@@ -30,15 +30,16 @@ export default meta
 type Story = StoryObj
 
 const SIGNAL_COLOURS = [
-  ['--bx-void', '#140b24', 'Inside of the bunker. The default page ground.'],
-  ['--bx-void-deep', '#0b0616', 'Absolute ground, behind everything.'],
-  ['--bx-nebula', '#2e1a5c', 'The sky on the cover art. Panels and surfaces.'],
-  ['--bx-nebula-soft', '#462b7d', 'One step of elevation above the ground.'],
-  ['--bx-phosphor', '#35e82e', 'The logo green. Actions, focus, anything live.'],
-  ['--bx-phosphor-hot', '#d9fa7a', 'The lime highlight. Hover and emphasis only.'],
-  ['--bx-magenta', '#d06ce0', 'Convergence error. Never used on its own.'],
-  ['--bx-signal', '#f0eaff', 'Star white. Primary text.'],
-  ['--bx-alert', '#ff4438', 'Warning lamp on the console. Errors only.'],
+  ['--bx-phosphor', '#00ed67', 'BRAND. Ações, foco, qualquer coisa viva.'],
+  ['--bx-purple', '#633693', 'BRAND. Superfícies e blocos elevados.'],
+  ['--bx-void-deep', '#0e0716', 'O roxo levado quase ao preto: o chão.'],
+  ['--bx-void', '#170e23', 'Um degrau acima: o interior do bunker.'],
+  ['--bx-nebula-soft', '#7d4bb3', 'Elevação sobre o roxo.'],
+  ['--bx-phosphor-hot', '#6bffa6', 'O verde levantado. Só hover e ênfase.'],
+  ['--bx-phosphor-dim', '#0a8f42', 'O verde derrubado. Estado inativo.'],
+  ['--bx-magenta', '#c974e0', 'Erro de convergência. Nunca sozinho.'],
+  ['--bx-signal', '#f2ecff', 'Branco-estrela. Texto principal.'],
+  ['--bx-alert', '#ff4438', 'Lâmpada de alerta. Só erro.'],
 ]
 
 function Swatch({ name, value, use }: { name: string; value: string; use: string }) {
@@ -91,11 +92,11 @@ export const Showroom: Story = {
         </div>
       </header>
 
-      <Section title="Cor" note="nebulosa violeta + fósforo verde">
+      <Section title="Cor" note="#00ED67 e #633693 são a marca; o resto é derivado">
         <Text size="sm" tone="mute">
-          O chão do sistema é o violeta da nebulosa, não preto — preto com verde neon é o clichê
-          de terminal de hacker, e a marca já oferecia saída melhor. O verde é o fósforo de um tubo
-          antigo e só aparece onde algo está vivo: ação, foco, estado ligado.
+          Duas cores são a marca e não se discutem: o verde #00ED67 e o roxo #633693. Todo o
+          resto sai delas — os fundos são o roxo levado ao preto, os tons são as duas escurecidas
+          ou clareadas. O verde só aparece onde algo está vivo: ação, foco, estado ligado.
         </Text>
         <div className="sr-grid sr-grid--swatches" style={{ marginTop: 'var(--bx-space-6)' }}>
           {SIGNAL_COLOURS.map(([name, value, use]) => (
@@ -104,7 +105,7 @@ export const Showroom: Story = {
         </div>
       </Section>
 
-      <Section title="Tipografia" note="IM Fell English · Barlow · IBM Plex Mono">
+      <Section title="Tipografia" note="Bunker X · New Order · VCR OSD Mono">
         <div className="sr-type__row">
           <span className="sr-type__tag">display 5xl</span>
           <Heading level={2} size={1} className="sr-type__sample">

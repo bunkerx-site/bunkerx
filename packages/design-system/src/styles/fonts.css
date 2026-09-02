@@ -1,5 +1,57 @@
 /*
- * In production, self-host these (via fontsource) instead of hitting Google
- * Fonts: it removes a third party from the critical path and avoids CLS.
+ * The brand's three faces.
+ *
+ * None of them is on Google Fonts, so all three are self-hosted from /fonts.
+ * Each declaration tries `local()` first — if a designer has the face installed
+ * they get it without a download — and then the files.
+ *
+ * DROP THESE FILES IN apps/web/public/fonts/ :
+ *
+ *   new-order-bold.woff2      New Order Bold      — primary face, body and UI
+ *   vcr-osd-mono.woff2        VCR OSD Mono        — complementary, banners and data
+ *   bunker-x.woff2            Bunker X            — the display face, wordmark
+ *
+ * Until they are there the stacks in tokens.css fall through to the fallbacks
+ * loaded below, which hold the layout at roughly the right proportions. Nothing
+ * breaks; the site simply is not yet in the brand's own type.
+ *
+ * `font-display: swap` on purpose: text drawn in the fallback and then swapped
+ * beats text that is invisible while a file downloads.
+ */
+
+@font-face {
+  font-family: 'New Order';
+  src:
+    local('New Order Bold'),
+    url('/fonts/new-order-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'VCR OSD Mono';
+  src:
+    local('VCR OSD Mono'),
+    url('/fonts/vcr-osd-mono.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bunker X';
+  src:
+    local('Bunker X'),
+    url('/fonts/bunker-x.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Fallbacks, loaded while the brand files are missing. Delete this import once
+ * the three faces above are in place — it is a third party on the critical
+ * path and it stops earning its keep the moment the real fonts land.
  */
 @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap');

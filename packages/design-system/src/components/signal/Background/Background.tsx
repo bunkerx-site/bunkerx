@@ -135,10 +135,12 @@ export function Background({
       }
     })
 
+    // Canvas cannot read CSS variables, so the brand values are repeated here.
+    // They must be kept in step with tokens.css.
     const TINTS: Record<string, [number, number, number]> = {
       signal: [240, 234, 255],
-      phosphor: [53, 232, 46],
-      magenta: [208, 108, 224],
+      phosphor: [0, 237, 103],
+      magenta: [201, 116, 224],
     }
 
     let width = 0

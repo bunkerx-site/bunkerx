@@ -1,22 +1,33 @@
 /*
  * Bunker X — design tokens
  *
- * One register: violet nebula and green phosphor. The CRT, space, the podcast.
- * Every surface belongs to it, so a colour that cannot be justified as light
- * coming off a tube does not belong in this file.
+ * Two colours are the brand and are not up for interpretation:
+ *   #00ED67  the green
+ *   #633693  the purple
+ * Everything else in the palette is derived from them — the grounds are the
+ * purple taken down toward black, the tints are the two brand values lightened
+ * or darkened. A colour that cannot be traced back to one of the two does not
+ * belong in this file.
+ *
+ * Contrast was checked on every pairing the interface actually uses: dark type
+ * on the green plate is 12.07:1, light type on the purple 7.23:1, green on the
+ * dark ground 12.27:1, and green on purple 5.37:1 — the only AA rather than
+ * AAA pairing, which is why green on purple is never used for body copy.
  */
 :root {
   /* --- SIGNAL register ------------------------------------------------ */
-  --bx-void: #140b24;          /* near-black violet: inside of the bunker  */
-  --bx-void-deep: #0b0616;     /* absolute ground, behind everything       */
-  --bx-nebula: #2e1a5c;        /* mid violet: the sky on the cover art     */
-  --bx-nebula-soft: #462b7d;   /* elevation: a panel above the ground      */
-  --bx-phosphor: #35e82e;      /* the logo green = P1 CRT phosphor         */
-  --bx-phosphor-hot: #d9fa7a;  /* the lime highlight at the top of the logo*/
-  --bx-phosphor-dim: #1c7a1a;  /* inactive / powered-down state            */
+  --bx-purple: #633693;        /* BRAND. the purple                       */
+  --bx-phosphor: #00ed67;      /* BRAND. the green                        */
+
+  --bx-void-deep: #0e0716;     /* the purple taken to near-black: the ground */
+  --bx-void: #170e23;          /* one step up: inside of the bunker        */
+  --bx-nebula: var(--bx-purple);
+  --bx-nebula-soft: #7d4bb3;   /* elevation: a panel above the ground      */
+  --bx-phosphor-hot: #6bffa6;  /* the green lifted: hover and emphasis     */
+  --bx-phosphor-dim: #0a8f42;  /* the green dropped: inactive / powered down */
   --bx-magenta: #d06ce0;       /* nebula pink = RGB convergence error      */
-  --bx-signal: #f0eaff;        /* star white: primary text                 */
-  --bx-signal-mute: #a99cc4;   /* secondary text                          */
+  --bx-signal: #f2ecff;        /* star white: primary text                 */
+  --bx-signal-mute: #a493c0;   /* secondary text, tinted toward the purple */
   --bx-alert: #ff4438;         /* warning lamp on the console: errors only */
 
   /* --- semantic ------------------------------------------------------- */
@@ -29,9 +40,15 @@
    * display: old letterpress serif, converses with the stamped logo.
    * body: institutional grotesque — public-signage feel, reads well at size.
    */
-  --bx-font-display: 'IM Fell English', 'Iowan Old Style', Georgia, serif;
-  --bx-font-body: 'Barlow', -apple-system, 'Segoe UI', system-ui, sans-serif;
-  --bx-font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  /*
+   * The brand's three faces. None of them is on Google Fonts, so each is
+   * declared in fonts.css and served from /fonts — see that file for which
+   * files have to be dropped in. The fallbacks are chosen to hold the layout
+   * at roughly the right proportions until they are.
+   */
+  --bx-font-display: 'Bunker X', 'IM Fell English', 'Iowan Old Style', Georgia, serif;
+  --bx-font-body: 'New Order', 'Barlow', -apple-system, 'Segoe UI', system-ui, sans-serif;
+  --bx-font-mono: 'VCR OSD Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
   /*
    * Anchored at 19px, not 16px. This is a reading site — long synopses, host
@@ -88,8 +105,8 @@
   --bx-converge-break: 3px;
 
   /* --- phosphor glow --------------------------------------------------- */
-  --bx-glow-soft: 0 0 12px rgba(53, 232, 46, 0.35);
-  --bx-glow-hard: 0 0 4px rgba(53, 232, 46, 0.9), 0 0 18px rgba(53, 232, 46, 0.45);
+  --bx-glow-soft: 0 0 12px rgba(0, 237, 103, 0.35);
+  --bx-glow-hard: 0 0 4px rgba(0, 237, 103, 0.9), 0 0 18px rgba(0, 237, 103, 0.45);
 
   /* --- motion ---------------------------------------------------------- */
   --bx-ease-crt: cubic-bezier(0.2, 0.8, 0.2, 1);
