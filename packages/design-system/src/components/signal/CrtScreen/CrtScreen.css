@@ -1,0 +1,24 @@
+.bx-crt { position: relative; min-height: 100%; }
+
+/* The portal root. Nothing between it and the body, so `fixed` really means
+   fixed to the viewport. */
+.bx-crt__glass-root { position: fixed; inset: 0; z-index: var(--bx-z-crt); pointer-events: none; }
+
+/*
+ * The glass: vignette only.
+ *
+ * There used to be a dark scanline layer here as well. It covered every pixel
+ * of the site including the type, and on the phosphor plates — where small
+ * dark text sits on bright green — it struck straight through the glyphs. No
+ * opacity was low enough to keep the lines visible and the text clean at the
+ * same time, so the lines went. The raster that remains lives in Background,
+ * behind the content, where it can be strong without touching a letterform.
+ */
+.bx-crt__overlay { position: absolute; inset: 0; }
+
+/* Vignette plus glass curvature: darkens the edges like a real tube. */
+.bx-crt__glass {
+  background:
+    radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(11, 6, 22, 0.55) 100%),
+    linear-gradient(to bottom, rgba(53, 232, 46, 0.03), transparent 12%);
+}

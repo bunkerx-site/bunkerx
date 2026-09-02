@@ -1,0 +1,62 @@
+/*
+ * A host portrait as it would look on a surveillance monitor: cropped square,
+ * pushed toward the phosphor, scanlines baked in.
+ */
+.bx-avatar {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: var(--bx-radius-stamp);
+  border: var(--bx-border-frame) solid var(--bx-phosphor-dim);
+  background: var(--bx-void);
+  line-height: 0;
+}
+
+.bx-avatar__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.7) contrast(1.15) brightness(0.95);
+  transition: filter var(--bx-dur-base) var(--bx-ease-crt);
+}
+
+/* The tint is a separate layer so the image keeps its own contrast underneath
+   instead of being flattened into a single green wash. */
+.bx-avatar__tint {
+  position: absolute;
+  inset: 0;
+  background: var(--bx-phosphor);
+  mix-blend-mode: color;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.bx-avatar__lines {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0px,
+    rgba(0, 0, 0, 0.3) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+}
+
+/* Colour returns when you look at them directly. */
+.bx-avatar--live:hover .bx-avatar__image { filter: none; }
+.bx-avatar--live:hover .bx-avatar__tint { opacity: 0.12; }
+
+.bx-avatar__name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: var(--bx-space-2) var(--bx-space-3);
+  background: linear-gradient(to top, var(--bx-void-deep) 40%, transparent);
+  color: var(--bx-phosphor);
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-xs);
+  line-height: 1.3;
+}

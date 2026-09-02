@@ -1,0 +1,38 @@
+.bx-checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--bx-space-3);
+  cursor: pointer;
+  font-size: var(--bx-text-sm);
+  color: var(--bx-signal);
+}
+
+.bx-checkbox__input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+/* An indicator lamp rather than a tick: it is lit or it is dark. */
+.bx-checkbox__box {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.15rem;
+  display: grid;
+  place-items: center;
+  border: var(--bx-border-frame) solid var(--bx-phosphor-dim);
+  background: var(--bx-void-deep);
+  transition:
+    border-color var(--bx-dur-fast) var(--bx-ease-crt),
+    box-shadow var(--bx-dur-fast) var(--bx-ease-crt);
+}
+
+.bx-checkbox__lamp {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--bx-phosphor);
+  opacity: 0;
+  transition: opacity var(--bx-dur-fast) var(--bx-ease-crt);
+}
+
+.bx-checkbox__input:checked + .bx-checkbox__box { border-color: var(--bx-phosphor); box-shadow: var(--bx-glow-soft); }
+.bx-checkbox__input:checked + .bx-checkbox__box .bx-checkbox__lamp { opacity: 1; }
+.bx-checkbox__input:focus-visible + .bx-checkbox__box { outline: 2px solid var(--bx-phosphor); outline-offset: 2px; }
+.bx-checkbox__input:disabled ~ * { opacity: 0.45; cursor: not-allowed; }

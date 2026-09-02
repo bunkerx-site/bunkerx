@@ -1,0 +1,160 @@
+/*
+ * Everything here sits behind the page content: the nebula the brand lives on,
+ * dust drifting through it, and the vertical hold slipping every few seconds.
+ * Nothing in this file may compete with reading — it is depth, not picture.
+ */
+.bx-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bx-bg__nebula {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(70% 90% at 20% 15%, color-mix(in srgb, var(--bx-nebula-soft) 70%, transparent), transparent 65%),
+    radial-gradient(60% 80% at 85% 75%, color-mix(in srgb, var(--bx-magenta) 22%, transparent), transparent 60%),
+    radial-gradient(90% 70% at 50% 110%, color-mix(in srgb, var(--bx-nebula) 60%, transparent), transparent 70%),
+    var(--bx-void-deep);
+}
+
+/* Snow, at the very bottom of the stack: under the dust, under the raster,
+   under everything the page renders. It is atmosphere, not texture on top. */
+.bx-bg__noise { position: absolute; inset: 0; opacity: 0.3; }
+
+.bx-bg__particles { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/*
+ * The tube's raster, painted behind the content where it is free to be
+ * visible. Light lines on the nebula rather than dark ones over the text: the
+ * stripes read as the screen glowing in bands, and nothing loses contrast.
+ */
+.bx-bg__raster {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--bx-signal) calc(var(--bx-raster-strength) * 100%), transparent) 0px,
+    color-mix(in srgb, var(--bx-signal) calc(var(--bx-raster-strength) * 100%), transparent) 1px,
+    transparent 1px,
+    transparent var(--bx-raster-period)
+  );
+}
+
+/* A second, much wider band drifting over the raster: the uneven brightness of
+   a tube whose beam current is not quite steady. */
+.bx-bg__raster::after {
+  content: '';
+  position: absolute;
+  inset: -50% 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--bx-phosphor) 5%, transparent) 45%,
+    color-mix(in srgb, var(--bx-phosphor) 8%, transparent) 50%,
+    color-mix(in srgb, var(--bx-phosphor) 5%, transparent) 55%,
+    transparent
+  );
+  animation: bx-raster-breathe 11s linear infinite;
+}
+
+@keyframes bx-raster-breathe {
+  from { transform: translateY(-30%); }
+  to { transform: translateY(30%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bx-bg__raster::after { animation: none; }
+}
+
+.bx-bg__tears { position: absolute; inset: 0; }
+
+/*
+ * One tear, in two nested layers.
+ *
+ * The outer element carries the bar down the screen. The inner one does the
+ * flick. They are split because both need `transform`, and a single element
+ * cannot run two transform animations at once — the second would win and the
+ * bar would stop travelling.
+ */
+.bx-tear {
+  position: absolute;
+  left: 0;
+  right: 0;
+  will-change: transform;
+  animation: bx-tear-sweep linear infinite;
+}
+
+.bx-tear__slice {
+  width: 100%;
+  height: 100%;
+  will-change: opacity, transform;
+  /* No interpolation: a tube does not fade out and back, it cuts. */
+  animation: bx-tear-flick steps(1, end) infinite;
+}
+
+@keyframes bx-tear-sweep {
+  from { transform: translate3d(0, -30vh, 0); }
+  to { transform: translate3d(0, 130vh, 0); }
+}
+
+/*
+ * Hard cuts at uneven intervals. Each pair of stops holds a value and then
+ * jumps, so the bar snaps between states instead of breathing. The horizontal
+ * nudge rides along: when the picture drops out it also loses its place.
+ */
+@keyframes bx-tear-flick {
+  0%, 40% { opacity: var(--tear-opacity); transform: translate3d(0, 0, 0); }
+  40.01%, 43% { opacity: calc(var(--tear-opacity) * 0.05); transform: translate3d(-1.5%, 0, 0); }
+  43.01%, 46% { opacity: var(--tear-opacity); transform: translate3d(0, 0, 0); }
+  46.01%, 47.5% { opacity: calc(var(--tear-opacity) * 0.45); transform: translate3d(2%, 0, 0); }
+  47.51%, 70% { opacity: var(--tear-opacity); transform: translate3d(0, 0, 0); }
+  70.01%, 72% { opacity: calc(var(--tear-opacity) * 0.12); transform: translate3d(-1%, 0, 0); }
+  72.01%, 86% { opacity: var(--tear-opacity); transform: translate3d(0, 0, 0); }
+  86.01%, 87% { opacity: calc(var(--tear-opacity) * 0.6); transform: translate3d(1%, 0, 0); }
+  87.01%, 100% { opacity: var(--tear-opacity); transform: translate3d(0, 0, 0); }
+}
+
+/* A wide, soft band: the picture brightening as the hold slips. */
+.bx-tear__slice--band {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--bx-signal) 10%, transparent) 45%,
+    color-mix(in srgb, var(--bx-signal) 16%, transparent) 50%,
+    color-mix(in srgb, var(--bx-signal) 10%, transparent) 55%,
+    transparent
+  );
+}
+
+/* A hard bright line: the seam between two frames. */
+.bx-tear__slice--seam {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--bx-signal) 45%, transparent),
+    transparent
+  );
+}
+
+/* A displaced slice, tinted with the two brand chromas — the same
+   misconvergence the Glitch component uses, applied to the whole picture. */
+.bx-tear__slice--chroma {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--bx-phosphor) 22%, transparent) 40%,
+    color-mix(in srgb, var(--bx-magenta) 22%, transparent) 60%,
+    transparent
+  );
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The texture stays, the sweeping and the flicking do not. */
+  .bx-tear { animation: none; }
+  .bx-tear__slice { animation: none; opacity: calc(var(--tear-opacity) * 0.5); }
+}

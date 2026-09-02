@@ -1,0 +1,28 @@
+/*
+ * The stamped frame, echoing the rounded-square decal in the logo. The radius
+ * token exists for this component and its relatives — anything that is not
+ * "stamped" keeps square corners.
+ */
+.bx-panel {
+  position: relative;
+  padding: var(--bx-space-6);
+  border-radius: var(--bx-radius-stamp);
+  background: color-mix(in srgb, var(--bx-nebula) 55%, transparent);
+  border: var(--bx-border-frame) solid color-mix(in srgb, var(--bx-phosphor) 30%, transparent);
+}
+
+.bx-panel--flat { background: transparent; }
+
+/* The corner ticks read as registration marks on a print sheet, and they mark
+   the frame as a deliberate crop rather than a card with a border. */
+.bx-panel--marked::before,
+.bx-panel--marked::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: var(--bx-border-frame) solid var(--bx-phosphor);
+  pointer-events: none;
+}
+.bx-panel--marked::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+.bx-panel--marked::after { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }

@@ -1,0 +1,45 @@
+/*
+ * Misconvergence, the system's emphasis mechanism.
+ *
+ * Two copies of the text are offset in opposite directions and tinted with the
+ * two brand chromas. Both copies are `aria-hidden` and the real text sits on
+ * top, so the string is announced once.
+ */
+.bx-glitch {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+
+.bx-glitch__ghost {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  transition: transform var(--bx-dur-base) var(--bx-ease-crt);
+}
+
+.bx-glitch__ghost--green {
+  color: var(--bx-phosphor);
+  transform: translateX(calc(var(--bx-converge) * -1));
+  mix-blend-mode: screen;
+}
+
+.bx-glitch__ghost--magenta {
+  color: var(--bx-magenta);
+  transform: translateX(var(--bx-converge));
+  mix-blend-mode: screen;
+}
+
+.bx-glitch__text { position: relative; z-index: 1; }
+
+.bx-glitch--nudge { --bx-converge: var(--bx-converge-nudge); }
+.bx-glitch--break { --bx-converge: var(--bx-converge-break); }
+
+/* The interactive case: alignment slips when the element is touched. */
+.bx-glitch--reactive:hover,
+.bx-glitch--reactive:focus-within { --bx-converge: var(--bx-converge-break); }
+
+@media (prefers-reduced-motion: reduce) {
+  .bx-glitch__ghost { transition: none; }
+}

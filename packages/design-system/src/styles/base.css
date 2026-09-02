@@ -1,0 +1,52 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bx-void-deep);
+  color: var(--bx-fg);
+  font-family: var(--bx-font-body);
+  font-size: var(--bx-text-base);
+  line-height: var(--bx-leading-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings use the letterpress serif. No uppercase transform: the logo is
+   already all-caps, headings do not need to repeat the trick. */
+h1, h2, h3, h4 {
+  font-family: var(--bx-font-display);
+  font-weight: 400;
+  line-height: var(--bx-leading-tight);
+  margin: 0;
+}
+
+p { margin: 0 0 var(--bx-space-4); max-width: var(--bx-measure); }
+
+a { color: var(--bx-phosphor); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--bx-phosphor-hot); }
+
+img, svg, video { display: block; max-width: 100%; }
+
+/* Visible focus is non-negotiable; the ring uses the phosphor itself. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--bx-phosphor);
+  outline-offset: 2px;
+}
+
+::selection { background: var(--bx-phosphor); color: var(--bx-void); }
+
+/* Available to screen readers, invisible on screen. */
+.bx-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,49 @@
+.bx-button {
+  --bx-converge: 0px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bx-space-2);
+  padding: var(--bx-space-3) var(--bx-space-6);
+  border: var(--bx-border-frame) solid transparent;
+  border-radius: var(--bx-radius-stamp);
+  font-family: var(--bx-font-body);
+  font-size: var(--bx-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  background: transparent;
+  transition:
+    background var(--bx-dur-fast) var(--bx-ease-crt),
+    color var(--bx-dur-fast) var(--bx-ease-crt),
+    box-shadow var(--bx-dur-base) var(--bx-ease-crt);
+}
+
+.bx-button:disabled { cursor: not-allowed; opacity: 0.45; }
+
+/* Primary: the phosphor plate. This is the "powered on" control. */
+.bx-button--phosphor {
+  background: var(--bx-phosphor);
+  border-color: var(--bx-phosphor);
+  color: var(--bx-void);
+}
+.bx-button--phosphor:hover:not(:disabled) {
+  background: var(--bx-phosphor-hot);
+  border-color: var(--bx-phosphor-hot);
+  box-shadow: var(--bx-glow-hard);
+}
+
+/* Secondary: outline only, like a stencil sprayed on the bunker wall. */
+.bx-button--outline {
+  border-color: var(--bx-phosphor-dim);
+  color: var(--bx-phosphor);
+}
+.bx-button--outline:hover:not(:disabled) {
+  border-color: var(--bx-phosphor);
+  box-shadow: var(--bx-glow-soft);
+}
+
+.bx-button--ghost { color: var(--bx-signal-mute); }
+.bx-button--ghost:hover:not(:disabled) { color: var(--bx-signal); }
+
+.bx-button--sm { padding: var(--bx-space-2) var(--bx-space-4); font-size: var(--bx-text-xs); }
+.bx-button--lg { padding: var(--bx-space-4) var(--bx-space-8); font-size: var(--bx-text-base); }

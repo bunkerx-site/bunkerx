@@ -1,0 +1,72 @@
+.sr { max-width: 72rem; margin: 0 auto; padding-bottom: var(--bx-space-24); }
+
+/* The masthead is the one place the system spends its boldness: the wordmark
+   loses convergence over a field of snow, the way the show's own logo sits on
+   a nebula. Everything below it stays deliberately quiet. */
+.sr-hero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 22rem;
+  margin-bottom: var(--bx-space-16);
+  overflow: hidden;
+  border-radius: var(--bx-radius-stamp);
+  background:
+    radial-gradient(90% 120% at 30% 20%, var(--bx-nebula-soft), transparent 60%),
+    radial-gradient(80% 100% at 80% 80%, color-mix(in srgb, var(--bx-magenta) 35%, transparent), transparent 60%),
+    var(--bx-void-deep);
+}
+
+.sr-hero__noise { position: absolute; inset: 0; opacity: 0.22; }
+.sr-hero__inner { position: relative; text-align: center; padding: var(--bx-space-8); }
+
+.sr-hero__wordmark {
+  font-family: var(--bx-font-display);
+  font-size: clamp(3rem, 12vw, 7rem);
+  line-height: 0.95;
+  color: var(--bx-signal);
+}
+
+.sr-hero__tagline {
+  margin-top: var(--bx-space-4);
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-sm);
+  color: var(--bx-phosphor);
+}
+
+.sr-section { margin-bottom: var(--bx-space-16); }
+
+.sr-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bx-space-4);
+  margin-bottom: var(--bx-space-6);
+  padding-bottom: var(--bx-space-3);
+  border-bottom: var(--bx-border-hair) solid color-mix(in srgb, var(--bx-phosphor) 25%, transparent);
+}
+
+.sr-section__note { font-family: var(--bx-font-mono); font-size: var(--bx-text-xs); color: var(--bx-signal-mute); }
+
+.sr-grid { display: grid; gap: var(--bx-space-4); }
+.sr-grid--swatches { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); }
+.sr-grid--two { grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
+
+.sr-swatch { border: var(--bx-border-hair) solid color-mix(in srgb, var(--bx-signal) 15%, transparent); }
+.sr-swatch__chip { height: 4.5rem; }
+.sr-swatch__meta { padding: var(--bx-space-2) var(--bx-space-3); background: var(--bx-void-deep); }
+.sr-swatch__name { font-family: var(--bx-font-mono); font-size: var(--bx-text-xs); color: var(--bx-signal); }
+.sr-swatch__value { font-family: var(--bx-font-mono); font-size: var(--bx-text-xs); color: var(--bx-signal-mute); }
+.sr-swatch__use { margin-top: var(--bx-space-1); font-size: var(--bx-text-xs); color: var(--bx-signal-mute); line-height: 1.35; }
+
+.sr-type__row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--bx-space-6);
+  padding: var(--bx-space-3) 0;
+  border-bottom: var(--bx-border-hair) solid color-mix(in srgb, var(--bx-signal) 10%, transparent);
+}
+.sr-type__tag { flex: none; width: 7rem; font-family: var(--bx-font-mono); font-size: var(--bx-text-xs); color: var(--bx-signal-mute); }
+.sr-type__sample { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.sr-row { display: flex; flex-wrap: wrap; gap: var(--bx-space-4); align-items: center; }

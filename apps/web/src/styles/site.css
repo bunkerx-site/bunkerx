@@ -1,0 +1,782 @@
+/* ============================================================== chrome == */
+
+/*
+ * In-page navigation moves rather than jumps, so it is obvious the page went
+ * somewhere else instead of appearing to have changed content in place. The
+ * offset keeps a heading from landing underneath the fixed header.
+ */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 7rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* The scrollbar is on screen the whole time, so it is part of the design:
+   phosphor thumb over a nebula track. */
+* { scrollbar-color: var(--bx-phosphor-dim) color-mix(in srgb, var(--bx-nebula) 55%, transparent); scrollbar-width: thin; }
+
+::-webkit-scrollbar { width: 12px; height: 12px; }
+
+::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--bx-nebula) 45%, var(--bx-void-deep));
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    var(--bx-phosphor) 0%,
+    var(--bx-phosphor-dim) 45%,
+    var(--bx-magenta) 100%
+  );
+  border: 3px solid var(--bx-void-deep);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, var(--bx-phosphor-hot), var(--bx-phosphor) 55%, var(--bx-magenta));
+}
+
+::-webkit-scrollbar-corner { background: var(--bx-void-deep); }
+
+/*
+ * Site layout.
+ *
+ * There is no ornament on this page — no logo, no icons, no illustration — so
+ * the decorating is done by scale, space and rules. Everything is left
+ * aligned and ragged right; nothing is centred, because centred text at these
+ * sizes is harder to return to on each line.
+ */
+
+.shell {
+  width: min(100% - 2.5rem, 78rem);
+  margin-inline: auto;
+}
+
+.shell--narrow { width: min(100% - 2.5rem, 58rem); }
+
+/* Sections breathe. The gap between blocks is what tells you a new subject has
+   started, which is why there is no chrome above each heading doing that job. */
+.block { position: relative; padding-block: clamp(5rem, 11vw, 10rem); }
+.block:target { scroll-margin-top: 7rem; }
+
+/*
+ * Alternating grounds. Full-bleed bands rather than boxed panels: a band edge
+ * to edge reads as the page changing surface, while a boxed one would read as
+ * one more card. Both tints are transparent enough that the drifting dust
+ * behind them still shows.
+ */
+.block--nebula { background: color-mix(in srgb, var(--bx-nebula) 42%, transparent); }
+.block--deep { background: color-mix(in srgb, var(--bx-void-deep) 62%, transparent); }
+
+/*
+ * The seam between sections.
+ *
+ * Taken from the colour burst a broadcast puts at the head of every line: a
+ * short run of bars, then a rule running out to the edge. It is asymmetric and
+ * left-anchored, aligned with the content — a centred divider would only be
+ * decoration, this one reads as the signal starting again, and it says where
+ * the column begins.
+ */
+.seam {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  height: clamp(0.5rem, 0.9vw, 0.75rem);
+  padding-inline: max(1.25rem, calc(50% - 39rem));
+  pointer-events: none;
+}
+
+/* Full-height bars, so the seam reads as a strip of test-card colour rather
+   than a decorated hairline. The widths are uneven — a real test card is not
+   an even split, and equal thirds would read as a chart. */
+.seam__bars {
+  flex: none;
+  width: clamp(6rem, 12vw, 10rem);
+  background: linear-gradient(
+    to right,
+    var(--bx-phosphor) 0 19%,
+    var(--bx-phosphor-hot) 19% 33%,
+    var(--bx-signal) 33% 42%,
+    var(--bx-magenta) 42% 60%,
+    var(--bx-nebula-soft) 60% 78%,
+    var(--bx-phosphor-dim) 78% 91%,
+    var(--bx-alert) 91% 100%
+  );
+  border-radius: 2px;
+}
+
+/* The rule sits on the optical centre of the bars and runs out to the edge. */
+.seam__rule {
+  flex: 1;
+  align-self: center;
+  height: 1px;
+  background: color-mix(in srgb, var(--bx-signal) 22%, transparent);
+  mask-image: linear-gradient(to right, black, transparent 92%);
+}
+
+.block__head { margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+
+.block__title {
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-text-2xl);
+  line-height: var(--bx-leading-tight);
+  color: var(--bx-signal);
+  margin: 0;
+}
+
+.block__lead {
+  margin-top: var(--bx-space-4);
+  max-width: 46ch;
+  font-size: var(--bx-text-lg);
+  line-height: 1.55;
+  color: var(--bx-signal-mute);
+}
+
+.block__more { margin-top: clamp(2.5rem, 5vw, 4rem); }
+
+/* ============================================================ masthead == */
+
+.masthead {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  /*
+   * The bar is a solid phosphor plate, not a scrim over the picture. It gives
+   * the page a fixed horizon and it is the one surface where the palette runs
+   * inverted — dark type on green — which is also how the show's own decal is
+   * built.
+   */
+  background: var(--bx-phosphor);
+  color: var(--bx-void);
+  transition: transform 260ms var(--bx-ease-crt), box-shadow 260ms var(--bx-ease-crt);
+  /* Deliberately untextured. Lines over a bright plate strike through the
+     glyphs of the dark type sitting on it, and they were not carrying any
+     information to pay for that. */
+}
+
+.masthead--hidden { transform: translateY(-101%); }
+
+/* Once content scrolls underneath, the plate gains an edge so it reads as a
+   separate layer rather than part of the page. */
+.masthead--stuck { box-shadow: 0 6px 24px rgba(11, 6, 22, 0.55); }
+
+.masthead__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  min-height: 5.25rem;
+}
+
+.masthead__name {
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-text-lg);
+  letter-spacing: 0.01em;
+  color: var(--bx-void);
+  text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+}
+
+/* A live indicator that carries the schedule — the one piece of information a
+   returning listener actually wants from a header. */
+.masthead__slot {
+  display: flex;
+  align-items: center;
+  gap: var(--bx-space-2);
+  font-size: var(--bx-text-sm);
+  color: color-mix(in srgb, var(--bx-void) 72%, transparent);
+  white-space: nowrap;
+  position: relative;
+}
+
+.masthead__lamp {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bx-void);
+  animation: bx-lamp 3.2s steps(1, end) infinite;
+}
+
+@keyframes bx-lamp {
+  0%, 88% { opacity: 1; }
+  88.01%, 94% { opacity: 0.2; }
+  94.01%, 100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .masthead__lamp { animation: none; }
+}
+
+.masthead__nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.2vw, 2rem);
+  margin-left: auto;
+}
+
+.masthead__link {
+  position: relative;
+  font-size: var(--bx-text-base);
+  color: color-mix(in srgb, var(--bx-void) 78%, transparent);
+  text-decoration: none;
+  padding-block: 0.35rem;
+  transition: color 120ms var(--bx-ease-crt);
+}
+
+/* The underline grows from the left rather than fading in, so it reads as the
+   cursor arriving at the word. */
+.masthead__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--bx-void);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms var(--bx-ease-crt);
+}
+
+.masthead__link:hover { color: var(--bx-void); }
+.masthead__link:hover::after,
+.masthead__link:focus-visible::after { transform: scaleX(1); }
+
+.masthead__join {
+  position: relative;
+  padding: 0.6rem 1.5rem;
+  border-radius: var(--bx-radius-stamp);
+  background: var(--bx-void);
+  color: var(--bx-phosphor);
+  font-size: var(--bx-text-base);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 140ms var(--bx-ease-crt), color 140ms var(--bx-ease-crt);
+}
+.masthead__join:hover { background: var(--bx-nebula); color: var(--bx-phosphor-hot); }
+
+.masthead__toggle {
+  display: none;
+  margin-left: auto;
+  padding: 0.55rem 1.1rem;
+  position: relative;
+  border: 2px solid var(--bx-void);
+  border-radius: var(--bx-radius-stamp);
+  background: transparent;
+  color: var(--bx-void);
+  font-family: var(--bx-font-body);
+  font-size: var(--bx-text-base);
+  cursor: pointer;
+}
+
+/* Full-screen menu on small viewports: at these type sizes a dropdown would
+   need to scroll, and a sheet that covers the page is easier to hit. */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: grid;
+  align-content: center;
+  gap: var(--bx-space-4);
+  padding: 6rem 1.75rem 3rem;
+  background: var(--bx-phosphor);
+}
+
+.menu__link {
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-text-3xl);
+  line-height: 1.15;
+  color: var(--bx-void);
+  text-decoration: none;
+}
+.menu__link:active { opacity: 0.6; }
+
+.menu__join { text-decoration: underline; text-underline-offset: 6px; }
+
+@media (max-width: 64rem) {
+  .masthead__nav, .masthead__slot { display: none; }
+  .masthead__toggle { display: inline-flex; }
+}
+
+@media (min-width: 64.0625rem) {
+  .menu { display: none; }
+}
+
+/* ================================================================ fold == */
+
+/*
+ * The first fold does not introduce the site — it acquires the signal. The
+ * newest episode's title is the whole screen, and on load it locks in out of
+ * the noise. One orchestrated moment, once, on the element that matters most.
+ */
+/*
+ * The fold is sized against the viewport it is actually in. Padding and type
+ * both scale with height as well as width, because a wide-but-short laptop
+ * screen is the case that overflows: 5.4vw alone says nothing about whether
+ * there is room underneath for the summary and the buttons.
+ */
+.fold {
+  position: relative;
+  /* svh rather than vh: on mobile, vh is the height with the browser chrome
+     hidden, so a 100vh hero is taller than the screen until you scroll. */
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  padding-block: clamp(6.5rem, 13vh, 9rem) clamp(2.5rem, 7vh, 6rem);
+  overflow: hidden;
+}
+
+/*
+ * Snow lives only here, and it dissolves before the fold ends. It is the
+ * signal being acquired, which is a thing that happens once, at the top —
+ * carrying it down the whole page would make it wallpaper.
+ *
+ * Two masks intersect: one fades it out toward the bottom of the section, the
+ * other clears it from behind the headline. It is faint enough to register as
+ * air rather than as grain.
+ */
+.fold__noise {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.16;
+  mask-image:
+    linear-gradient(to bottom, black 0%, black 32%, transparent 88%),
+    radial-gradient(65% 55% at 26% 48%, transparent 10%, black 68%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.fold__inner { z-index: 1; }
+
+
+/* A soft well under the text, so the type keeps its contrast wherever the
+   nebula behind it happens to be bright. */
+.fold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(75% 65% at 26% 50%, color-mix(in srgb, var(--bx-void-deep) 70%, transparent), transparent 72%);
+  pointer-events: none;
+}
+
+.fold__inner { position: relative; }
+
+.fold__site {
+  font-size: var(--bx-text-base);
+  color: var(--bx-signal-mute);
+  margin: 0 0 clamp(1.5rem, 4vh, 2.5rem);
+  max-width: 40ch;
+}
+
+.fold__site strong { color: var(--bx-signal); font-weight: 500; }
+
+.fold__slug {
+  display: block;
+  margin-bottom: var(--bx-space-5);
+  font-size: var(--bx-text-base);
+  color: var(--bx-phosphor);
+}
+
+.fold__title {
+  font-family: var(--bx-font-display);
+  font-size: clamp(2.1rem, min(5.4vw, 7.4vh), 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  color: var(--bx-signal);
+  margin: 0;
+  max-width: 19ch;
+  text-wrap: balance;
+}
+
+.fold__summary {
+  margin-top: clamp(1.25rem, 3vh, 2rem);
+  max-width: 52ch;
+  font-size: var(--bx-text-lg);
+  line-height: 1.6;
+  color: var(--bx-signal-mute);
+}
+
+/* On a genuinely short screen the synopsis is the thing to give up: the title
+   and the two actions are what the fold is for. */
+@media (max-height: 44rem) {
+  .fold__summary { display: none; }
+  .fold__site { margin-bottom: var(--bx-space-5); }
+}
+
+.fold__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bx-space-4);
+  margin-top: clamp(1.5rem, 4vh, 2.5rem);
+}
+
+.fold__action {
+  padding: 1rem 2rem;
+  border-radius: var(--bx-radius-stamp);
+  font-size: var(--bx-text-base);
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid var(--bx-phosphor);
+  transition: background 140ms var(--bx-ease-crt), color 140ms var(--bx-ease-crt),
+    box-shadow 200ms var(--bx-ease-crt);
+}
+
+.fold__action--primary { background: var(--bx-phosphor); color: var(--bx-void); }
+.fold__action--primary:hover { box-shadow: var(--bx-glow-hard); }
+.fold__action--ghost { color: var(--bx-phosphor); background: transparent; }
+.fold__action--ghost:hover { background: color-mix(in srgb, var(--bx-phosphor) 15%, transparent); }
+
+/* The lock-on. Channels separate, noise sits over the type, then it settles. */
+.fold__lock {
+  animation: bx-lock 1500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes bx-lock {
+  0% { opacity: 0; filter: blur(6px); transform: translate3d(0, 12px, 0); }
+  35% { opacity: 1; filter: blur(2px); }
+  55% { opacity: 0.55; }
+  62% { opacity: 1; filter: blur(0); transform: none; }
+  70% { opacity: 0.7; }
+  100% { opacity: 1; filter: blur(0); transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fold__lock { animation: none; }
+}
+
+/* ============================================================= episodes == */
+
+/*
+ * The archive of a weekly show is a log, so it is set as one: full-width rows
+ * with the date hanging in the margin. A grid of equal cards would have made
+ * the newest episode look the same size as one from 2023.
+ */
+.log { border-top: 1px solid color-mix(in srgb, var(--bx-signal) 14%, transparent); }
+
+.entry {
+  display: grid;
+  grid-template-columns: 21rem 5.5rem minmax(0, 1fr) auto;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+  padding-block: clamp(2rem, 4vw, 3rem);
+  border-bottom: 1px solid color-mix(in srgb, var(--bx-signal) 14%, transparent);
+  transition: border-color 200ms var(--bx-ease-crt);
+}
+
+.entry:hover { border-bottom-color: color-mix(in srgb, var(--bx-phosphor) 55%, transparent); }
+
+/*
+ * The still sits first, at a size worth actually looking at.
+ *
+ * Every row is 16:9 regardless of what the source gave us — matched episodes
+ * bring a YouTube thumbnail, the rest fall back to square cover art that gets
+ * cropped to fit. A column of mixed ratios made the log look broken, and the
+ * cover art is centred artwork that survives the crop.
+ */
+.entry__art {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--bx-radius-stamp);
+  background: var(--bx-void-deep);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bx-signal) 12%, transparent);
+  aspect-ratio: 16 / 9;
+  transition: box-shadow 200ms var(--bx-ease-crt);
+}
+
+.entry:hover .entry__art { box-shadow: 0 0 0 2px color-mix(in srgb, var(--bx-phosphor) 70%, transparent); }
+/* Matched episodes bring a 16:9 still, which fills the frame. The rest fall
+   back to square cover art: letterboxed rather than cropped, because cropping
+   a centred decal to 16:9 beheads it. The gap reads as "no video for this
+   one", which is the truth. */
+.entry__img { width: 100%; height: 100%; object-fit: cover; }
+
+.entry__img--square {
+  object-fit: contain;
+  padding: 0.4rem;
+  background:
+    radial-gradient(60% 80% at 50% 50%, color-mix(in srgb, var(--bx-nebula) 55%, transparent), transparent),
+    var(--bx-void-deep);
+}
+
+.entry__date {
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-text-xl);
+  line-height: 1;
+  color: var(--bx-phosphor);
+  padding-top: 0.35rem;
+}
+
+.entry__year {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: var(--bx-text-sm);
+  color: var(--bx-signal-mute);
+}
+
+.entry__title {
+  font-family: var(--bx-font-display);
+  font-size: clamp(1.6rem, 3vw, 2.35rem);
+  line-height: 1.1;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.entry__title a { color: var(--bx-signal); text-decoration: none; }
+.entry__title a:hover { color: var(--bx-phosphor-hot); }
+
+.entry__summary {
+  margin: var(--bx-space-4) 0 0;
+  max-width: 58ch;
+  font-size: var(--bx-text-base);
+  line-height: var(--bx-leading-body);
+  color: var(--bx-signal-mute);
+}
+
+.entry__duration {
+  font-size: var(--bx-text-base);
+  color: var(--bx-signal-mute);
+  padding-top: 0.6rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 74rem) {
+  .entry { grid-template-columns: 15rem 5rem minmax(0, 1fr); }
+  .entry__duration { grid-column: 2 / -1; padding-top: 0; }
+}
+
+@media (max-width: 52rem) {
+  .entry { grid-template-columns: 1fr; gap: var(--bx-space-3); }
+  .entry__art { max-width: 28rem; }
+  .entry__duration { grid-column: auto; }
+  .entry__date { display: flex; align-items: baseline; gap: var(--bx-space-3); padding-top: 0; }
+  .entry__year { margin: 0; }
+  .entry__duration { padding-top: 0; }
+}
+
+/* =============================================================== videos == */
+
+/* Two per row, large. Four thumbnails at 300px would have been four things
+   you cannot actually see. */
+.reel { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 25rem), 1fr)); gap: clamp(2rem, 4vw, 3.5rem); }
+.reel--tight { grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: clamp(1.5rem, 3vw, 2.5rem); }
+
+.clip { display: block; text-decoration: none; }
+
+.clip__frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--bx-radius-stamp);
+  background: var(--bx-void-deep);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bx-signal) 12%, transparent);
+  transition: box-shadow 200ms var(--bx-ease-crt);
+}
+
+.clip:hover .clip__frame { box-shadow: 0 0 0 2px var(--bx-phosphor), var(--bx-glow-soft); }
+.clip__frame img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Scanlines only on the video stills — they are the parts of the page that are
+   literally a screen showing a picture. */
+.clip__scan {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(to bottom, rgba(0,0,0,.3) 0 1px, transparent 1px 4px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.clip__title {
+  margin: var(--bx-space-5) 0 0;
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-text-lg);
+  line-height: 1.2;
+  color: var(--bx-signal);
+}
+.clip:hover .clip__title { color: var(--bx-phosphor-hot); }
+
+.clip__summary {
+  margin: var(--bx-space-3) 0 0;
+  max-width: 52ch;
+  font-size: var(--bx-text-base);
+  line-height: 1.6;
+  color: var(--bx-signal-mute);
+}
+
+.clip__date { display: block; margin-top: var(--bx-space-3); font-size: var(--bx-text-sm); color: var(--bx-signal-mute); }
+
+/* =============================================================== agents == */
+
+.agents { display: grid; gap: clamp(3rem, 7vw, 6rem); }
+
+.agent { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: clamp(1.75rem, 4vw, 3.5rem); align-items: start; }
+
+.agent__portrait {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--bx-radius-stamp);
+  filter: grayscale(0.65) contrast(1.1);
+  transition: filter 260ms var(--bx-ease-crt);
+}
+.agent:hover .agent__portrait { filter: none; }
+
+.agent__name { font-family: var(--bx-font-display); font-size: var(--bx-text-2xl); line-height: 1.05; margin: 0; color: var(--bx-signal); }
+.agent__bio { margin: var(--bx-space-5) 0 0; max-width: 54ch; font-size: var(--bx-text-lg); line-height: 1.65; color: var(--bx-signal-mute); }
+.agent__links { display: flex; gap: var(--bx-space-6); margin-top: var(--bx-space-5); }
+.agent__links a { font-size: var(--bx-text-base); color: var(--bx-phosphor); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+@media (max-width: 48rem) {
+  .agent { grid-template-columns: 1fr; }
+  .agent__portrait { max-width: 11rem; }
+}
+
+/* ============================================================= bulletin == */
+
+.files { border-top: 1px solid color-mix(in srgb, var(--bx-signal) 14%, transparent); }
+
+.file {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+  padding-block: clamp(2rem, 4vw, 3rem);
+  border-bottom: 1px solid color-mix(in srgb, var(--bx-signal) 14%, transparent);
+}
+
+.file__title { font-family: var(--bx-font-display); font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.12; margin: 0; color: var(--bx-signal); }
+.file__excerpt { margin: var(--bx-space-4) 0 0; max-width: 58ch; font-size: var(--bx-text-base); line-height: var(--bx-leading-body); color: var(--bx-signal-mute); }
+
+.file__redacted { display: inline-block; margin-top: var(--bx-space-4); font-size: var(--bx-text-sm); color: var(--bx-signal-mute); }
+.file__redacted mark { background: var(--bx-signal-mute); color: transparent; border-radius: 2px; }
+
+.file__state { font-size: var(--bx-text-sm); color: var(--bx-signal-mute); white-space: nowrap; padding-top: 0.5rem; }
+.file__state--open { color: var(--bx-phosphor); }
+
+@media (max-width: 44rem) { .file { grid-template-columns: 1fr; } }
+
+/* ================================================================ store == */
+
+.goods { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: clamp(1.75rem, 3.5vw, 3rem); }
+
+.good { display: block; text-decoration: none; }
+
+.good__frame {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--bx-radius-stamp);
+  background: var(--bx-void-deep);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bx-signal) 12%, transparent);
+  transition: box-shadow 200ms var(--bx-ease-crt);
+}
+.good:hover .good__frame { box-shadow: 0 0 0 2px var(--bx-phosphor); }
+.good__frame img { width: 100%; height: 100%; object-fit: cover; }
+
+.good__name { display: block; margin-top: var(--bx-space-4); font-size: var(--bx-text-lg); line-height: 1.3; color: var(--bx-signal); }
+.good__price { display: block; margin-top: var(--bx-space-2); font-size: var(--bx-text-base); color: var(--bx-phosphor); }
+
+/* =============================================================== join ==== */
+
+.join {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+  padding: clamp(2.5rem, 6vw, 5rem);
+  border-radius: var(--bx-radius-stamp);
+  background: color-mix(in srgb, var(--bx-nebula) 45%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--bx-phosphor) 35%, transparent);
+}
+
+.join__title { font-family: var(--bx-font-display); font-size: clamp(2rem, 4.5vw, 3.25rem); line-height: 1.05; margin: 0; color: var(--bx-signal); max-width: 20ch; }
+.join__text { margin: var(--bx-space-5) 0 0; max-width: 54ch; font-size: var(--bx-text-lg); line-height: 1.6; color: var(--bx-signal-mute); }
+.join__actions { display: flex; flex-wrap: wrap; gap: var(--bx-space-4); }
+
+/* ============================================================== listen === */
+
+.outlets { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: var(--bx-space-4); }
+
+.outlet {
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.25rem, 2.5vw, 1.75rem);
+  border-radius: var(--bx-radius-stamp);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bx-signal) 16%, transparent);
+  color: var(--bx-signal);
+  font-size: var(--bx-text-lg);
+  text-decoration: none;
+  transition: box-shadow 160ms var(--bx-ease-crt), color 160ms var(--bx-ease-crt);
+}
+.outlet:hover { box-shadow: inset 0 0 0 2px var(--bx-phosphor); color: var(--bx-phosphor); }
+
+/* ============================================================== signoff == */
+
+/*
+ * The bookend to the fold. Same snow, same full-bleed treatment, but the
+ * gradient runs the other way: it gathers toward the bottom instead of
+ * dissolving, so the page ends in noise rather than starting in it.
+ */
+.signoff {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(5rem, 12vw, 9rem);
+}
+
+.signoff__noise {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.22;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 55%, black 100%);
+}
+
+.signoff__inner { position: relative; z-index: 1; }
+
+.signoff__mark {
+  margin: 0;
+  font-family: var(--bx-font-display);
+  font-size: clamp(3rem, 14vw, 11rem);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: color-mix(in srgb, var(--bx-signal) 88%, transparent);
+}
+
+.signoff__note {
+  margin: var(--bx-space-6) 0 0;
+  font-size: var(--bx-text-lg);
+  color: var(--bx-signal-mute);
+}
+
+/* =============================================================== footer == */
+
+/*
+ * The footer answers the masthead: the same phosphor plate, so the page opens
+ * and closes on the same surface and everything between them is the dark
+ * broadcast. Full-bleed rather than boxed — a green band edge to edge ends the
+ * page, a green card would read as one more section.
+ *
+ * Untextured for the same reason the masthead is: dark type on a bright plate
+ * cannot afford lines struck through it.
+ */
+.footer {
+  position: relative;
+  padding-block: clamp(3.5rem, 7vw, 6rem) 3rem;
+  background: var(--bx-phosphor);
+  color: var(--bx-void);
+}
+.footer__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: clamp(2rem, 5vw, 4rem); }
+.footer__name { font-family: var(--bx-font-display); font-size: var(--bx-text-2xl); color: var(--bx-void); margin: 0; }
+.footer__blurb { margin: var(--bx-space-4) 0 0; max-width: 34ch; font-size: var(--bx-text-base); line-height: 1.6; color: color-mix(in srgb, var(--bx-void) 75%, transparent); }
+.footer__group h3 { font-family: var(--bx-font-body); font-size: var(--bx-text-base); font-weight: 700; color: var(--bx-void); margin: 0 0 var(--bx-space-4); }
+.footer__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--bx-space-3); }
+.footer__list a {
+  font-size: var(--bx-text-base);
+  color: color-mix(in srgb, var(--bx-void) 78%, transparent);
+  text-decoration: none;
+}
+.footer__list a:hover { color: var(--bx-void); text-decoration: underline; text-underline-offset: 4px; }
+.footer__bottom { margin-top: clamp(3rem, 6vw, 5rem); padding-top: var(--bx-space-6); box-shadow: inset 0 1px 0 color-mix(in srgb, var(--bx-void) 25%, transparent); font-size: var(--bx-text-sm); color: color-mix(in srgb, var(--bx-void) 70%, transparent); display: flex; flex-wrap: wrap; gap: var(--bx-space-4); justify-content: space-between; }

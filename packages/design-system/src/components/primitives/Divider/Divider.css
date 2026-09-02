@@ -1,0 +1,22 @@
+/*
+ * A break in the signal rather than a hairline rule: a dashed run that fades
+ * out at both ends, like a torn strip of tape across the wall.
+ */
+.bx-divider {
+  border: 0;
+  height: 1px;
+  margin: var(--bx-space-8) 0;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--bx-phosphor-dim) 0 8px,
+    transparent 8px 16px
+  );
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+
+.bx-divider--solid {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--bx-phosphor) 25%, transparent);
+}
+
+.bx-divider--tight { margin: var(--bx-space-4) 0; }

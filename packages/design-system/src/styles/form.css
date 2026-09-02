@@ -1,0 +1,18 @@
+/* Shared chrome for every labelled form control. */
+.bx-field { display: block; }
+
+.bx-field__label {
+  display: block;
+  margin-bottom: var(--bx-space-2);
+  font-size: var(--bx-text-sm);
+  font-weight: 500;
+  color: var(--bx-signal-mute);
+}
+
+.bx-field__hint {
+  margin-top: var(--bx-space-2);
+  font-size: var(--bx-text-xs);
+  color: var(--bx-signal-mute);
+}
+
+.bx-field__hint--error { color: var(--bx-alert); }

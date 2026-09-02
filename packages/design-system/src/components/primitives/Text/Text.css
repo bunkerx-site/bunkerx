@@ -1,0 +1,21 @@
+.bx-text {
+  font-family: var(--bx-font-body);
+  line-height: var(--bx-leading-body);
+  color: var(--bx-signal);
+  margin: 0;
+  max-width: var(--bx-measure);
+}
+
+.bx-text--xs { font-size: var(--bx-text-xs); }
+.bx-text--sm { font-size: var(--bx-text-sm); }
+.bx-text--md { font-size: var(--bx-text-base); }
+.bx-text--lg { font-size: var(--bx-text-lg); }
+
+.bx-text--mute { color: var(--bx-signal-mute); }
+.bx-text--accent { color: var(--bx-phosphor); }
+
+/* The terminal voice: timestamps, counters, IDs, anything machine-emitted. */
+.bx-text--mono { font-family: var(--bx-font-mono); }
+
+/* Removes the measure cap for text that sits in an already-narrow column. */
+.bx-text--full { max-width: none; }

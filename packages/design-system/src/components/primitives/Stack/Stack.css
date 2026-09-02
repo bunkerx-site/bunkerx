@@ -1,0 +1,23 @@
+/* Layout primitive: one axis, one gap. Keeps spacing decisions out of the
+   content components, so margins never collapse unpredictably between them. */
+.bx-stack { display: flex; min-width: 0; }
+.bx-stack--column { flex-direction: column; }
+.bx-stack--row { flex-direction: row; flex-wrap: wrap; }
+
+.bx-stack--gap-1 { gap: var(--bx-space-1); }
+.bx-stack--gap-2 { gap: var(--bx-space-2); }
+.bx-stack--gap-3 { gap: var(--bx-space-3); }
+.bx-stack--gap-4 { gap: var(--bx-space-4); }
+.bx-stack--gap-6 { gap: var(--bx-space-6); }
+.bx-stack--gap-8 { gap: var(--bx-space-8); }
+.bx-stack--gap-12 { gap: var(--bx-space-12); }
+.bx-stack--gap-16 { gap: var(--bx-space-16); }
+
+.bx-stack--align-start { align-items: flex-start; }
+.bx-stack--align-center { align-items: center; }
+.bx-stack--align-end { align-items: flex-end; }
+.bx-stack--align-stretch { align-items: stretch; }
+
+.bx-stack--justify-start { justify-content: flex-start; }
+.bx-stack--justify-center { justify-content: center; }
+.bx-stack--justify-between { justify-content: space-between; }

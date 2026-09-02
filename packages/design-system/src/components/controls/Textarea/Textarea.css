@@ -1,0 +1,20 @@
+@import '../../../styles/form.css';
+
+.bx-textarea__field {
+  width: 100%;
+  min-height: 8rem;
+  padding: var(--bx-space-3);
+  background: color-mix(in srgb, var(--bx-void-deep) 80%, transparent);
+  border: var(--bx-border-hair) solid var(--bx-phosphor-dim);
+  color: var(--bx-signal);
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-base);
+  line-height: var(--bx-leading-body);
+  resize: vertical;
+  transition: border-color var(--bx-dur-fast) var(--bx-ease-crt);
+}
+
+.bx-textarea__field:focus { outline: 0; border-color: var(--bx-phosphor); box-shadow: var(--bx-glow-soft); }
+.bx-textarea__field::placeholder { color: var(--bx-signal-mute); opacity: 0.6; }
+
+.bx-textarea--invalid .bx-textarea__field { border-color: var(--bx-alert); }

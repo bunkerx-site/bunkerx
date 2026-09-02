@@ -1,0 +1,5 @@
+/*
+ * In production, self-host these (via fontsource) instead of hitting Google
+ * Fonts: it removes a third party from the critical path and avoids CLS.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap');

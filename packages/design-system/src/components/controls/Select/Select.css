@@ -1,0 +1,31 @@
+@import '../../../styles/form.css';
+
+.bx-select__control { position: relative; display: flex; align-items: center; }
+
+.bx-select__field {
+  width: 100%;
+  padding: var(--bx-space-3) var(--bx-space-8) var(--bx-space-3) var(--bx-space-3);
+  background: color-mix(in srgb, var(--bx-void-deep) 80%, transparent);
+  border: var(--bx-border-hair) solid var(--bx-phosphor-dim);
+  color: var(--bx-signal);
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-base);
+  appearance: none;
+  transition: border-color var(--bx-dur-fast) var(--bx-ease-crt);
+}
+
+.bx-select__field:focus { outline: 0; border-color: var(--bx-phosphor); box-shadow: var(--bx-glow-soft); }
+
+/* The native menu renders in the OS palette, so options need explicit colours
+   to avoid black-on-black on platforms that inherit the field's background. */
+.bx-select__field option { background: var(--bx-void); color: var(--bx-signal); }
+
+.bx-select__caret {
+  position: absolute;
+  right: var(--bx-space-3);
+  width: 10px;
+  color: var(--bx-phosphor);
+  pointer-events: none;
+}
+
+.bx-select--invalid .bx-select__field { border-color: var(--bx-alert); }

@@ -1,0 +1,41 @@
+@import '../../../styles/form.css';
+
+/*
+ * A terminal line. Square corners on purpose: the stamp radius is reserved for
+ * surfaces that are "pressed", and a form field is something you type into.
+ */
+
+.bx-field__control {
+  display: flex;
+  align-items: center;
+  gap: var(--bx-space-2);
+  padding: var(--bx-space-3);
+  background: color-mix(in srgb, var(--bx-void-deep) 80%, transparent);
+  border: var(--bx-border-hair) solid var(--bx-phosphor-dim);
+  transition: border-color var(--bx-dur-fast) var(--bx-ease-crt);
+}
+
+.bx-field__control:focus-within { border-color: var(--bx-phosphor); box-shadow: var(--bx-glow-soft); }
+
+/* The prompt marks the line as a terminal without needing a placeholder that
+   disappears the moment someone starts typing. */
+.bx-field__prompt {
+  color: var(--bx-phosphor);
+  font-family: var(--bx-font-mono);
+  user-select: none;
+}
+
+.bx-field__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--bx-signal);
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-base);
+}
+
+.bx-field__input::placeholder { color: var(--bx-signal-mute); opacity: 0.6; }
+
+.bx-field--invalid .bx-field__control { border-color: var(--bx-alert); }

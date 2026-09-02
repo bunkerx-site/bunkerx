@@ -1,0 +1,79 @@
+.bx-episode {
+  display: grid;
+  grid-template-columns: 128px 1fr;
+  gap: var(--bx-space-4);
+  padding: var(--bx-space-4);
+  border-radius: var(--bx-radius-stamp);
+  border: var(--bx-border-hair) solid color-mix(in srgb, var(--bx-phosphor) 22%, transparent);
+  background: color-mix(in srgb, var(--bx-nebula) 40%, transparent);
+  transition: border-color var(--bx-dur-base) var(--bx-ease-crt);
+}
+
+.bx-episode:hover { border-color: color-mix(in srgb, var(--bx-phosphor) 60%, transparent); }
+
+.bx-episode__art {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: calc(var(--bx-radius-stamp) - 4px);
+  background: var(--bx-void-deep);
+}
+
+.bx-episode__art img { width: 100%; height: 100%; object-fit: cover; }
+
+.bx-episode__body { min-width: 0; }
+
+/* The episode number is genuinely an identifier — the show numbers its own
+   episodes — so it is typeset as a catalogue mark, not as a decorative index. */
+.bx-episode__number {
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-xs);
+  color: var(--bx-phosphor);
+}
+
+.bx-episode__title {
+  margin: var(--bx-space-1) 0 var(--bx-space-2);
+  font-size: var(--bx-text-xl);
+  color: var(--bx-signal);
+}
+
+.bx-episode__title a { color: inherit; text-decoration: none; }
+.bx-episode__title a:hover { color: var(--bx-phosphor-hot); }
+
+.bx-episode__summary {
+  margin: 0;
+  font-size: var(--bx-text-sm);
+  color: var(--bx-signal-mute);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bx-episode__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bx-space-3);
+  margin-top: var(--bx-space-3);
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-xs);
+  color: var(--bx-signal-mute);
+}
+
+/* Where the episode can be heard or watched. Presence of a platform is the
+   information; the list is short enough that it does not need a label. */
+.bx-episode__platforms { display: flex; gap: var(--bx-space-2); }
+
+.bx-episode__platform {
+  padding: 2px var(--bx-space-2);
+  border: var(--bx-border-hair) solid currentColor;
+  color: var(--bx-phosphor-dim);
+  text-decoration: none;
+}
+.bx-episode__platform:hover { color: var(--bx-phosphor); }
+
+@media (max-width: 34rem) {
+  .bx-episode { grid-template-columns: 1fr; }
+  .bx-episode__art { max-width: 160px; }
+}

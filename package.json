@@ -1,0 +1,17 @@
+{
+  "name": "bunkerx",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": { "node": ">=20.19" },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "storybook": "turbo run storybook --filter=@bunkerx/design-system",
+    "build:storybook": "turbo run build:storybook"
+  },
+  "devDependencies": {
+    "turbo": "^2.10.12"
+  }
+}

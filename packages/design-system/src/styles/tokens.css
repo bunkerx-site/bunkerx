@@ -1,0 +1,115 @@
+/*
+ * Bunker X — design tokens
+ *
+ * One register: violet nebula and green phosphor. The CRT, space, the podcast.
+ * Every surface belongs to it, so a colour that cannot be justified as light
+ * coming off a tube does not belong in this file.
+ */
+:root {
+  /* --- SIGNAL register ------------------------------------------------ */
+  --bx-void: #140b24;          /* near-black violet: inside of the bunker  */
+  --bx-void-deep: #0b0616;     /* absolute ground, behind everything       */
+  --bx-nebula: #2e1a5c;        /* mid violet: the sky on the cover art     */
+  --bx-nebula-soft: #462b7d;   /* elevation: a panel above the ground      */
+  --bx-phosphor: #35e82e;      /* the logo green = P1 CRT phosphor         */
+  --bx-phosphor-hot: #d9fa7a;  /* the lime highlight at the top of the logo*/
+  --bx-phosphor-dim: #1c7a1a;  /* inactive / powered-down state            */
+  --bx-magenta: #d06ce0;       /* nebula pink = RGB convergence error      */
+  --bx-signal: #f0eaff;        /* star white: primary text                 */
+  --bx-signal-mute: #a99cc4;   /* secondary text                          */
+  --bx-alert: #ff4438;         /* warning lamp on the console: errors only */
+
+  /* --- semantic ------------------------------------------------------- */
+  --bx-bg: var(--bx-void);
+  --bx-fg: var(--bx-signal);
+  --bx-accent: var(--bx-phosphor);
+  --bx-danger: var(--bx-alert);
+
+  /* --- typography ------------------------------------------------------
+   * display: old letterpress serif, converses with the stamped logo.
+   * body: institutional grotesque — public-signage feel, reads well at size.
+   */
+  --bx-font-display: 'IM Fell English', 'Iowan Old Style', Georgia, serif;
+  --bx-font-body: 'Barlow', -apple-system, 'Segoe UI', system-ui, sans-serif;
+  --bx-font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /*
+   * Anchored at 19px, not 16px. This is a reading site — long synopses, host
+   * bios, bulletin copy — and 16px body with 14px secondary text made every
+   * level land in the same middle register, so nothing read as large and
+   * nothing read as small. The steps below widen toward the top so headline
+   * and metadata sit far apart; that distance is what does the decorating on
+   * a page with no ornament.
+   */
+  --bx-text-xs: 0.8125rem;
+  --bx-text-sm: 0.9375rem;
+  --bx-text-base: 1.1875rem;
+  --bx-text-lg: 1.5rem;
+  --bx-text-xl: 1.9375rem;
+  --bx-text-2xl: 2.5rem;
+  --bx-text-3xl: 3.25rem;
+  --bx-text-4xl: 4.5rem;
+  --bx-text-5xl: 6rem;
+
+  --bx-leading-tight: 1.04;
+  --bx-leading-body: 1.7;
+  --bx-measure: 62ch;          /* maximum line length */
+
+  /* --- spacing (4px base) --------------------------------------------- */
+  --bx-space-1: 0.25rem;
+  --bx-space-5: 1.25rem;
+  --bx-space-2: 0.5rem;
+  --bx-space-3: 0.75rem;
+  --bx-space-4: 1rem;
+  --bx-space-6: 1.5rem;
+  --bx-space-8: 2rem;
+  --bx-space-12: 3rem;
+  --bx-space-16: 4rem;
+  --bx-space-20: 5rem;
+  --bx-space-24: 6rem;
+  --bx-space-32: 8rem;
+  --bx-space-40: 10rem;
+
+  /* --- shape -----------------------------------------------------------
+   * A single radius, taken from the logo decal. It only appears on things
+   * that are "stamped" — never on text, images or form fields.
+   */
+  --bx-radius-stamp: 14px;
+  --bx-border-hair: 1px;
+  --bx-border-frame: 2px;
+
+  /* --- misconvergence --------------------------------------------------
+   * The signature defect: an old CRT loses alignment between its RGB guns,
+   * leaving a green fringe on one side and magenta on the other. This is the
+   * system's emphasis mechanism, standing in for "one accent colour".
+   */
+  --bx-converge: 0px;          /* animated / overridden per state */
+  --bx-converge-nudge: 1.5px;
+  --bx-converge-break: 3px;
+
+  /* --- phosphor glow --------------------------------------------------- */
+  --bx-glow-soft: 0 0 12px rgba(53, 232, 46, 0.35);
+  --bx-glow-hard: 0 0 4px rgba(53, 232, 46, 0.9), 0 0 18px rgba(53, 232, 46, 0.45);
+
+  /* --- motion ---------------------------------------------------------- */
+  --bx-ease-crt: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --bx-dur-fast: 90ms;
+  --bx-dur-base: 180ms;
+
+  /* --- raster ----------------------------------------------------------
+   * The bright line spacing of the tube. Two layers carry it: a light raster
+   * behind the content, where it can be seen, and a dark scanline over the
+   * top, which must stay faint so text does not lose contrast.
+   */
+  --bx-raster-period: 4px;
+  --bx-raster-strength: 0.075;
+
+  --bx-z-crt: 9999;            /* the scanline overlay sits above everything */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --bx-dur-fast: 0ms;
+    --bx-dur-base: 0ms;
+  }
+}

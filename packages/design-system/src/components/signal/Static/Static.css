@@ -1,0 +1,9 @@
+.bx-static {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* The canvas is painted below display size; keep the upscale crunchy so the
+     grain stays as pixels rather than a smooth blur. */
+  image-rendering: pixelated;
+  pointer-events: none;
+}
