@@ -1,20 +1,21 @@
 # Brand fonts
 
-Three files go here. They are declared in
-`packages/design-system/src/styles/fonts.css` and referenced from the token
-stacks in `tokens.css`.
+Declared in `packages/design-system/src/styles/fonts.css`, referenced from the
+token stacks in `tokens.css`.
 
 | File | Face | Role |
 | --- | --- | --- |
+| `bunker-x.woff2` | Bunker X | Display. Wordmark and large headlines. |
 | `new-order-bold.woff2` | New Order Bold | Primary. Body copy, UI, navigation. |
-| `vcr-osd-mono.woff2` | VCR OSD Mono | Complementary. Banners, dates, durations, data. |
-| `bunker-x.woff2` | Bunker X | Display. The wordmark and the large headlines. |
+| `vcr-osd-mono.woff2` | VCR OSD Mono | Complementary. Banners, dates, data. |
 
-Convert whatever the brand kit ships (`.otf`, `.ttf`) to `woff2` — it is
-roughly 30% smaller than the original and every browser in use supports it.
+Convert with the helper rather than by hand — it checks the file is really a
+font, reports whether the Portuguese accents are present, and writes woff2 here:
 
-Until the files are here the site falls back to Barlow, IBM Plex Mono and IM
-Fell English. It renders correctly, it is simply not in the brand's own type.
+```
+./apps/web/scripts/build-fonts.sh ~/Downloads/NewOrder-Bold.ttf new-order-bold
+```
 
-Check the licence before committing these: a webfont licence is separate from a
-desktop one, and a repository is distribution.
+New Order and VCR OSD Mono are not in yet, so those stacks still fall back to
+Barlow and IBM Plex Mono. Drop the Google Fonts import from `fonts.css` once
+both arrive.

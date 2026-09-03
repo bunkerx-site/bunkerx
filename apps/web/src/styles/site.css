@@ -370,6 +370,11 @@ html {
 .fold__inner { position: relative; }
 
 .fold__site {
+  /* This h1 is a sentence, not a headline. Every h1 gets the display face from
+     base.css, which is right for a title and wrong for running text — in the
+     display face the line stops being readable at this size. */
+  font-family: var(--bx-font-body);
+  font-weight: 400;
   font-size: var(--bx-text-base);
   color: var(--bx-signal-mute);
   margin: 0 0 clamp(1.5rem, 4vh, 2.5rem);
