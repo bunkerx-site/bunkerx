@@ -1,4 +1,5 @@
 import { Block } from './Block'
+import type { StickerName } from '@bunkerx/design-system'
 import { formatDate, truncate } from '../lib/format'
 import type { Video } from '../lib/types'
 
@@ -13,6 +14,8 @@ type WatchProps = {
   tight?: boolean
   count?: number
   tone?: 'plain' | 'nebula' | 'deep'
+  sticker?: StickerName
+  stickerSide?: 'left' | 'right'
 }
 
 /**
@@ -32,6 +35,8 @@ export function Watch({
   tight = false,
   count = 4,
   tone = 'plain',
+  sticker,
+  stickerSide,
 }: WatchProps) {
   return (
     <Block
@@ -39,6 +44,8 @@ export function Watch({
       title={title}
       lead={lead}
       tone={tone}
+      sticker={sticker}
+      stickerSide={stickerSide}
       more={
         <a
           className="fold__action fold__action--ghost"

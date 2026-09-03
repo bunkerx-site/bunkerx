@@ -7,7 +7,9 @@
  */
 
 export const SITE = {
-  name: 'Bunker X',
+  /* The mark is always uppercase. Written this way once, here, so no screen
+     has to remember to transform it. */
+  name: 'BUNKER X',
   tagline: 'Sua dose semanal de verdade',
   description:
     'OVNIs, aparições ectoplásmicas e criaturas sobrenaturais, investigados por dois agentes que levam o assunto a sério o suficiente para rir dele.',

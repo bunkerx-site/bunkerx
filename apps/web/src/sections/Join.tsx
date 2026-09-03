@@ -1,3 +1,4 @@
+import { Sticker } from '@bunkerx/design-system'
 import { MEMBERSHIP } from '../content/site'
 
 /**
@@ -10,6 +11,10 @@ export function Join() {
     <section className="block" id="membro">
       <div className="shell">
       <div className="join">
+        <Sticker name="all-seeing-eye" width="clamp(8rem, 18vw, 15rem)" className="join__eye" />
+        {/* The one place a taped line is used for what it says: it is the
+            argument the section is making. */}
+        <Sticker name="tape-not-alone" width="clamp(9rem, 22vw, 17rem)" className="join__tape" />
         <div>
           <h2 className="join__title">Entre para o bunker</h2>
           <p className="join__text">

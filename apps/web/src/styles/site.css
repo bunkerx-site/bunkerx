@@ -59,7 +59,8 @@ html {
 
 /* Sections breathe. The gap between blocks is what tells you a new subject has
    started, which is why there is no chrome above each heading doing that job. */
-.block { position: relative; padding-block: clamp(5rem, 11vw, 10rem); }
+.block { position: relative; padding-block: clamp(5rem, 11vw, 10rem); overflow: hidden; }
+.block > .shell { position: relative; z-index: 1; }
 .block:target { scroll-margin-top: 7rem; }
 
 /*
@@ -181,6 +182,21 @@ html {
   text-decoration: none;
   white-space: nowrap;
   position: relative;
+  transition: text-decoration-color 140ms var(--bx-ease-crt);
+}
+
+/*
+ * The design system sets `a:hover { color: phosphor-hot }`, which beats a
+ * single class on specificity — on the green plate that landed light green on
+ * green at 1.24:1. The colour is pinned back and the hover is carried by an
+ * underline instead, which costs no contrast at all.
+ */
+.masthead .masthead__name:hover,
+.masthead .masthead__name:focus-visible {
+  color: var(--bx-void);
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
 }
 
 /* A live indicator that carries the schedule — the one piece of information a
@@ -260,7 +276,11 @@ html {
   white-space: nowrap;
   transition: background 140ms var(--bx-ease-crt), color 140ms var(--bx-ease-crt);
 }
-.masthead__join:hover { background: var(--bx-nebula); color: var(--bx-phosphor-hot); }
+.masthead__join:hover,
+.masthead__join:focus-visible {
+  background: var(--bx-void-deep);
+  color: var(--bx-phosphor-hot);
+}
 
 .masthead__toggle {
   display: none;
@@ -355,6 +375,8 @@ html {
 }
 
 .fold__inner { z-index: 1; }
+.join > div:not([class]) { position: relative; z-index: 1; }
+.join__actions { position: relative; z-index: 1; }
 
 
 /* A soft well under the text, so the type keeps its contrast wherever the
@@ -392,21 +414,26 @@ html {
 
 .fold__title {
   font-family: var(--bx-font-display);
-  font-size: clamp(2.1rem, min(5.4vw, 7.4vh), 4.75rem);
+  font-size: clamp(2.1rem, min(4.6vw, 7vh), 4.25rem);
   line-height: 1.02;
   letter-spacing: -0.015em;
   color: var(--bx-signal);
   margin: 0;
-  max-width: 19ch;
+  max-width: 16ch;
   text-wrap: balance;
+  /* The beam is bright, and on a wide screen a long title reaches it. This
+     keeps the letterforms readable where they overlap instead of relying on
+     the saucer never getting in the way. */
+  text-shadow: 0 2px 18px var(--bx-void-deep), 0 0 42px var(--bx-void-deep);
 }
 
 .fold__summary {
   margin-top: clamp(1.25rem, 3vh, 2rem);
-  max-width: 52ch;
+  max-width: 46ch;
   font-size: var(--bx-text-lg);
   line-height: 1.6;
   color: var(--bx-signal-mute);
+  text-shadow: 0 1px 14px var(--bx-void-deep);
 }
 
 /* On a genuinely short screen the synopsis is the thing to give up: the title
@@ -434,8 +461,21 @@ html {
     box-shadow 200ms var(--bx-ease-crt);
 }
 
+/*
+ * Same specificity problem as the logo, and the same consequence: on hover the
+ * label turned light green on a green fill. The hover now brightens the fill
+ * and holds the label dark, which reads as clearly interactive and measures
+ * 14.67:1 instead of 1.24:1.
+ */
 .fold__action--primary { background: var(--bx-phosphor); color: var(--bx-void); }
-.fold__action--primary:hover { box-shadow: var(--bx-glow-hard); }
+
+.fold__action--primary:hover,
+.fold__action--primary:focus-visible {
+  background: var(--bx-phosphor-hot);
+  border-color: var(--bx-phosphor-hot);
+  color: var(--bx-void-deep);
+  box-shadow: var(--bx-glow-hard);
+}
 .fold__action--ghost { color: var(--bx-phosphor); background: transparent; }
 .fold__action--ghost:hover { background: color-mix(in srgb, var(--bx-phosphor) 15%, transparent); }
 
@@ -690,18 +730,27 @@ html {
 
 /* =============================================================== join ==== */
 
+/*
+ * The one centred block on the site.
+ *
+ * Everything else is left aligned and ragged right, which is what keeps long
+ * reading comfortable. This panel is neither long nor reading — it is a single
+ * ask with two ways to answer it, so centring works here and marks it out as
+ * the moment the page stops informing and starts asking.
+ */
 .join {
   display: grid;
   gap: clamp(2rem, 4vw, 3rem);
   padding: clamp(2.5rem, 6vw, 5rem);
+  text-align: center;
   border-radius: var(--bx-radius-stamp);
   background: color-mix(in srgb, var(--bx-nebula) 45%, transparent);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--bx-phosphor) 35%, transparent);
 }
 
-.join__title { font-family: var(--bx-font-display); font-size: clamp(2rem, 4.5vw, 3.25rem); line-height: 1.05; margin: 0; color: var(--bx-signal); max-width: 20ch; }
-.join__text { margin: var(--bx-space-5) 0 0; max-width: 54ch; font-size: var(--bx-text-lg); line-height: 1.6; color: var(--bx-signal-mute); }
-.join__actions { display: flex; flex-wrap: wrap; gap: var(--bx-space-4); }
+.join__title { font-family: var(--bx-font-display); font-size: clamp(2rem, 4.5vw, 3.25rem); line-height: 1.05; margin: 0 auto; color: var(--bx-signal); max-width: 20ch; }
+.join__text { margin: var(--bx-space-5) auto 0; max-width: 52ch; font-size: var(--bx-text-lg); line-height: 1.6; color: var(--bx-signal-mute); }
+.join__actions { display: flex; flex-wrap: wrap; gap: var(--bx-space-4); justify-content: center; }
 
 /* ============================================================== listen === */
 
@@ -717,6 +766,333 @@ html {
   transition: box-shadow 160ms var(--bx-ease-crt), color 160ms var(--bx-ease-crt);
 }
 .outlet:hover { box-shadow: inset 0 0 0 2px var(--bx-phosphor); color: var(--bx-phosphor); }
+
+/* ============================================================= stickers == */
+
+/*
+ * Placement rules for every cut-out on the page.
+ *
+ * The section stickers are laid out, not positioned: they are the second cell
+ * of the header row, so on a narrow screen they drop under the heading and
+ * shrink with it. Nothing is hidden at a breakpoint any more — the earlier
+ * version had to hide them because a background sprite can only be sized in
+ * fixed pixels.
+ */
+.block__head--marked {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+}
+
+.block__sticker { justify-self: end; }
+
+/* The side is chosen per block rather than derived from its background, so the
+   two are free to disagree — and so no reader gets a column of stickers down
+   one edge as they scroll. */
+.block__head--left { grid-template-columns: auto minmax(0, 1fr); }
+.block__head--left .block__sticker { justify-self: start; }
+
+@media (max-width: 48rem) {
+  /* Stacked, and the heading always comes first: a sticker above the title
+     would push the thing someone is looking for off the top of the block. */
+  .block__head--marked { grid-template-columns: 1fr; }
+  .block__head--marked > div { order: 1; }
+  .block__sticker { order: 2; justify-self: start; }
+}
+
+/*
+ * The saucer sits in the half of the fold the headline does not use. It is
+ * absolutely placed because it is meant to overlap the picture, but its width
+ * is fluid, so it shrinks with the screen rather than disappearing.
+ *
+ * It hovers. A saucer holding position is the one thing on this page where
+ * continuous motion is the subject rather than an effect — and the drift is
+ * slow and small enough that it never pulls the eye off the headline.
+ *
+ * The tilt lives in the keyframes, not on the element: an inline rotate would
+ * be overwritten the moment the animation set its own transform.
+ */
+.fold__ufo {
+  position: absolute;
+  /* Held to the outer third. The headline is the reason the screen exists, so
+     the saucer gets whatever is left rather than the other way round. */
+  right: clamp(-4rem, -2vw, 0rem);
+  top: 6%;
+  z-index: 0;
+  /* The beam reads as light, so it should spill a little onto what is behind. */
+  filter: drop-shadow(0 2rem 3rem rgba(0, 237, 103, 0.16));
+  animation: bx-hover 11s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes bx-hover {
+  0% { transform: translate3d(0, 0, 0) rotate(-4deg); }
+  30% { transform: translate3d(-0.8%, -2.4%, 0) rotate(-2.6deg); }
+  62% { transform: translate3d(0.6%, -3.4%, 0) rotate(-5deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fold__ufo { animation: none; transform: rotate(-4deg); }
+}
+
+/*
+ * The membership panel.
+ *
+ * Both cut-outs break the panel's edge instead of sitting inside it — a
+ * sticker contained by the box it decorates reads as an illustration placed in
+ * a frame; one that hangs over the edge reads as stuck on afterwards. That
+ * means no `overflow: hidden` here, and the block around it has to allow the
+ * overflow too.
+ *
+ * The eye is at full strength. It is the argument the section is making, so it
+ * is the one sticker on the page that is not held back behind the content.
+ */
+#membro { overflow: visible; }
+.join { position: relative; overflow: visible; }
+
+.join__eye {
+  position: absolute;
+  right: clamp(-4rem, -3vw, -1.5rem);
+  bottom: clamp(-3.5rem, -3vw, -1.5rem);
+  z-index: 2;
+  filter: drop-shadow(0 0 2rem rgba(99, 54, 147, 0.7));
+  animation: bx-watching 10s ease-in-out infinite;
+  will-change: filter, transform;
+}
+
+/* It does not blink — it dilates. The glow widens and the whole thing leans a
+   degree or two, the way something looking at you shifts without moving. */
+@keyframes bx-watching {
+  0%, 100% {
+    transform: rotate(4deg) scale(1);
+    filter: drop-shadow(0 0 1.6rem rgba(99, 54, 147, 0.6));
+  }
+  50% {
+    transform: rotate(2.5deg) scale(1.03);
+    filter: drop-shadow(0 0 3.2rem rgba(0, 237, 103, 0.4))
+      drop-shadow(0 0 2rem rgba(99, 54, 147, 0.8));
+  }
+}
+
+.join__tape {
+  position: absolute;
+  /* Far enough above the panel edge that it clears the heading inside. A
+     sticker that overlaps the title is not breaking the frame any more, it is
+     covering the content. */
+  left: clamp(-2.5rem, -2vw, -1rem);
+  top: clamp(-4.5rem, -3.5vw, -2.5rem);
+  z-index: 3;
+  filter: drop-shadow(0 0.7rem 1.2rem rgba(11, 6, 22, 0.6));
+  animation: bx-taped-join 14s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes bx-taped-join {
+  0% { transform: rotate(-4deg); }
+  45% { transform: rotate(-2deg); }
+  75% { transform: rotate(-5.2deg); }
+  100% { transform: rotate(-4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .join__eye { animation: none; transform: rotate(4deg); }
+  .join__tape { animation: none; transform: rotate(-4deg); }
+}
+
+.join > div:not([class]), .join__actions { position: relative; z-index: 1; }
+
+/*
+ * The tape straddling the footer's top edge.
+ *
+ * No `overflow: hidden` on the footer: the whole effect is the half that hangs
+ * over the section above, and clipping it would leave a sticker that merely
+ * touches the edge. It drifts a little, the way something taped on and not
+ * quite stuck down does.
+ */
+.footer__tape {
+  position: absolute;
+  right: clamp(1rem, 8vw, 7rem);
+  top: 0;
+  z-index: 3;
+  filter: drop-shadow(0 0.6rem 1rem rgba(11, 6, 22, 0.5));
+  animation: bx-taped 12s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes bx-taped {
+  0% { transform: translateY(-52%) rotate(-4deg); }
+  40% { transform: translateY(-58%) rotate(-2.4deg); }
+  70% { transform: translateY(-49%) rotate(-5deg); }
+  100% { transform: translateY(-52%) rotate(-4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__tape { animation: none; transform: translateY(-52%) rotate(-4deg); }
+}
+
+.footer__grid { position: relative; }
+
+/*
+ * The globe over the episode log.
+ *
+ * Not a spin: it is a flat picture of a planet, and rotating it would read as a
+ * wheel turning rather than a world. What it does instead is hold position and
+ * breathe — the atmosphere brightens and dims on a slow cycle, so it reads as
+ * lit and transmitting, which is what the section under it is about.
+ *
+ * The drift and the glow run on different periods, so they never land together
+ * and the loop does not become countable.
+ */
+#episodios .block__sticker {
+  animation: bx-orbit 19s ease-in-out infinite, bx-atmosphere 7s ease-in-out infinite;
+  will-change: transform, filter;
+}
+
+@keyframes bx-orbit {
+  0% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+  50% { transform: translate3d(-1.5%, -3%, 0) rotate(-3deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+}
+
+@keyframes bx-atmosphere {
+  0%, 100% { filter: drop-shadow(0 0 1.2rem rgba(0, 237, 103, 0.18)); }
+  50% { filter: drop-shadow(0 0 2.6rem rgba(0, 237, 103, 0.42)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #episodios .block__sticker {
+    animation: none;
+    transform: rotate(-6deg);
+    filter: drop-shadow(0 0 1.6rem rgba(0, 237, 103, 0.24));
+  }
+}
+
+/*
+ * The camera over the video block.
+ *
+ * It pans, the way a mounted camera does: rotation anchored at the bracket so
+ * the body swings and the mount stays put, with a long hold at each end rather
+ * than a smooth sweep. A camera that moved continuously would read as a
+ * pendulum; one that stops to look reads as a camera.
+ */
+#videos .block__sticker {
+  transform-origin: 88% 22%;
+  animation: bx-pan 16s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+@keyframes bx-pan {
+  0%, 18% { transform: rotate(-6deg); }
+  38%, 58% { transform: rotate(5deg); }
+  78%, 100% { transform: rotate(-6deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #videos .block__sticker { animation: none; transform: rotate(-6deg); }
+}
+
+/*
+ * The night-vision scope over the cuts.
+ *
+ * It used to pulse like an image intensifier gaining and settling. On screen
+ * that read as a fault rather than as equipment — a hard stepped flicker next
+ * to a column of thumbnails looks like something is broken. It drifts instead,
+ * slowly, the way a scope held up to the eye never sits quite still.
+ */
+#cortes .block__sticker {
+  animation: bx-handheld 15s ease-in-out infinite;
+  filter: drop-shadow(0 0 1.6rem rgba(0, 237, 103, 0.28));
+  will-change: transform;
+}
+
+@keyframes bx-handheld {
+  0% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+  30% { transform: translate3d(-1%, -2.2%, 0) rotate(-4.4deg); }
+  65% { transform: translate3d(0.8%, -1.2%, 0) rotate(-7.2deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #cortes .block__sticker { animation: none; transform: rotate(-6deg); }
+}
+
+/*
+ * The case folder over the hosts.
+ *
+ * The handprint on it is the reason this cut-out is here, so the effect is a
+ * biometric read: a long dim hold while it is being compared, one hard flash
+ * when it matches, then it settles. The rhythm is the point — a folder that
+ * pulsed evenly would just be a glowing rectangle.
+ *
+ * Stepped, not eased. A match is a decision, and decisions do not fade in.
+ */
+#agentes .block__sticker {
+  animation: bx-identify 9s steps(1, end) infinite;
+  will-change: filter, transform;
+}
+
+@keyframes bx-identify {
+  0%, 62% { filter: drop-shadow(0 0 1rem rgba(99, 54, 147, 0.5)); transform: rotate(6deg); }
+  62.01%, 66% { filter: drop-shadow(0 0 2.8rem rgba(0, 237, 103, 0.75)); transform: rotate(6deg) scale(1.02); }
+  66.01%, 70% { filter: drop-shadow(0 0 0.8rem rgba(0, 237, 103, 0.2)); transform: rotate(6deg); }
+  70.01%, 76% { filter: drop-shadow(0 0 2.2rem rgba(0, 237, 103, 0.6)); transform: rotate(6deg) scale(1.01); }
+  76.01%, 100% { filter: drop-shadow(0 0 1.2rem rgba(0, 237, 103, 0.3)); transform: rotate(6deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #agentes .block__sticker {
+    animation: none;
+    transform: rotate(6deg);
+    filter: drop-shadow(0 0 1.4rem rgba(0, 237, 103, 0.3));
+  }
+}
+
+/*
+ * The taped sketch over the shop.
+ *
+ * It replaced a cut-out portrait that ended in a flat edge across the
+ * shoulders. Masking that edge into a fade did hide it, but pairing
+ * `mask-image` with `drop-shadow` made the glow trace the element's box
+ * instead of the artwork's alpha — a purple rectangle behind the head. Neither
+ * is needed here: this cut-out is a torn sheet with its own irregular outline,
+ * so it can simply be drawn.
+ *
+ * It hangs from its tape and sways, which is what a sheet stuck to a wall by
+ * one corner does. The origin is the taped corner, not the centre.
+ */
+#loja .block__sticker {
+  transform-origin: 22% 6%;
+  animation: bx-pinned 13s ease-in-out infinite;
+  filter: drop-shadow(0 0.8rem 1.4rem rgba(11, 6, 22, 0.55));
+  will-change: transform;
+}
+
+@keyframes bx-pinned {
+  0% { transform: rotate(-5deg); }
+  35% { transform: rotate(-2.2deg); }
+  70% { transform: rotate(-6.4deg); }
+  100% { transform: rotate(-5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #loja .block__sticker { animation: none; transform: rotate(-5deg); }
+}
+
+/* The moon running out, under the sign-off. */
+.signoff__moons {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.6rem, 2vw, 1.4rem);
+  margin-top: var(--bx-space-8);
+}
+
+@media (max-width: 40rem) {
+  /* On a phone the fold is entirely text, so the saucer drops below it and
+     pulls back to where it cannot compete with the headline. */
+  .fold__ufo { opacity: 0.4 !important; top: auto; bottom: 3%; right: -4rem; }
+}
 
 /* ============================================================== signoff == */
 

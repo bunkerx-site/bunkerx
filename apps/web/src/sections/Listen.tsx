@@ -7,6 +7,9 @@ export function Listen() {
       id="ouvir"
       title="Onde ouvir"
       tone="nebula"
+      stickerSide="left"
+      sticker="radio-dishes"
+      stickerRotate={4}
       lead="Um feed só, distribuído em todas elas. Escolha a sua."
     >
       <div className="outlets">

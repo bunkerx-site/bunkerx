@@ -1,4 +1,4 @@
-import { Static } from '@bunkerx/design-system'
+import { Static, Sticker } from '@bunkerx/design-system'
 import { SITE } from '../content/site'
 
 /**
@@ -20,6 +20,20 @@ export function SignOff() {
           {SITE.name}
         </p>
         <p className="signoff__note">Transmissão encerrada. Voltamos {SITE.schedule.toLowerCase()}.</p>
+
+        {/* The moon waning to nothing, which is what the section is saying. */}
+        <div className="signoff__moons">
+          {(['moon-full', 'moon-gibbous', 'moon-half', 'moon-crescent', 'moon-sliver'] as const).map(
+            (phase, index) => (
+              <Sticker
+                key={phase}
+                name={phase}
+                width={`clamp(${1.4 - index * 0.15}rem, ${4 - index * 0.4}vw, ${3 - index * 0.3}rem)`}
+                opacity={0.75 - index * 0.1}
+              />
+            ),
+          )}
+        </div>
       </div>
     </section>
   )

@@ -15,6 +15,7 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
       id="episodios"
       title="Episódios"
       tone="deep"
+      sticker="earth"
       lead="O programa completo, toda segunda. Aqui estão os mais recentes; o arquivo inteiro está nas plataformas."
       more={
         <a

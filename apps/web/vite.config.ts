@@ -40,7 +40,7 @@ function seo(): Plugin {
       const series = {
         '@context': 'https://schema.org',
         '@type': 'PodcastSeries',
-        name: 'Bunker X',
+        name: 'BUNKER X',
         url: SITE_URL,
         description:
           'OVNIs, aparições ectoplásmicas e criaturas sobrenaturais, investigados por Affonso Solano e Afonso 3D. Toda segunda, 20h.',
@@ -72,12 +72,12 @@ function seo(): Plugin {
             datePublished: episode.publishedAt,
             timeRequired: iso8601(episode.durationSeconds),
             url: episode.url,
-            partOfSeries: { '@type': 'PodcastSeries', name: 'Bunker X', url: SITE_URL },
+            partOfSeries: { '@type': 'PodcastSeries', name: 'BUNKER X', url: SITE_URL },
           },
         })),
       }
 
-      const description = `${latest.title} — o episódio mais recente do Bunker X. OVNIs, conspirações e assombrações com Affonso Solano e Afonso 3D, toda segunda às 20h.`
+      const description = `${latest.title} — o episódio mais recente do BUNKER X. OVNIs, conspirações e assombrações com Affonso Solano e Afonso 3D, toda segunda às 20h.`
 
       const tags = [
         `<link rel="canonical" href="${SITE_URL}/" />`,

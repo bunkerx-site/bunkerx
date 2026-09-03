@@ -48,6 +48,8 @@ export function App() {
           videos={VIDEOS}
           channelUrl="https://www.youtube.com/@bunkerx"
           channelLabel="Ver o canal no YouTube"
+          sticker="camera"
+          stickerSide="left"
           count={4}
         />
         <Watch
@@ -57,6 +59,7 @@ export function App() {
           videos={CUTS}
           channelUrl="https://www.youtube.com/@CortesBunkerX"
           channelLabel="Ver o canal de cortes"
+          sticker="night-vision"
           tone="nebula"
           tight
           count={6}

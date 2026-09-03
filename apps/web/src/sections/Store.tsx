@@ -10,6 +10,8 @@ export function Store({ products }: { products: Product[] }) {
       id="loja"
       title="Loja"
       tone="deep"
+      sticker="sketch-grey"
+      stickerRotate={-5}
       lead="Estampas do programa. A produção e a entrega ficam com a Montink."
       more={
         <a

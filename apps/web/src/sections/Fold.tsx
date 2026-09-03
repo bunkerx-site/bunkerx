@@ -1,4 +1,4 @@
-import { Static } from '@bunkerx/design-system'
+import { Static, Sticker } from '@bunkerx/design-system'
 import { SITE } from '../content/site'
 import { formatDate, formatDuration, truncate } from '../lib/format'
 import type { Episode } from '../lib/types'
@@ -27,6 +27,17 @@ export function Fold({ episode }: { episode: Episode }) {
       <div className="fold__noise" aria-hidden="true">
         <Static intensity={0.05} fps={14} grain={3} />
       </div>
+
+      {/* The abducting saucer sits in the half of the fold the headline does
+          not use. The tilt is not passed as a prop here: the hover animation
+          owns the transform, so the angle lives in its keyframes instead. */}
+      <Sticker
+        name="ufo-beam"
+        width="clamp(13rem, 40vw, 38rem)"
+        opacity={0.85}
+        eager
+        className="fold__ufo"
+      />
 
       <div className="shell fold__inner">
         {/* The h1 names the show; the episode is an h2 under it. A visitor sees

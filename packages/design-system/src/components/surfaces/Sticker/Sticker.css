@@ -1,0 +1,16 @@
+/*
+ * Cut-outs from the brand's sticker sheet, exported individually and untouched:
+ * no re-encoding, no downscaling.
+ *
+ * `height: auto` against the intrinsic width and height attributes is what
+ * keeps them fluid — give one a width in any unit and the height follows, with
+ * the box reserved before the file arrives so nothing shifts.
+ */
+.bx-sticker {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}

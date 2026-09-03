@@ -1,8 +1,18 @@
+import { Sticker } from '@bunkerx/design-system'
 import { MEMBERSHIP, NAV, PLATFORMS, SITE, SOCIALS } from '../content/site'
 
 export function SiteFooter() {
   return (
     <footer className="footer">
+      {/* Pressed across the seam: half of it on the dark, half on the plate.
+          A sticker stuck over a join is the whole reason it reads as stuck on
+          rather than laid out. */}
+      <Sticker
+        name="tape-look-up"
+        width="clamp(8rem, 20vw, 14rem)"
+        className="footer__tape"
+      />
+
       <div className="shell">
         <div className="footer__grid">
           <div>
@@ -59,7 +69,7 @@ export function SiteFooter() {
         </div>
 
         <div className="footer__bottom">
-          <span>© {new Date().getFullYear()} Bunker X</span>
+          <span>© {new Date().getFullYear()} {SITE.name}</span>
           <span>Feito num bunker, transmitido de segunda</span>
         </div>
       </div>

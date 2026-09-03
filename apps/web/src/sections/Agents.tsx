@@ -7,6 +7,9 @@ export function Agents() {
       id="agentes"
       title="Quem investiga"
       tone="nebula"
+      stickerSide="left"
+      sticker="case-folder"
+      stickerRotate={6}
       lead="Dois sujeitos que levam o assunto a sério o suficiente para rir dele."
     >
       <div className="agents">

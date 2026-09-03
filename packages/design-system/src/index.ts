@@ -21,6 +21,11 @@ export { Panel, type PanelProps } from './components/surfaces/Panel/Panel'
 export { Stamp, type StampProps } from './components/surfaces/Stamp/Stamp'
 export { Avatar, type AvatarProps } from './components/surfaces/Avatar/Avatar'
 export {
+  Sticker,
+  type StickerProps,
+  type StickerName,
+} from './components/surfaces/Sticker/Sticker'
+export {
   EpisodeCard,
   type EpisodeCardProps,
   type EpisodePlatform,

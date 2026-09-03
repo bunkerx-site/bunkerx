@@ -14,6 +14,8 @@ export function Bulletin() {
       id="boletim"
       title="Boletim"
       lead="O que apuramos entre um episódio e outro."
+      sticker="note-closed"
+      stickerRotate={5}
     >
       <div className="files">
         {BULLETIN.map((entry) => (
