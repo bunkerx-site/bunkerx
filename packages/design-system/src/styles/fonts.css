@@ -1,4 +1,19 @@
 /*
+ * Fallbacks for the faces that have not arrived yet.
+ *
+ * Bunker X is in place, so IM Fell English is no longer loaded. New Order and
+ * VCR OSD Mono are still missing, so Barlow and IBM Plex Mono stay. Delete
+ * this import entirely once both land — it is a third party on the critical
+ * path and it stops earning its keep the moment the real files are here.
+ *
+ * IT HAS TO BE THE FIRST STATEMENT IN THE FILE. `@import` must precede every
+ * other rule, and while it sat at the bottom — under the @font-face block —
+ * the bundler dropped it silently: valid-looking CSS, one build warning, and
+ * body copy quietly falling through to the system sans on every screen.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/*
  * The brand's three faces.
  *
  * None of them is on Google Fonts, so all three are self-hosted from /fonts.
@@ -12,8 +27,8 @@
  *   bunker-x.woff2            Bunker X            — the display face, wordmark
  *
  * Until they are there the stacks in tokens.css fall through to the fallbacks
- * loaded below, which hold the layout at roughly the right proportions. Nothing
- * breaks; the site simply is not yet in the brand's own type.
+ * imported above, which hold the layout at roughly the right proportions.
+ * Nothing breaks; the site simply is not yet in the brand's own type.
  *
  * `font-display: swap` on purpose: text drawn in the fallback and then swapped
  * beats text that is invisible while a file downloads.
@@ -48,13 +63,3 @@
   font-style: normal;
   font-display: swap;
 }
-
-/*
- * Fallbacks for the faces that have not arrived yet.
- *
- * Bunker X is in place, so IM Fell English is no longer loaded. New Order and
- * VCR OSD Mono are still missing, so Barlow and IBM Plex Mono stay. Delete this
- * import entirely once both land — it is a third party on the critical path and
- * it stops earning its keep the moment the real files are here.
- */
-@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');

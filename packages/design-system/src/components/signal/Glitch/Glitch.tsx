@@ -7,6 +7,14 @@ export type GlitchProps = HTMLAttributes<HTMLElement> & {
   offset?: 'none' | 'nudge' | 'break'
   /** Let the drift widen on hover and focus instead of staying fixed. */
   reactive?: boolean
+  /**
+   * Arrives out of register and pulls into alignment on first paint.
+   *
+   * A tube warming up and finding its convergence. One per screen, on the
+   * element worth announcing — and only on load, so it is an event rather than
+   * a loop. Honours `prefers-reduced-motion` by starting in register.
+   */
+  settle?: boolean
   as?: ElementType
 }
 
@@ -21,6 +29,7 @@ export function Glitch({
   children,
   offset = 'nudge',
   reactive = false,
+  settle = false,
   as: Tag = 'span',
   className,
   ...rest
@@ -29,6 +38,7 @@ export function Glitch({
     'bx-glitch',
     offset !== 'none' && `bx-glitch--${offset}`,
     reactive && 'bx-glitch--reactive',
+    settle && 'bx-glitch--settle',
     className,
   ]
     .filter(Boolean)

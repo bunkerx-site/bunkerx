@@ -1,0 +1,65 @@
+/*
+ * The plate stays on the stamp radius: at this size it is a surface you aim
+ * at in a grid of equals, not a control with a fixed small height, and a
+ * stadium corner on a block this large reads as a lozenge. Its `sm` variant
+ * is a control and is fully rounded — see the shape block in tokens.css.
+ */
+.bx-tile {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  border-radius: var(--bx-radius-stamp);
+  /* Inset, so thickening it on hover costs no layout. */
+  box-shadow: inset 0 0 0 var(--bx-border-hair) color-mix(in srgb, var(--bx-signal) 16%, transparent);
+  color: var(--bx-signal);
+  font-size: var(--bx-text-lg);
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    box-shadow var(--bx-dur-base) var(--bx-ease-crt),
+    color var(--bx-dur-base) var(--bx-ease-crt);
+}
+
+.bx-tile:hover,
+.bx-tile:focus-visible {
+  box-shadow: inset 0 0 0 var(--bx-border-frame) var(--bx-phosphor);
+  color: var(--bx-phosphor);
+}
+
+/*
+ * The chip: the same destination at a lower rank.
+ *
+ * Sits in a wrapping row under something more important, so it is only as wide
+ * as its own name and its ring is quieter — six of these at full strength
+ * beside a filled button would read as seven equal actions.
+ */
+.bx-tile--sm {
+  display: inline-flex;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--bx-radius-pill);
+  gap: 0.5rem;
+  font-size: var(--bx-text-sm);
+  line-height: 1.1;
+  white-space: nowrap;
+  /*
+   * The system's secondary register, not a treatment of its own.
+   *
+   * At the muted tint these read as disabled, sitting as they do under a
+   * filled button — but the fix is the outline rank the system already
+   * defines for exactly this job: a `phosphor-dim` ring with a `phosphor`
+   * label at rest, brightening to a full ring and the soft bloom on hover.
+   * The same pair `Button`'s outline variant uses. A tinted fill and a heavier
+   * label would have been a fourth control style invented for one row.
+   */
+  color: var(--bx-phosphor);
+  box-shadow: inset 0 0 0 var(--bx-border-hair) var(--bx-phosphor-dim);
+}
+
+.bx-tile--sm:hover,
+.bx-tile--sm:focus-visible {
+  box-shadow:
+    inset 0 0 0 var(--bx-border-hair) var(--bx-phosphor),
+    var(--bx-glow-soft);
+  color: var(--bx-phosphor);
+}

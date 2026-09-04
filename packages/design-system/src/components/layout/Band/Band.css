@@ -1,0 +1,75 @@
+/*
+ * Sections breathe. The gap between bands is what tells a reader a new subject
+ * has started, which is why there is no chrome above each heading doing that
+ * job — and why the padding is as large as it is.
+ */
+.bx-band {
+  position: relative;
+  padding-block: var(--bx-band-pad);
+  overflow: hidden;
+}
+
+/* The content sits above the band's ground and above the seam. */
+.bx-band > .bx-shell { position: relative; z-index: 1; }
+
+
+/* Alternating grounds, full-bleed. See tokens.css for why they are tinted
+   rather than opaque. */
+.bx-band--nebula { background: var(--bx-band-nebula); }
+.bx-band--deep { background: var(--bx-band-deep); }
+
+/*
+ * A band clips by default, so a decoration inside one cannot bleed into the
+ * section above it. Opting out is for the one case where the bleed is the
+ * whole point — a sticker pressed over a panel's edge.
+ */
+.bx-band--overflow { overflow: visible; }
+
+.bx-band__head { margin-bottom: var(--bx-band-head-gap); }
+
+.bx-band__title {
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-text-2xl);
+  line-height: var(--bx-leading-tight);
+  color: var(--bx-signal);
+  margin: 0;
+}
+
+.bx-band__lead {
+  margin-top: var(--bx-space-4);
+  max-width: 46ch;
+  font-size: var(--bx-text-lg);
+  line-height: 1.55;
+  color: var(--bx-signal-mute);
+}
+
+.bx-band__more { margin-top: var(--bx-band-head-gap); }
+
+/*
+ * The cut-out is laid out, not positioned: it is the second cell of the header
+ * row, so on a narrow screen it drops under the heading and shrinks with it.
+ * A background sprite could only be sized in fixed pixels, which is why the
+ * earlier version had to hide these at a breakpoint.
+ */
+.bx-band__head--marked {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+}
+
+.bx-band__sticker { justify-self: end; }
+
+/* The side is chosen per band rather than derived from its ground, so the two
+   are free to disagree — and so no reader gets a column of stickers down one
+   edge as they scroll. */
+.bx-band__head--left { grid-template-columns: auto minmax(0, 1fr); }
+.bx-band__head--left .bx-band__sticker { justify-self: start; }
+
+@media (max-width: 48rem) {
+  /* Stacked, and the heading always comes first: a sticker above the title
+     would push the thing someone is looking for off the top of the band. */
+  .bx-band__head--marked { grid-template-columns: 1fr; }
+  .bx-band__head--marked > div { order: 1; }
+  .bx-band__sticker { order: 2; justify-self: start; }
+}

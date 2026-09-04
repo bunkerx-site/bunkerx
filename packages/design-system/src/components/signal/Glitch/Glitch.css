@@ -1,4 +1,21 @@
 /*
+ * `--bx-converge` is registered as a length so it can be animated.
+ *
+ * A custom property is a plain string to the animation engine unless it is
+ * declared, and an undeclared one jumps from keyframe to keyframe instead of
+ * interpolating. Registering it is what lets a single keyframe drive both
+ * ghosts: they read the variable in opposite directions, so animating the
+ * variable pulls the two channels apart and back together at once. Two
+ * keyframes animating `transform` could not do that without duplicating every
+ * step for each direction.
+ */
+@property --bx-converge {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+/*
  * Misconvergence, the system's emphasis mechanism.
  *
  * Two copies of the text are offset in opposite directions and tinted with the
@@ -40,6 +57,32 @@
 .bx-glitch--reactive:hover,
 .bx-glitch--reactive:focus-within { --bx-converge: var(--bx-converge-break); }
 
+/*
+ * The lock-on: the channels arrive far apart and pull into register.
+ *
+ * This is the mechanism used as the thing it is named after — a tube warming
+ * up and finding its convergence — so it belongs on the one element per screen
+ * that is worth announcing, and only on first paint. It overshoots once at 68%
+ * before settling, because a tube that slides smoothly into alignment reads as
+ * an easing curve and one that catches slightly reads as equipment.
+ *
+ * The ghosts' `transition` has to come off while this runs: the animation
+ * rewrites the offset every frame, and a transition on top of that chases the
+ * value and lags a frame behind it in the opposite direction.
+ */
+.bx-glitch--settle { animation: bx-glitch-settle 1100ms var(--bx-ease-crt) both; }
+.bx-glitch--settle .bx-glitch__ghost { transition: none; }
+
+@keyframes bx-glitch-settle {
+  0% { --bx-converge: 15px; }
+  55% { --bx-converge: 2px; }
+  68% { --bx-converge: 7px; }
+  100% { --bx-converge: var(--bx-converge-nudge); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bx-glitch__ghost { transition: none; }
+  /* Rests in register rather than mid-drift: the offset variant on the element
+     still applies, so the emphasis survives without the movement. */
+  .bx-glitch--settle { animation: none; }
 }

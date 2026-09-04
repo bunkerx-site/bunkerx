@@ -36,15 +36,51 @@
   --bx-accent: var(--bx-phosphor);
   --bx-danger: var(--bx-alert);
 
-  /* --- typography ------------------------------------------------------
-   * display: old letterpress serif, converses with the stamped logo.
-   * body: institutional grotesque — public-signage feel, reads well at size.
+  /* --- link colour, as a variable rather than a rule -------------------
+   * Every anchor in base.css reads these two instead of naming the green
+   * directly, and that indirection is load-bearing.
+   *
+   * `a:hover { color: phosphor-hot }` is one element and one pseudo-class, so
+   * it beats any single class a consumer puts on the link. On the dark ground
+   * that is exactly right. On the green plate — the masthead, the footer, the
+   * mobile sheet — it painted light green on green at 1.24:1, and the only way
+   * out was a more specific selector per component. Two of those patches
+   * existed before this indirection did.
+   *
+   * An inverted surface now redefines the two values on itself (see `Plate`)
+   * and every anchor inside it follows, with no specificity contest at all.
    */
-  /*
+  --bx-link: var(--bx-phosphor);
+  --bx-link-hover: var(--bx-phosphor-hot);
+
+  /* --- lines and rings -------------------------------------------------
+   * The hairline is the only rule the interface draws. It appears as the top
+   * and bottom edge of a log row, as the ring around a framed still, and as
+   * the seam's fading rule — one value, so those three read as the same
+   * gesture at different strengths rather than as three different borders.
+   */
+  --bx-hairline: color-mix(in srgb, var(--bx-signal) 14%, transparent);
+  --bx-ring: color-mix(in srgb, var(--bx-signal) 12%, transparent);
+  --bx-ring-live: color-mix(in srgb, var(--bx-phosphor) 70%, transparent);
+  --bx-ring-quiet: color-mix(in srgb, var(--bx-phosphor) 35%, transparent);
+
+  /* --- section grounds -------------------------------------------------
+   * Full-bleed bands rather than boxed panels: a band edge to edge reads as
+   * the page changing surface, a boxed one reads as one more card. Both are
+   * transparent enough that the drifting dust behind them still shows.
+   */
+  --bx-band-nebula: color-mix(in srgb, var(--bx-nebula) 42%, transparent);
+  --bx-band-deep: color-mix(in srgb, var(--bx-void-deep) 62%, transparent);
+  --bx-panel-fill: color-mix(in srgb, var(--bx-nebula) 45%, transparent);
+
+  /* --- typography ------------------------------------------------------
    * The brand's three faces. None of them is on Google Fonts, so each is
    * declared in fonts.css and served from /fonts — see that file for which
    * files have to be dropped in. The fallbacks are chosen to hold the layout
    * at roughly the right proportions until they are.
+   *
+   * display: the brand's own letterpress face, converses with the stamped logo.
+   * body: institutional grotesque — public-signage feel, reads well at size.
    */
   --bx-font-display: 'Bunker X', 'IM Fell English', 'Iowan Old Style', Georgia, serif;
   --bx-font-body: 'New Order', 'Barlow', -apple-system, 'Segoe UI', system-ui, sans-serif;
@@ -68,16 +104,56 @@
   --bx-text-4xl: 4.5rem;
   --bx-text-5xl: 6rem;
 
+  /*
+   * The fluid register.
+   *
+   * The fixed steps above are right for anything that has to line up with
+   * something else — a label, a caption, a run of body copy. They are wrong
+   * for headlines, which is what building the site actually established: a
+   * fixed 4.5rem title is a title on a monitor and a wall of type on a phone,
+   * and dropping it a step at a breakpoint made the change visible as a jump.
+   *
+   * Every headline on the page therefore scales continuously between a floor
+   * and a ceiling. The names are roles, not sizes, because the point of each
+   * one is where it sits in the hierarchy.
+   */
+  --bx-display-row: clamp(1.6rem, 3vw, 2.35rem);      /* a title inside a list row  */
+  --bx-display-band: clamp(1.5rem, 2.6vw, 2.1rem);    /* a title inside a file row  */
+  --bx-display-panel: clamp(2rem, 4.5vw, 3.25rem);    /* the ask, centred in a panel */
+  /*
+   * The fold headline is measured against height as well as width. A
+   * wide-but-short laptop screen is the case that overflows: 4.6vw alone says
+   * nothing about whether there is room underneath for the summary and the
+   * two actions.
+   */
+  --bx-display-fold: clamp(2.1rem, min(4.6vw, 7vh), 4.25rem);
+  --bx-display-mark: clamp(3rem, 14vw, 11rem);        /* the wordmark, sign-off     */
+
   --bx-leading-tight: 1.04;
   --bx-leading-body: 1.7;
   --bx-measure: 62ch;          /* maximum line length */
 
+  /*
+   * Optical baseline correction for the display face.
+   *
+   * Bunker X is drawn all-caps with no descenders, so its font box carries
+   * descender space at the bottom that no glyph ever occupies. Centring that
+   * box — which is all `align-items: center` can do — leaves the ink sitting
+   * high: measured on the masthead, the wordmark had 79px of plate above it
+   * and 102px below, just under 4px off centre at 24px type.
+   *
+   * Nudge the display face down by this much wherever it shares a line with
+   * body text. Not needed when it stands alone, where there is nothing to be
+   * out of register with.
+   */
+  --bx-display-nudge: 0.16em;
+
   /* --- spacing (4px base) --------------------------------------------- */
   --bx-space-1: 0.25rem;
-  --bx-space-5: 1.25rem;
   --bx-space-2: 0.5rem;
   --bx-space-3: 0.75rem;
   --bx-space-4: 1rem;
+  --bx-space-5: 1.25rem;
   --bx-space-6: 1.5rem;
   --bx-space-8: 2rem;
   --bx-space-12: 3rem;
@@ -87,11 +163,59 @@
   --bx-space-32: 8rem;
   --bx-space-40: 10rem;
 
+  /* --- layout ----------------------------------------------------------
+   * One column width for the whole site, and a narrow variant for anything
+   * that is meant to be read straight through. The gutter is subtracted
+   * rather than added as padding so the column is the same on every section
+   * including the ones that bleed.
+   */
+  --bx-gutter: 1.25rem;
+  --bx-shell: 78rem;
+  --bx-shell-narrow: 58rem;
+
+  --bx-plate-height: 5.25rem;
+
+  /*
+   * How much room an anchor target leaves above itself: none.
+   *
+   * The obvious value is the fixed bar's height, and that was the first two
+   * answers here — 7rem, then the bar's exact 5.25rem. Both were wrong for the
+   * same reason: the bar hides itself on downward scroll, and an anchor click
+   * scrolls downward, so by the time the jump lands the bar has gone and the
+   * space reserved for it is just a gap above the section.
+   *
+   * Zero, with the bar actually clearing out of the way on nav clicks, is what
+   * puts a section's top edge on the first pixel of the screen. See
+   * `hideForJump` in useHideOnScroll — the two halves only work together.
+   */
+  --bx-anchor-offset: 0px;
+
+  /* The distance that says a new subject has started. Nothing sits above a
+     section heading doing that job, so the gap has to do all of it. */
+  --bx-band-pad: clamp(5rem, 11vw, 10rem);
+  --bx-band-head-gap: clamp(2.5rem, 5vw, 4rem);
+
   /* --- shape -----------------------------------------------------------
-   * A single radius, taken from the logo decal. It only appears on things
-   * that are "stamped" — never on text, images or form fields.
+   * Two shapes, and the split is by class of object rather than by taste.
+   *
+   * `stamp` is the brand's own corner, taken from the logo decal. It belongs
+   * to surfaces: the things you look at or read — a framed still, a panel, a
+   * plate in a grid, an empty state.
+   *
+   * `pill` belongs to controls: the things you press. A button, a chip, a
+   * short strip of fields. They share one property that surfaces do not —
+   * a small fixed height — and at that height a fully rounded end reads as
+   * something made to be hit, where a 14px corner on a 3rem-tall button reads
+   * as a small panel that happens to be clickable.
+   *
+   * Neither ever appears on text, images or form fields. Form controls keep
+   * square corners on purpose: they are boxes you type into, not objects.
+   *
+   * The rule is what keeps this from being two arbitrary radii. If a new
+   * element is hard to place, ask whether a person presses it or reads it.
    */
   --bx-radius-stamp: 14px;
+  --bx-radius-pill: 999px;
   --bx-border-hair: 1px;
   --bx-border-frame: 2px;
 
@@ -108,10 +232,31 @@
   --bx-glow-soft: 0 0 12px rgba(0, 237, 103, 0.35);
   --bx-glow-hard: 0 0 4px rgba(0, 237, 103, 0.9), 0 0 18px rgba(0, 237, 103, 0.45);
 
-  /* --- motion ---------------------------------------------------------- */
+  /*
+   * Haloes for the cut-outs. A sticker is artwork with its own alpha, so it
+   * takes a `drop-shadow` filter rather than a `box-shadow` — the glow has to
+   * trace the drawing, not the element's box.
+   */
+  --bx-halo-phosphor: drop-shadow(0 0 2rem rgba(0, 237, 103, 0.35));
+  --bx-halo-nebula: drop-shadow(0 0 2rem rgba(99, 54, 147, 0.7));
+  --bx-lift-sticker: drop-shadow(0 0.7rem 1.2rem rgba(11, 6, 22, 0.6));
+
+  /* --- the tube's own lines --------------------------------------------
+   * Laid over anything that is literally a screen showing a picture — a video
+   * still, a thumbnail. Never over type: lines struck through glyphs cost
+   * contrast and carry no information to pay for it.
+   */
+  --bx-scanlines: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0 1px, transparent 1px 4px);
+
+  /* --- motion ----------------------------------------------------------
+   * Three durations. `fast` is a colour swapping under the cursor, `base` is
+   * a ring or an underline arriving, `slow` is the fixed bar leaving the top
+   * of the screen — the only movement large enough that the eye follows it.
+   */
   --bx-ease-crt: cubic-bezier(0.2, 0.8, 0.2, 1);
   --bx-dur-fast: 90ms;
   --bx-dur-base: 180ms;
+  --bx-dur-slow: 260ms;
 
   /* --- raster ----------------------------------------------------------
    * The bright line spacing of the tube. Two layers carry it: a light raster
@@ -128,5 +273,6 @@
   :root {
     --bx-dur-fast: 0ms;
     --bx-dur-base: 0ms;
+    --bx-dur-slow: 0ms;
   }
 }

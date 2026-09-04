@@ -1,0 +1,83 @@
+.bx-log { border-top: var(--bx-border-hair) solid var(--bx-hairline); }
+
+.bx-log__entry {
+  display: grid;
+  /* Still, date, body, length. The still comes first and at a size worth
+     actually looking at; the date hangs in its own column so the log reads
+     down the left edge. */
+  grid-template-columns: 21rem 5.5rem minmax(0, 1fr) auto;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+  padding-block: clamp(2rem, 4vw, 3rem);
+  border-bottom: var(--bx-border-hair) solid var(--bx-hairline);
+  transition: border-color var(--bx-dur-base) var(--bx-ease-crt);
+}
+
+/*
+ * Hovering anywhere in the row lights the row and the still inside it.
+ *
+ * The still's ring is not set here — `bx-hoverable` on the row flips the two
+ * inherited properties that `Frame` reads, so the coupling runs through a
+ * value rather than through a selector reaching into another component.
+ */
+.bx-log__entry:hover { border-bottom-color: color-mix(in srgb, var(--bx-phosphor) 55%, transparent); }
+
+.bx-log__art { display: block; }
+
+.bx-log__date {
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-text-xl);
+  line-height: 1;
+  color: var(--bx-phosphor);
+  padding-top: 0.35rem;
+}
+
+.bx-log__year {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: var(--bx-text-sm);
+  color: var(--bx-signal-mute);
+}
+
+.bx-log__title {
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-display-row);
+  line-height: 1.1;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.bx-log__title a { color: var(--bx-signal); text-decoration: none; }
+.bx-log__title a:hover { color: var(--bx-phosphor-hot); }
+
+.bx-log__summary {
+  margin: var(--bx-space-4) 0 0;
+  max-width: 58ch;
+  font-size: var(--bx-text-base);
+  line-height: var(--bx-leading-body);
+  color: var(--bx-signal-mute);
+}
+
+.bx-log__duration {
+  font-size: var(--bx-text-base);
+  color: var(--bx-signal-mute);
+  padding-top: 0.6rem;
+  white-space: nowrap;
+}
+
+/* The length is the first thing to give up its own column: it is the shortest
+   piece of information in the row and the one a reader scans for last. */
+@media (max-width: 74rem) {
+  .bx-log__entry { grid-template-columns: 15rem 5rem minmax(0, 1fr); }
+  .bx-log__duration { grid-column: 2 / -1; padding-top: 0; }
+}
+
+@media (max-width: 52rem) {
+  .bx-log__entry { grid-template-columns: 1fr; gap: var(--bx-space-3); }
+  .bx-log__art { max-width: 28rem; }
+  .bx-log__duration { grid-column: auto; padding-top: 0; }
+  /* Stacked, the date has a whole line to itself, so day and year sit side by
+     side on it rather than one above the other. */
+  .bx-log__date { display: flex; align-items: baseline; gap: var(--bx-space-3); padding-top: 0; }
+  .bx-log__year { margin: 0; }
+}

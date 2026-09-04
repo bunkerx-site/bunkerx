@@ -1,0 +1,8 @@
+/* Same optical nudge as the platform marks: a 24×24 glyph set at 1em beside
+   text sits a fraction high, because the em box includes descender space the
+   glyphs beside it do use. */
+.bx-icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: -0.14em;
+}

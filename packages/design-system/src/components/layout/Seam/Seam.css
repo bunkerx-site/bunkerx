@@ -1,0 +1,88 @@
+.bx-seam {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+  gap: var(--bx-space-4);
+  height: clamp(0.5rem, 0.9vw, 0.75rem);
+  /* Indented to the content column, so the bars start exactly where the
+     heading below them does. Derived from the shell rather than repeated as a
+     number: change the column width and the seam follows. */
+  padding-inline: max(var(--bx-gutter), calc(50% - var(--bx-shell) / 2));
+  pointer-events: none;
+}
+
+/*
+ * Full-height bars, so the seam reads as a strip of test-card colour rather
+ * than a decorated hairline. The widths are uneven — a real test card is not
+ * an even split, and equal thirds would read as a chart.
+ */
+.bx-seam__bars {
+  flex: none;
+  width: clamp(6rem, 12vw, 10rem);
+  background: linear-gradient(
+    to right,
+    var(--bx-phosphor) 0 19%,
+    var(--bx-phosphor-hot) 19% 33%,
+    var(--bx-signal) 33% 42%,
+    var(--bx-magenta) 42% 60%,
+    var(--bx-nebula-soft) 60% 78%,
+    var(--bx-phosphor-dim) 78% 91%,
+    var(--bx-alert) 91% 100%
+  );
+  border-radius: 2px;
+}
+
+/* The rule sits on the optical centre of the bars and runs out to the edge. */
+.bx-seam__rule {
+  flex: 1;
+  align-self: center;
+  height: 1px;
+  background: color-mix(in srgb, var(--bx-signal) 22%, transparent);
+  mask-image: linear-gradient(to right, black, transparent 92%);
+}
+
+/*
+ * Inline: an ordinary divider rather than a section's top edge.
+ *
+ * Drops the absolute positioning and the indent, because a seam used this way
+ * is already inside the content column and indenting again would step it in
+ * twice.
+ */
+.bx-seam--inline {
+  position: static;
+  display: flex;
+  width: 100%;
+  padding-inline: 0;
+}
+
+/*
+ * The plate's burst.
+ *
+ * The green plate is the one surface where the palette runs inverted, and the
+ * seam has to invert with it: four of the seven bars in the signal burst are
+ * greens, and a green bar on a green ground is not a bar. What reads here is
+ * the dark end of the palette plus the two chromas that survive on green —
+ * the purple and the convergence magenta — so the strip keeps its character
+ * as a colour burst instead of degrading into a barcode.
+ *
+ * Used at the sign-off, where it says the opposite of what it says at the top
+ * of a section: not that the signal starts again, but that this was the last
+ * of it.
+ */
+.bx-seam--plate .bx-seam__bars {
+  background: linear-gradient(
+    to right,
+    var(--bx-void) 0 19%,
+    var(--bx-nebula) 19% 33%,
+    var(--bx-void-deep) 33% 42%,
+    var(--bx-magenta) 42% 60%,
+    var(--bx-nebula-soft) 60% 78%,
+    var(--bx-void) 78% 91%,
+    color-mix(in srgb, var(--bx-void) 45%, transparent) 91% 100%
+  );
+}
+
+.bx-seam--plate .bx-seam__rule {
+  background: color-mix(in srgb, var(--bx-void) 30%, transparent);
+}

@@ -1,0 +1,307 @@
+/*
+ * The wrapper shrink-wraps the artwork, so the effect layers can be pinned to
+ * the picture's own box with `inset: 0` and stay in register with it at every
+ * size. `inline-block` rather than `block` is what makes it shrink-wrap: a
+ * block wrapper would be as wide as the column and the cone would be traced
+ * against the wrong box.
+ */
+.bx-scene {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.bx-scene__art {
+  display: block;
+  /*
+   * Height-driven, so both of these have to be undone.
+   *
+   * `width: auto` against the intrinsic width and height attributes is what
+   * derives the width from the artwork, and `max-width: none` is what stops
+   * the base sheet's `img { max-width: 100% }` from re-entering as a second,
+   * competing constraint — with it in place a tall picture in a narrow column
+   * silently loses the height it was given.
+   */
+  height: var(--bx-scene-height, min(72svh, 44rem));
+  width: auto;
+  max-width: none;
+  -webkit-user-drag: none;
+}
+
+/*
+ * The breathe. Glow only: see Scene.tsx for why nothing moves.
+ *
+ * The halo is a `drop-shadow` filter rather than a box shadow, because the
+ * artwork has its own alpha and the light has to spill from the beam, not from
+ * the element's rectangle.
+ */
+.bx-scene--transmit .bx-scene__art {
+  animation: bx-scene-transmit 9s ease-in-out infinite;
+  will-change: filter;
+}
+
+@keyframes bx-scene-transmit {
+  0%, 100% { filter: drop-shadow(0 0 2rem rgba(0, 237, 103, 0.16)); }
+  50% { filter: drop-shadow(0 0 4.5rem rgba(0, 237, 103, 0.34)); }
+}
+
+/* --- the effect layers ------------------------------------------------ */
+
+.bx-scene__beam,
+.bx-scene__dust {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/*
+ * The pull: one soft band of light travelling up the cone.
+ *
+ * It is what gives the beam a direction. A cone that merely glows is a cone of
+ * light; the same cone with something moving up it is something being taken,
+ * which is the idea the whole section rests on. Slow and low-contrast on
+ * purpose — a hard band would read as a scanning laser.
+ */
+.bx-scene__pull {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 46%;
+  background: linear-gradient(
+    to top,
+    transparent,
+    color-mix(in srgb, var(--bx-phosphor-hot) 26%, transparent) 45%,
+    transparent
+  );
+  mix-blend-mode: screen;
+  animation: bx-scene-pull 7.5s cubic-bezier(0.35, 0, 0.5, 1) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes bx-scene-pull {
+  0% { transform: translateY(100%); opacity: 0; }
+  18% { opacity: 1; }
+  76% { opacity: 1; }
+  100% { transform: translateY(-105%); opacity: 0; }
+}
+
+/*
+ * One mote.
+ *
+ * Positioned from the bottom, because the base of the beam is where the
+ * material comes from and the base is the edge that stays put when the scene
+ * is resized. Both the start offset and the climb are expressed against
+ * `--bx-scene-height`, so the field scales with the picture rather than
+ * sliding out of register with it.
+ */
+.bx-mote {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: var(--bx-mote-size, 3px);
+  height: var(--bx-mote-size, 3px);
+  border-radius: 50%;
+  /*
+   * Phosphor, and kept quiet.
+   *
+   * A white-hot core does read more sharply against the green, but it also
+   * pulls the eye off the picture and onto the dots — and the picture is the
+   * point. Held in the green they sit inside the beam as part of the light
+   * rather than as an effect laid over it, which is the register the whole
+   * page is in: the interference is behind the content, never on top of it.
+   */
+  background: var(--bx-phosphor-hot);
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--bx-phosphor) 70%, transparent);
+  opacity: 0;
+  animation-name: bx-mote-rise;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+/* A few carry the convergence magenta instead. Never many: the green is the
+   light, and the magenta is the error in it. */
+.bx-mote--magenta {
+  background: var(--bx-magenta);
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--bx-magenta) 60%, transparent);
+}
+
+/* The ambient dust outside the cone: further away, so slower and fainter. */
+.bx-mote--slow {
+  animation-timing-function: linear;
+  opacity: 0;
+  filter: blur(0.4px);
+}
+
+/*
+ * Rising, and converging as it rises.
+ *
+ * The horizontal term is the half of this that sells it. The cone narrows
+ * toward the emitter, so a mote travelling straight up crosses out of the
+ * light and reads as rain running backwards.
+ *
+ * Both ends of the path are solved in JS against the measured cone, so this
+ * keyframe only has to interpolate between them. That is why there are two
+ * separate x values rather than one multiplied by a constant: a mote that
+ * climbs a short way should converge a short way, and a fixed fraction pulled
+ * the quick ones toward the axis far faster than the light actually narrows.
+ */
+@keyframes bx-mote-rise {
+  0% {
+    transform: translate3d(var(--bx-mote-x), calc(var(--bx-mote-y) * -1), 0) scale(0.5);
+    opacity: 0;
+  }
+  14% { opacity: var(--bx-mote-opacity, 0.7); }
+  80% { opacity: var(--bx-mote-opacity, 0.7); }
+  100% {
+    transform: translate3d(
+        var(--bx-mote-x-end),
+        calc((var(--bx-mote-y) + var(--bx-mote-rise)) * -1),
+        0
+      )
+      scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* --- what the beam has hold of ---------------------------------------
+ * A zero-size anchor at the grip point, so everything inside it is placed
+ * relative to the object rather than to the picture's box.
+ */
+.bx-scene__grip {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/*
+ * The aura: the field's grip on whatever it is taking.
+ *
+ * `screen` rather than a plain overlay, because this is light being added to
+ * light — over the beam a normal blend would grey the green down instead of
+ * brightening it. It swells and fades on a period unrelated to the pull's, so
+ * the two never land together.
+ */
+.bx-scene__aura {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* Sized per artwork — one constant cannot serve a cow and an astronaut. The
+     negative margin is half the size, which is what centres it on the grip. */
+  width: calc(var(--bx-scene-height, 40rem) * var(--bx-aura-size, 0.3));
+  height: calc(var(--bx-scene-height, 40rem) * var(--bx-aura-size, 0.3));
+  margin: calc(var(--bx-scene-height, 40rem) * var(--bx-aura-size, 0.3) / -2);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--bx-phosphor-hot) 34%, transparent) 0%,
+    color-mix(in srgb, var(--bx-phosphor) 16%, transparent) 38%,
+    transparent 68%
+  );
+  mix-blend-mode: screen;
+  animation: bx-scene-grip 5.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes bx-scene-grip {
+  0%, 100% { transform: scale(0.86); opacity: 0.55; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/*
+ * One spark going round.
+ *
+ * The path is traced as eight stops of an ellipse rather than with a rotating
+ * parent, which keeps it to one element per spark. Opacity and scale drop
+ * through the back half of the orbit — the stops from 50% to 100% — so the
+ * ring reads as passing behind the subject and coming back round, instead of
+ * as a flat circle drawn on top of it.
+ */
+.bx-spark {
+  position: absolute;
+  width: var(--bx-mote-size, 3px);
+  height: var(--bx-mote-size, 3px);
+  border-radius: 50%;
+  background: var(--bx-phosphor-hot);
+  box-shadow: 0 0 7px 1px color-mix(in srgb, var(--bx-phosphor) 75%, transparent);
+  animation-name: bx-spark-orbit;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes bx-spark-orbit {
+  /* front, coming right */
+  0% {
+    transform: translate3d(var(--bx-orbit-rx), 0, 0) scale(1);
+    opacity: var(--bx-mote-opacity, 0.7);
+  }
+  12.5% {
+    transform: translate3d(calc(var(--bx-orbit-rx) * 0.707), calc(var(--bx-orbit-ry) * 0.707), 0)
+      scale(1.05);
+    opacity: var(--bx-mote-opacity, 0.7);
+  }
+  25% {
+    transform: translate3d(0, var(--bx-orbit-ry), 0) scale(1.1);
+    opacity: var(--bx-mote-opacity, 0.7);
+  }
+  37.5% {
+    transform: translate3d(calc(var(--bx-orbit-rx) * -0.707), calc(var(--bx-orbit-ry) * 0.707), 0)
+      scale(1.05);
+    opacity: var(--bx-mote-opacity, 0.7);
+  }
+  50% {
+    transform: translate3d(calc(var(--bx-orbit-rx) * -1), 0, 0) scale(1);
+    opacity: var(--bx-mote-opacity, 0.7);
+  }
+  /* back, passing behind: smaller and dimmer */
+  62.5% {
+    transform: translate3d(calc(var(--bx-orbit-rx) * -0.707), calc(var(--bx-orbit-ry) * -0.707), 0)
+      scale(0.8);
+    opacity: calc(var(--bx-mote-opacity, 0.7) * 0.35);
+  }
+  75% {
+    transform: translate3d(0, calc(var(--bx-orbit-ry) * -1), 0) scale(0.72);
+    opacity: calc(var(--bx-mote-opacity, 0.7) * 0.25);
+  }
+  87.5% {
+    transform: translate3d(calc(var(--bx-orbit-rx) * 0.707), calc(var(--bx-orbit-ry) * -0.707), 0)
+      scale(0.8);
+    opacity: calc(var(--bx-mote-opacity, 0.7) * 0.35);
+  }
+  100% {
+    transform: translate3d(var(--bx-orbit-rx), 0, 0) scale(1);
+    opacity: var(--bx-mote-opacity, 0.7);
+  }
+}
+
+/*
+ * Nothing moves, and the beam settles mid-cycle rather than going dark.
+ *
+ * The motes are removed outright instead of being frozen: two dozen dots held
+ * still inside the cone read as specks of dirt on the picture, which is worse
+ * than not having them. The picture is complete without them — it is a beam
+ * either way.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .bx-scene--transmit .bx-scene__art {
+    animation: none;
+    will-change: auto;
+    filter: drop-shadow(0 0 2.8rem rgba(0, 237, 103, 0.24));
+  }
+
+  .bx-scene__pull {
+    animation: none;
+    opacity: 0.5;
+    transform: translateY(20%);
+  }
+
+  /* The aura stays — it is light on the subject, and light does not have to
+     move to say the field has hold of it. */
+  .bx-scene__aura { animation: none; opacity: 0.8; transform: scale(1); }
+
+  .bx-mote,
+  .bx-spark { display: none; }
+}

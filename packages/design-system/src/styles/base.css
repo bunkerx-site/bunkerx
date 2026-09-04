@@ -1,6 +1,26 @@
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /*
+   * In-page navigation moves rather than jumps, so it is obvious the page went
+   * somewhere else instead of appearing to have changed content in place. The
+   * padding keeps a section from landing underneath the fixed plate.
+   *
+   * This is the *only* place the anchor offset is applied. `scroll-padding` on
+   * the scroll container and `scroll-margin` on the target both shift where an
+   * element comes to rest, and they add up — declaring both put every section
+   * 224px down instead of 84px. It belongs here rather than on the target
+   * because it then covers every anchor on the page, including one reached by
+   * `scrollIntoView` rather than by a fragment.
+   */
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--bx-anchor-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
 
 body {
   margin: 0;
@@ -25,8 +45,21 @@ h1, h2, h3, h4 {
 
 p { margin: 0 0 var(--bx-space-4); max-width: var(--bx-measure); }
 
-a { color: var(--bx-phosphor); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-a:hover { color: var(--bx-phosphor-hot); }
+/*
+ * Anchors read their colour from a variable instead of naming the green.
+ *
+ * These two selectors are an element plus a pseudo-class, so they beat any
+ * single class a consumer puts on a link — which is correct on the dark ground
+ * and was a bug on the green plate, where the hover painted light green on
+ * green at 1.24:1. An inverted surface now redefines `--bx-link` on itself and
+ * every anchor inside follows, with no specificity contest to win.
+ */
+a {
+  color: var(--bx-link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--bx-link-hover); }
 
 img, svg, video { display: block; max-width: 100%; }
 
@@ -37,6 +70,41 @@ img, svg, video { display: block; max-width: 100%; }
 }
 
 ::selection { background: var(--bx-phosphor); color: var(--bx-void); }
+
+/*
+ * The scrollbar is on screen the whole time, so it is part of the design
+ * rather than something to leave to the browser: a phosphor thumb running
+ * down to magenta over a nebula track. The gradient is the tube's own
+ * misconvergence, at the one place on the page where a vertical strip of it
+ * reads as a mechanism instead of as decoration.
+ */
+* {
+  scrollbar-color: var(--bx-phosphor-dim) color-mix(in srgb, var(--bx-nebula) 55%, transparent);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar { width: 12px; height: 12px; }
+
+::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--bx-nebula) 45%, var(--bx-void-deep));
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    var(--bx-phosphor) 0%,
+    var(--bx-phosphor-dim) 45%,
+    var(--bx-magenta) 100%
+  );
+  border: 3px solid var(--bx-void-deep);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, var(--bx-phosphor-hot), var(--bx-phosphor) 55%, var(--bx-magenta));
+}
+
+::-webkit-scrollbar-corner { background: var(--bx-void-deep); }
 
 /* Available to screen readers, invisible on screen. */
 .bx-visually-hidden {

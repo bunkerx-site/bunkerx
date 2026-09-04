@@ -17,7 +17,7 @@ export const STICKER_SIZES = {
   'camera': [219, 196],
   'case-folder': [282, 219],
   'drip-green': [83, 68],
-  'earth': [263, 260],
+  'earth': [480, 475],
   'filmstrip': [140, 223],
   'galaxy-spiral': [252, 241],
   'galaxy-void': [231, 292],

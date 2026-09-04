@@ -5,7 +5,7 @@
   gap: var(--bx-space-2);
   padding: var(--bx-space-3) var(--bx-space-6);
   border: var(--bx-border-frame) solid transparent;
-  border-radius: var(--bx-radius-stamp);
+  border-radius: var(--bx-radius-pill);
   font-family: var(--bx-font-body);
   font-size: var(--bx-text-sm);
   font-weight: 600;

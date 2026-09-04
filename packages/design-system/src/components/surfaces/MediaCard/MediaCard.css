@@ -1,0 +1,39 @@
+.bx-media { display: block; text-decoration: none; }
+
+.bx-media__title {
+  margin: var(--bx-space-5) 0 0;
+  font-size: var(--bx-text-lg);
+  line-height: 1.2;
+  color: var(--bx-signal);
+  transition: color var(--bx-dur-fast) var(--bx-ease-crt);
+}
+
+.bx-media__title--display { font-family: var(--bx-font-display); }
+
+/* A catalogue name is a label, not a headline, so it keeps the body face and
+   a line height that suits two or three wrapped words. */
+.bx-media__title--body {
+  font-family: var(--bx-font-body);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.bx-media:hover .bx-media__title { color: var(--bx-phosphor-hot); }
+
+.bx-media__summary {
+  margin: var(--bx-space-3) 0 0;
+  max-width: 52ch;
+  font-size: var(--bx-text-base);
+  line-height: 1.6;
+  color: var(--bx-signal-mute);
+}
+
+.bx-media__note {
+  display: block;
+  margin-top: var(--bx-space-3);
+  font-size: var(--bx-text-sm);
+}
+
+.bx-media__note--mute { color: var(--bx-signal-mute); }
+/* A price is the one number on a card worth spending the green on. */
+.bx-media__note--accent { font-size: var(--bx-text-base); color: var(--bx-phosphor); }

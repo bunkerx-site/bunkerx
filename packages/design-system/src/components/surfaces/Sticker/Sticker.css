@@ -13,4 +13,203 @@
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
+  transform-origin: var(--bx-sticker-origin, 50% 50%);
+}
+
+/*
+ * The resting pose, for a cut-out that has been rotated, lifted or given a
+ * motion. Only these get a transform, so an untouched sticker stays on the
+ * ordinary paint path.
+ *
+ * Every motion below varies around this same expression rather than replacing
+ * it, which is what lets `rotate` and `lift` keep working while an animation
+ * runs. Baking the angle into the keyframes — as the first version did — meant
+ * the two props silently stopped having any effect.
+ */
+.bx-sticker--placed {
+  transform: translate3d(0, var(--bx-sticker-lift, 0%), 0) rotate(var(--bx-sticker-rotate, 0deg));
+}
+
+/* --- static haloes ---------------------------------------------------
+ * A sticker is artwork with its own alpha, so these are `drop-shadow`
+ * filters rather than box shadows: the glow has to trace the drawing, not
+ * the element's rectangle. Pairing `mask-image` with `drop-shadow` is the
+ * thing to avoid — it puts the glow back on the box.
+ */
+.bx-sticker--halo-lift { filter: var(--bx-lift-sticker); }
+.bx-sticker--halo-phosphor { filter: drop-shadow(0 0 1.6rem rgba(0, 237, 103, 0.28)); }
+.bx-sticker--halo-nebula { filter: var(--bx-halo-nebula); }
+/* Light spilling downward, so a cut-out that emits some marks what is under
+   it instead of glowing evenly in place. */
+.bx-sticker--halo-beam { filter: drop-shadow(0 2rem 3rem rgba(0, 237, 103, 0.16)); }
+
+/* --- hover: a saucer keeping station ----------------------------------
+ * The one place on a page where continuous motion is the subject rather than
+ * an effect. Slow and small enough that it never pulls the eye off a headline.
+ */
+.bx-sticker--hover {
+  animation: bx-sticker-hover 11s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes bx-sticker-hover {
+  0% { transform: translate3d(0, var(--bx-sticker-lift, 0%), 0) rotate(var(--bx-sticker-rotate, 0deg)); }
+  30% { transform: translate3d(-0.8%, calc(var(--bx-sticker-lift, 0%) - 2.4%), 0) rotate(calc(var(--bx-sticker-rotate, 0deg) + 1.4deg)); }
+  62% { transform: translate3d(0.6%, calc(var(--bx-sticker-lift, 0%) - 3.4%), 0) rotate(calc(var(--bx-sticker-rotate, 0deg) - 1deg)); }
+  100% { transform: translate3d(0, var(--bx-sticker-lift, 0%), 0) rotate(var(--bx-sticker-rotate, 0deg)); }
+}
+
+/* --- orbit: a lit planet ----------------------------------------------
+ * Not a spin. It is a flat picture of a planet, and rotating it would read as
+ * a wheel turning rather than a world. It holds position and breathes: the
+ * atmosphere brightens and dims, so it reads as lit and transmitting.
+ *
+ * The drift and the glow run on different periods, so they never land together
+ * and the loop does not become countable.
+ */
+.bx-sticker--orbit {
+  animation: bx-sticker-orbit 19s ease-in-out infinite, bx-sticker-atmosphere 7s ease-in-out infinite;
+  will-change: transform, filter;
+}
+
+@keyframes bx-sticker-orbit {
+  0% { transform: translate3d(0, var(--bx-sticker-lift, 0%), 0) rotate(var(--bx-sticker-rotate, 0deg)); }
+  50% { transform: translate3d(-1.5%, calc(var(--bx-sticker-lift, 0%) - 3%), 0) rotate(calc(var(--bx-sticker-rotate, 0deg) + 3deg)); }
+  100% { transform: translate3d(0, var(--bx-sticker-lift, 0%), 0) rotate(var(--bx-sticker-rotate, 0deg)); }
+}
+
+@keyframes bx-sticker-atmosphere {
+  0%, 100% { filter: drop-shadow(0 0 1.2rem rgba(0, 237, 103, 0.18)); }
+  50% { filter: drop-shadow(0 0 2.6rem rgba(0, 237, 103, 0.42)); }
+}
+
+/* --- handheld: something held up to the eye ---------------------------
+ * This replaced a hard stepped flicker meant to read as an image intensifier
+ * gaining. Next to a column of thumbnails that looked like a fault rather than
+ * like equipment. It drifts instead, the way a scope held up to the eye never
+ * sits quite still.
+ */
+.bx-sticker--handheld {
+  animation: bx-sticker-handheld 15s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes bx-sticker-handheld {
+  0% { transform: translate3d(0, var(--bx-sticker-lift, 0%), 0) rotate(var(--bx-sticker-rotate, 0deg)); }
+  30% { transform: translate3d(-1%, calc(var(--bx-sticker-lift, 0%) - 2.2%), 0) rotate(calc(var(--bx-sticker-rotate, 0deg) + 1.6deg)); }
+  65% { transform: translate3d(0.8%, calc(var(--bx-sticker-lift, 0%) - 1.2%), 0) rotate(calc(var(--bx-sticker-rotate, 0deg) - 1.2deg)); }
+  100% { transform: translate3d(0, var(--bx-sticker-lift, 0%), 0) rotate(var(--bx-sticker-rotate, 0deg)); }
+}
+
+/* --- pan: a mounted camera --------------------------------------------
+ * Rotation anchored at the bracket, so the body swings and the mount stays
+ * put, with a long hold at each end rather than a smooth sweep. A camera that
+ * moved continuously would read as a pendulum; one that stops to look reads as
+ * a camera. Set `origin` to the bracket.
+ */
+.bx-sticker--pan {
+  animation: bx-sticker-pan 16s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+@keyframes bx-sticker-pan {
+  0%, 18% { transform: rotate(var(--bx-sticker-rotate, 0deg)); }
+  38%, 58% { transform: rotate(calc(var(--bx-sticker-rotate, 0deg) + 11deg)); }
+  78%, 100% { transform: rotate(var(--bx-sticker-rotate, 0deg)); }
+}
+
+/* --- identify: a biometric read ---------------------------------------
+ * A long dim hold while something is being compared, one hard flash when it
+ * matches, then it settles. The rhythm is the point — an even pulse would just
+ * be a glowing rectangle.
+ *
+ * Stepped, not eased. A match is a decision, and decisions do not fade in.
+ */
+.bx-sticker--identify {
+  animation: bx-sticker-identify 9s steps(1, end) infinite;
+  will-change: filter, transform;
+}
+
+@keyframes bx-sticker-identify {
+  0%, 62% {
+    filter: drop-shadow(0 0 1rem rgba(99, 54, 147, 0.5));
+    transform: rotate(var(--bx-sticker-rotate, 0deg));
+  }
+  62.01%, 66% {
+    filter: drop-shadow(0 0 2.8rem rgba(0, 237, 103, 0.75));
+    transform: rotate(var(--bx-sticker-rotate, 0deg)) scale(1.02);
+  }
+  66.01%, 70% {
+    filter: drop-shadow(0 0 0.8rem rgba(0, 237, 103, 0.2));
+    transform: rotate(var(--bx-sticker-rotate, 0deg));
+  }
+  70.01%, 76% {
+    filter: drop-shadow(0 0 2.2rem rgba(0, 237, 103, 0.6));
+    transform: rotate(var(--bx-sticker-rotate, 0deg)) scale(1.01);
+  }
+  76.01%, 100% {
+    filter: drop-shadow(0 0 1.2rem rgba(0, 237, 103, 0.3));
+    transform: rotate(var(--bx-sticker-rotate, 0deg));
+  }
+}
+
+/* --- watch: something looking at you ----------------------------------
+ * It does not blink, it dilates. The glow widens and the whole thing leans a
+ * degree or two, the way something looking at you shifts without moving.
+ */
+.bx-sticker--watch {
+  animation: bx-sticker-watch 10s ease-in-out infinite;
+  will-change: filter, transform;
+}
+
+@keyframes bx-sticker-watch {
+  0%, 100% {
+    transform: rotate(var(--bx-sticker-rotate, 0deg)) scale(1);
+    filter: drop-shadow(0 0 1.6rem rgba(99, 54, 147, 0.6));
+  }
+  50% {
+    transform: rotate(calc(var(--bx-sticker-rotate, 0deg) - 1.5deg)) scale(1.03);
+    filter: drop-shadow(0 0 3.2rem rgba(0, 237, 103, 0.4))
+      drop-shadow(0 0 2rem rgba(99, 54, 147, 0.8));
+  }
+}
+
+/* --- sway: hanging from its tape --------------------------------------
+ * What a sheet stuck to a wall by one corner does. Set `origin` to the taped
+ * corner; left at the centre it reads as a pendulum instead.
+ */
+.bx-sticker--sway {
+  animation: bx-sticker-sway 13s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes bx-sticker-sway {
+  0% { transform: translate3d(0, var(--bx-sticker-lift, 0%), 0) rotate(var(--bx-sticker-rotate, 0deg)); }
+  35% { transform: translate3d(0, calc(var(--bx-sticker-lift, 0%) - 2.5%), 0) rotate(calc(var(--bx-sticker-rotate, 0deg) + 2.8deg)); }
+  70% { transform: translate3d(0, calc(var(--bx-sticker-lift, 0%) + 1.2%), 0) rotate(calc(var(--bx-sticker-rotate, 0deg) - 1.4deg)); }
+  100% { transform: translate3d(0, var(--bx-sticker-lift, 0%), 0) rotate(var(--bx-sticker-rotate, 0deg)); }
+}
+
+/*
+ * Resting poses.
+ *
+ * Turning the animation off is not enough on its own: three of the motions
+ * carry the halo in their keyframes, so without a resting filter the cut-out
+ * loses its glow entirely rather than settling into it.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .bx-sticker--hover,
+  .bx-sticker--orbit,
+  .bx-sticker--handheld,
+  .bx-sticker--pan,
+  .bx-sticker--identify,
+  .bx-sticker--watch,
+  .bx-sticker--sway {
+    animation: none;
+    will-change: auto;
+  }
+
+  .bx-sticker--orbit { filter: drop-shadow(0 0 1.6rem rgba(0, 237, 103, 0.24)); }
+  .bx-sticker--identify { filter: drop-shadow(0 0 1.4rem rgba(0, 237, 103, 0.3)); }
+  .bx-sticker--watch { filter: drop-shadow(0 0 1.6rem rgba(99, 54, 147, 0.6)); }
 }

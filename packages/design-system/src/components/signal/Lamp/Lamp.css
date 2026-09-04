@@ -1,0 +1,35 @@
+.bx-lamp {
+  display: flex;
+  align-items: center;
+  gap: var(--bx-space-2);
+  font-size: var(--bx-text-sm);
+  white-space: nowrap;
+}
+
+.bx-lamp__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  /*
+   * A long hold, one short drop-out, then back. Stepped rather than eased: a
+   * lamp is on or off, and a dot that fades in and out reads as a decoration
+   * breathing instead of as equipment reporting.
+   */
+  animation: bx-lamp 3.2s steps(1, end) infinite;
+}
+
+@keyframes bx-lamp {
+  0%, 88% { opacity: 1; }
+  88.01%, 94% { opacity: 0.2; }
+  94.01%, 100% { opacity: 1; }
+}
+
+.bx-lamp--off { opacity: 0.6; }
+.bx-lamp--off .bx-lamp__dot { animation: none; opacity: 0.35; }
+
+/* The state is in the words beside it, so holding the lamp still loses
+   nothing. */
+@media (prefers-reduced-motion: reduce) {
+  .bx-lamp__dot { animation: none; }
+}

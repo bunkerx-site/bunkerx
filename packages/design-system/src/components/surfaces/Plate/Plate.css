@@ -1,0 +1,32 @@
+.bx-plate {
+  position: relative;
+  background: var(--bx-phosphor);
+  color: var(--bx-void);
+
+  /*
+   * The whole point of the component. See Plate.tsx and tokens.css for why
+   * this is two variables rather than a more specific selector.
+   *
+   * Both land on the same value: on this plate hover cannot be carried by
+   * colour at all — there is nowhere darker to go that is not simply black —
+   * so it is carried by an underline instead.
+   */
+  --bx-link: var(--bx-void);
+  --bx-link-hover: var(--bx-void);
+}
+
+/* Quiet type on the plate. `signal-mute` is tinted toward the purple and is
+   invisible here, so the muted register is the void at partial strength. */
+.bx-plate a,
+.bx-plate .bx-plate__quiet { color: color-mix(in srgb, var(--bx-void) 78%, transparent); }
+
+.bx-plate a:hover,
+.bx-plate a:focus-visible {
+  color: var(--bx-void);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Once content scrolls underneath, the plate gains an edge so it reads as a
+   separate layer rather than as part of the page. */
+.bx-plate--raised { box-shadow: 0 6px 24px rgba(11, 6, 22, 0.55); }

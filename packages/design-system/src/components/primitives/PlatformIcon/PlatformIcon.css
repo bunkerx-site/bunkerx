@@ -1,0 +1,13 @@
+/*
+ * Sized in `em` and shifted onto the type's optical centre.
+ *
+ * A 24×24 mark set at `1em` beside text sits a fraction high, because the
+ * em box includes descender space the glyphs beside it do use. The nudge is
+ * what stops a row of platform names from looking like the icons are floating
+ * above their labels.
+ */
+.bx-platform-icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: -0.14em;
+}

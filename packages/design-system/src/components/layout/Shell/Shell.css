@@ -1,0 +1,6 @@
+.bx-shell {
+  width: min(100% - var(--bx-gutter) * 2, var(--bx-shell));
+  margin-inline: auto;
+}
+
+.bx-shell--narrow { width: min(100% - var(--bx-gutter) * 2, var(--bx-shell-narrow)); }

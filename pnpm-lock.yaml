@@ -47,6 +47,10 @@ importers:
         version: 8.2.2(@types/node@24.13.3)(esbuild@0.28.2)
 
   packages/design-system:
+    dependencies:
+      simple-icons:
+        specifier: ^16.29.0
+        version: 16.29.0
     devDependencies:
       '@storybook/addon-docs':
         specifier: ^10.6.0
@@ -1408,6 +1412,10 @@ packages:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
     hasBin: true
+
+  simple-icons@16.29.0:
+    resolution: {integrity: sha512-4H94f5ZgcCcgJroc902TFlFdgPu2IU2eD7+WebN2Z14xKYrKHeJ4UQcZwzgSuH4Rgzw+jp7sbHl40NefuIEYsg==}
+    engines: {node: '>=0.12.18'}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -2778,6 +2786,8 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.8.5: {}
+
+  simple-icons@16.29.0: {}
 
   source-map-js@1.2.1: {}
 
