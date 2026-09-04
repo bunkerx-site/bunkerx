@@ -62,18 +62,53 @@ function trimTitle(title) {
 /** Always work with an array, whether the parser saw one node or many. */
 const list = (value) => (Array.isArray(value) ? value : value ? [value] : [])
 
-/** Strips tags and collapses whitespace; feed summaries arrive as loose HTML. */
+/** The named entities that actually turn up in these two feeds. */
+const ENTITIES = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: ' ',
+  hellip: '\u2026',
+  mdash: '\u2014',
+  ndash: '\u2013',
+  lsquo: '\u2018',
+  rsquo: '\u2019',
+  ldquo: '\u201c',
+  rdquo: '\u201d',
+}
+
+/** Named, decimal and hex references in one pass, so none can re-encode another. */
+function decode(text) {
+  return text.replace(/&(#[xX]?[0-9a-fA-F]+|[a-zA-Z]+);/g, (whole, body) => {
+    if (body[0] !== '#') return ENTITIES[body.toLowerCase()] ?? whole
+    const digits = body[1] === 'x' || body[1] === 'X' ? body.slice(2) : body.slice(1)
+    const code = Number.parseInt(digits, body[1] === 'x' || body[1] === 'X' ? 16 : 10)
+    return Number.isFinite(code) && code > 0 ? String.fromCodePoint(code) : whole
+  })
+}
+
+/** Line breaks become spaces; every other tag just goes. */
+function strip(text) {
+  return text.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '')
+}
+
+/**
+ * Strips tags and collapses whitespace; feed summaries arrive as loose HTML.
+ *
+ * Stripped and decoded twice, because the podcast host does not escape
+ * consistently. Most descriptions arrive as ordinary HTML, and some arrive
+ * with the markup escaped a second time — those survived a single strip with
+ * their tags intact as text, and the page printed "&lt;p&gt;No episódio de
+ * hoje" at the top of the synopsis. A second pass over the output of the first
+ * catches whatever the decode has just turned back into a tag.
+ */
 function plain(html) {
   if (!html) return ''
-  return String(html)
-    .replace(/<br\s*\/?>/gi, ' ')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/\s+/g, ' ')
-    .trim()
+  let text = String(html)
+  for (let pass = 0; pass < 2; pass += 1) text = decode(strip(text))
+  return text.replace(/\s+/g, ' ').trim()
 }
 
 /**
@@ -85,7 +120,8 @@ function plain(html) {
  * synopses cite a source mid-sentence. So a block is judged by how much prose
  * survives once links are removed, plus whether it opens with a known pitch.
  */
-const PITCH = /^(seja membro|clique aqui|nossos canais|tamb[ée]m estamos|insider|assine|apoie|garanta|use o cupom|link)/i
+const PITCH =
+  /^(seja membro|clique aqui|nossos canais|tamb[ée]m estamos|insider|assine|apoie|garanta|use o cupom|link|este programa foi|quer contratar)/i
 const URL = /https?:\/\/\S+|www\.\S+|\b[a-z0-9-]+\.(com|br|cc|me|tv)\/\S*/gi
 
 function synopsis(html) {
@@ -124,14 +160,17 @@ async function podcast() {
     id: String(item.guid?.['#text'] ?? item.guid ?? item.link),
     title: trimTitle(plain(item.title)),
     /*
-     * Long enough that "Ver mais" has something to reveal.
+     * The whole synopsis, not a lead-in to it.
      *
      * At 400 this was shorter than the two lines the archive shows collapsed
      * plus a little, so expanding a row gained the reader almost nothing. The
-     * cap is still here because a handful of these descriptions carry the
-     * show's entire credits block, and none of that is a synopsis.
+     * longest synopsis in the feed today runs to about 2,100 characters and
+     * the median to 1,100, so nothing real is cut here any more — the cap is
+     * only a backstop against a description that turns out to be a transcript.
+     * What keeps the sponsor reads and the credits out is `synopsis` picking a
+     * block, not this number.
      */
-    summary: synopsis(item.description).slice(0, 1800),
+    summary: synopsis(item.description).slice(0, 3000),
     publishedAt: new Date(item.pubDate).toISOString(),
     durationSeconds: toSeconds(item['itunes:duration']),
     episode: item['itunes:episode'] ? Number(item['itunes:episode']) : undefined,
@@ -140,6 +179,154 @@ async function podcast() {
     audioUrl: item.enclosure?.['@_url'],
     url: item.link,
   }))
+}
+
+/**
+ * Every video on a channel, not just the fifteen the RSS feed carries.
+ *
+ * YouTube's `feeds/videos.xml` is capped at fifteen entries with no paging,
+ * which is fine for the main channel — the podcast RSS is the real archive
+ * there and the videos are only matched against it — but the cuts channel has
+ * no other source, so the site was showing fifteen of its twenty-two videos
+ * and calling that the channel.
+ *
+ * So: read the channel's own /videos page, which ships its listing as JSON in
+ * `ytInitialData`, and follow the continuation tokens with the same InnerTube
+ * call the page itself makes when you scroll. That gives every id in the
+ * order the channel lists them. The listing does not carry a description or a
+ * real date — only "há 11 meses" — so each video is then read once from its
+ * watch page, where `ytInitialPlayerResponse` has the exact publish date, the
+ * length in seconds, the view count and the full description.
+ *
+ * This is someone else's page and its shape is theirs to change, so every step
+ * fails soft: `videos` returns null if the listing cannot be read, and the
+ * caller falls back to the RSS feed. Between the two, the section always has
+ * something to show.
+ */
+const BROWSER_UA =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+
+async function getPage(url, init) {
+  const response = await fetch(url, {
+    ...init,
+    headers: { 'User-Agent': BROWSER_UA, 'Accept-Language': 'pt-BR,pt;q=0.9', ...init?.headers },
+  })
+  if (!response.ok) throw new Error(`${response.status} ${response.statusText} — ${url}`)
+  return response.text()
+}
+
+/** Every value under `key`, anywhere in an InnerTube tree. */
+function collect(node, key, out = []) {
+  if (Array.isArray(node)) {
+    for (const child of node) collect(child, key, out)
+    return out
+  }
+  if (!node || typeof node !== 'object') return out
+  for (const [name, value] of Object.entries(node)) {
+    if (name === key) out.push(value)
+    collect(value, key, out)
+  }
+  return out
+}
+
+/** The video ids in a listing response, in the order the channel lists them. */
+function lockupIds(tree) {
+  return collect(tree, 'lockupViewModel')
+    .filter((lockup) => lockup.contentType === 'LOCKUP_CONTENT_TYPE_VIDEO' && lockup.contentId)
+    .map((lockup) => lockup.contentId)
+}
+
+/** The token for the next screenful, if the listing has one. */
+function continuation(tree) {
+  for (const item of collect(tree, 'continuationItemRenderer')) {
+    const token = item.continuationEndpoint?.continuationCommand?.token
+    if (token) return token
+  }
+  return null
+}
+
+/** One video, read from its own watch page. */
+async function watch(id) {
+  const html = await getPage(`https://www.youtube.com/watch?v=${id}`)
+  const match = html.match(/var ytInitialPlayerResponse = (\{[\s\S]*?\});\s*(?:var|<\/script>)/)
+  if (!match) return null
+
+  const response = JSON.parse(match[1])
+  const details = response.videoDetails ?? {}
+  const card = response.microformat?.playerMicroformatRenderer ?? {}
+  const published = card.publishDate ?? card.uploadDate
+  if (!details.title || !published) return null
+
+  const views = Number(details.viewCount)
+
+  return {
+    id,
+    title: trimTitle(plain(details.title)),
+    summary: synopsis(details.shortDescription),
+    publishedAt: new Date(published).toISOString(),
+    durationSeconds: toSeconds(details.lengthSeconds),
+    views: Number.isFinite(views) ? views : undefined,
+    url: `https://www.youtube.com/watch?v=${id}`,
+    // maxresdefault 404s on some uploads; hqdefault always exists.
+    thumbnail: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+  }
+}
+
+/** Runs `job` over `items` a few at a time, so 22 watch pages are not 22 at once. */
+async function pooled(items, size, job) {
+  const results = []
+  for (let start = 0; start < items.length; start += size) {
+    results.push(...(await Promise.all(items.slice(start, start + size).map(job))))
+  }
+  return results
+}
+
+async function channelVideos(channelId) {
+  let ids
+  try {
+    const html = await getPage(`https://www.youtube.com/channel/${channelId}/videos`)
+    const key = html.match(/"INNERTUBE_API_KEY":"([^"]+)"/)?.[1]
+    const version = html.match(/"clientVersion":"([\d.]+)"/)?.[1]
+    const first = html.match(/var ytInitialData = (\{[\s\S]*?\});<\/script>/)?.[1]
+    if (!key || !version || !first) throw new Error('a página do canal mudou de forma')
+
+    const tree = JSON.parse(first)
+    const seen = new Set(lockupIds(tree))
+    let token = continuation(tree)
+
+    // The bound is a runaway guard, not a limit on the channel: each round is
+    // about thirty videos, so this is roughly a thousand before it gives up.
+    for (let round = 0; round < 32 && token; round += 1) {
+      const body = JSON.stringify({
+        context: { client: { clientName: 'WEB', clientVersion: version, hl: 'pt', gl: 'BR' } },
+        continuation: token,
+      })
+      const next = JSON.parse(
+        await getPage(`https://www.youtube.com/youtubei/v1/browse?key=${key}&prettyPrint=false`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body,
+        }),
+      )
+      const before = seen.size
+      for (const id of lockupIds(next)) seen.add(id)
+      token = continuation(next)
+      if (seen.size === before) break
+    }
+
+    ids = [...seen]
+  } catch (error) {
+    console.warn(`  ! listagem do canal ${channelId}: ${error.message}`)
+    return null
+  }
+
+  const videos = (await pooled(ids, 5, (id) => watch(id).catch(() => null))).filter(Boolean)
+  if (videos.length === 0) return null
+
+  // Newest first, like every other listing on the site. The channel page is
+  // already in this order, but the watch pages come back out of order and the
+  // date is the only thing that actually decides it.
+  return videos.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
 }
 
 async function youtube(channelId) {
@@ -241,7 +428,23 @@ function linkVideos(episodes, videos) {
   })
 }
 
+/**
+ * Writes a source file, unless the fetch came back with nothing.
+ *
+ * The whole reason these files are committed is that the site should degrade
+ * to the last known good data rather than to an empty page. Overwriting a
+ * good file with `[]` is the one way this script can take that away, and it
+ * is not hypothetical: the store scrape reads someone else's storefront, and
+ * the day they rename a collection it returns zero products and the Loja
+ * section renders empty. An empty result is a fetch that failed, not a source
+ * that emptied — the fix belongs in the scraper, and until it lands the file
+ * on disk is better than what just came back.
+ */
 async function write(name, data) {
+  if (data.length === 0) {
+    console.warn(`  ! ${name}.json — nada retornou, mantendo o arquivo atual`)
+    return
+  }
   await writeFile(resolve(OUT, `${name}.json`), `${JSON.stringify(data, null, 2)}\n`)
   console.log(`  ${name}.json — ${data.length} itens`)
 }
@@ -249,12 +452,20 @@ async function write(name, data) {
 await mkdir(OUT, { recursive: true })
 console.log('buscando fontes externas…')
 
-const [episodes, videos, cuts, products] = await Promise.all([
+const [episodes, videos, scrapedCuts, rssCuts, products] = await Promise.all([
   podcast(),
   youtube(CHANNELS.main),
+  channelVideos(CHANNELS.cuts),
   youtube(CHANNELS.cuts),
   store(),
 ])
+
+/* The whole cuts channel where the scrape worked, the RSS feed's fifteen where
+   it did not. Both are asked for every time rather than the second only on
+   failure: the RSS call is one cheap request and having it in hand is what
+   makes the fallback silent. */
+const cuts = scrapedCuts ?? rssCuts
+if (!scrapedCuts) console.warn('  ! cortes: usando o RSS (15 de ~22)')
 
 // The podcast archive is the only complete history; the YouTube feeds cap at
 // 15 entries with no pagination, which is a limit of the source, not a choice.

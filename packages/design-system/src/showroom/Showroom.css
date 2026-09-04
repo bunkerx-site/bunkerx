@@ -69,7 +69,7 @@
 .sr-type__tag { flex: none; width: 7rem; font-family: var(--bx-font-mono); font-size: var(--bx-text-xs); color: var(--bx-signal-mute); }
 .sr-type__sample { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.sr-row { display: flex; flex-wrap: wrap; gap: var(--bx-space-4); align-items: center; }
+.sr-row { display: flex; flex-wrap: wrap; gap: var(--bx-action-gap); align-items: center; }
 
 /*
  * The showroom's own prose styles.

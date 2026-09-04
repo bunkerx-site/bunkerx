@@ -168,7 +168,10 @@ export const Showroom: Story = {
         </div>
       </Section>
 
-      <Section title="Ações">
+      <Section
+        title="Ações"
+        note="a distância entre dois controles vem do tamanho deles, não da seção"
+      >
         <div className="sr-row">
           <Button variant="phosphor">Ouvir episódio</Button>
           <Button variant="outline">Ver todos</Button>
@@ -186,6 +189,10 @@ export const Showroom: Story = {
             Como um link
           </Button>
         </div>
+        <p className="sr-note" style={{ marginTop: 'var(--bx-space-4)' }}>
+          Uma fileira de controles usa <code>--bx-action-gap</code>; a do rank pequeno e a de
+          chips usam <code>--bx-action-gap-sm</code>. As duas fileiras acima estão nesses valores.
+        </p>
       </Section>
 
       <Section title="Formulário" note="cantos retos: só o que é carimbado tem raio">

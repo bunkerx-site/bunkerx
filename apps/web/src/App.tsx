@@ -2,7 +2,7 @@ import { Background, CrtScreen } from '@bunkerx/design-system'
 import { SiteHeader } from './sections/SiteHeader'
 import { Fold } from './sections/Fold'
 import { Episodes } from './sections/Episodes'
-import { Watch } from './sections/Watch'
+import { Cuts } from './sections/Cuts'
 import { Agents } from './sections/Agents'
 import { Bulletin } from './sections/Bulletin'
 import { Store } from './sections/Store'
@@ -13,7 +13,7 @@ import { SiteFooter } from './sections/SiteFooter'
 import episodes from './data/episodes-latest.json'
 import cuts from './data/cuts.json'
 import products from './data/products.json'
-import { CHANNELS, SECTION } from './content/site'
+import { SECTION } from './content/site'
 import type { Episode, Product, Video } from './lib/types'
 import './styles/site.css'
 
@@ -44,22 +44,8 @@ export function App() {
             fifteen uploads on the main channel are episodes, and the archive
             above now carries every episode's video alongside its audio. The
             cuts are a different channel and a different thing, so they keep
-            their own section. */}
-        <Watch
-          id={SECTION.cuts}
-          title="Cortes"
-          lead="Trechos soltos, para quem tem dez minutos."
-          videos={CUTS}
-          channelUrl={CHANNELS.cuts}
-          channelLabel="Ver o canal de cortes"
-          sticker="night-vision"
-          stickerMotion="handheld"
-          stickerHalo="phosphor"
-          tone="nebula"
-          stickerSide="left"
-          tight
-          count={6}
-        />
+            their own section — and their own surface. */}
+        <Cuts videos={CUTS} />
         <Agents />
         <Bulletin />
         <Store products={PRODUCTS} />

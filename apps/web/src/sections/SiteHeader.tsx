@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Lamp, Plate } from '@bunkerx/design-system'
 import { useHideOnScroll } from '../hooks/useHideOnScroll'
+import { useOverSection } from '../hooks/useOverSection'
 import { hash, MEMBERSHIP, NAV, SECTION, SITE } from '../content/site'
 
 /*
@@ -15,6 +16,9 @@ const TOP = hash(SECTION.top)
 
 export function SiteHeader() {
   const { hidden, atTop, hideForJump } = useHideOnScroll()
+  /* The cuts band is a phosphor plate and so is this bar. Over it, the bar
+     takes the other brand colour — see `.masthead--over`. */
+  const overPlate = useOverSection(SECTION.cuts, '.masthead')
   const [open, setOpen] = useState(false)
 
   // The sheet covers the page, so the page behind it must not scroll, and a
@@ -41,7 +45,13 @@ export function SiteHeader() {
 
   /* `raised` is `Plate`'s own edge-once-scrolled, so the site only owns the
      bar's position and its hide-on-scroll. */
-  const classes = ['masthead', hidden && !open && 'masthead--hidden'].filter(Boolean).join(' ')
+  const classes = [
+    'masthead',
+    hidden && !open && 'masthead--hidden',
+    overPlate && !open && 'masthead--over',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <>

@@ -1,6 +1,32 @@
+import type { CSSProperties } from 'react'
 import { ABDUCTIONS, Button, formatDate, formatDuration, Glitch, Icon, PlatformIcon, Scene, Static, Tile, truncate } from '@bunkerx/design-system'
 import { hash, MEMBERSHIP, PLATFORMS, SECTION, SITE } from '../content/site'
 import type { Episode } from '../lib/types'
+
+/**
+ * How much the headline gives up so the fold still fits one screen.
+ *
+ * The title is the tallest thing on the fold and its length is not ours to
+ * choose: "Os OVNIS que cruzaram a LUA" is 27 characters and "O Gigante de
+ * Kandahar: Soldados Americanos Enfrentaram um NEPHILIM?" is 67. At one fixed
+ * size the second ran to five lines and pushed the watch button and the two
+ * links below it clean off the bottom of the screen — every episode changes
+ * the headline, so this cannot be a constant.
+ *
+ * Derived from the length rather than measured. Measuring means painting the
+ * title at the wrong size, reading it back and reflowing, which is a visible
+ * jump on the one element the page's load sequence is built around.
+ *
+ * FULL is the longest title that still gets the full size — about two lines at
+ * the widths this column actually gets. The floor is where shrinking stops
+ * being worth it: below it the headline is competing with the body copy, and
+ * the right answer for a title that long is fewer words, not smaller type.
+ */
+const FULL = 34
+const FLOOR = 0.6
+
+const titleFit = (title: string) =>
+  Math.max(FLOOR, Math.min(1, FULL / Math.max(title.length, 1))).toFixed(3)
 
 /**
  * The first fold does not introduce the site — it acquires the signal.
@@ -60,7 +86,15 @@ export function Fold({ episode }: { episode: Episode }) {
           </h1>
 
           <div className="fold__lock">
-            <h2 className="fold__title">{episode.title}</h2>
+            {/* The fit factor rides in as a custom property so the sizing
+                stays in the stylesheet — the component supplies the one thing
+                CSS cannot know, which is how long this week's title is. */}
+            <h2
+              className="fold__title"
+              style={{ '--fold-title-fit': titleFit(episode.title) } as CSSProperties}
+            >
+              {episode.title}
+            </h2>
 
             {/*
               Under the title, not above it.

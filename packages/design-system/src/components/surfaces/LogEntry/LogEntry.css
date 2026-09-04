@@ -97,15 +97,27 @@
 }
 
 /*
- * Clamped by line count rather than by height, so the cut always lands between
- * lines. The number comes in as an inline style because it is a prop — a
- * height in rem would have to be recalculated against the line-height, and
- * would slice a line in half at any size it was not tuned for.
+ * Clamped to a whole number of lines, and with no ellipsis.
+ *
+ * This used `-webkit-line-clamp`, which puts its "…" wherever the line
+ * happens to break — and that is usually the middle of a word: "quatro
+ * histórias que estão movimentand…". Three dots after half a word read as a
+ * fault rather than as a cut, and nothing in CSS can move them to the nearest
+ * space; `text-overflow: clip` does not suppress them either, so the only way
+ * to stop drawing them is to stop using the clamp.
+ *
+ * A height does the same job here without inventing punctuation. It is exact
+ * rather than approximate — the line count times this paragraph's own
+ * line-height, in `em`, so it scales with the type instead of being a number
+ * tuned for one size — which means the cut always lands between two lines and
+ * never through one. The text simply stops mid-sentence, the way a paragraph
+ * continuing over a page break does, and "Ver mais" underneath is what says
+ * there is more. `truncate` still handles the places that need real dots,
+ * where no disclosure follows the cut.
  */
 .bx-log__summary--clamped {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  max-height: calc(var(--bx-clamp-lines, 2) * var(--bx-leading-body) * 1em);
 }
 
 /*
@@ -136,7 +148,7 @@
 .bx-log__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--bx-space-3);
+  gap: var(--bx-action-gap-sm);
   margin-top: var(--bx-space-5);
 }
 

@@ -27,6 +27,15 @@ export type BandProps = {
   tone?: BandTone
   /** Sits under the content, for a link out to the full archive or channel. */
   more?: ReactNode
+  /**
+   * A full-bleed decorative layer, behind everything.
+   *
+   * Rendered outside the shell, like the seam, because that is the whole
+   * point: a texture confined to the content column is a stripe. The band
+   * clips, so a layer can be sized to overflow it without escaping. Purely
+   * decorative — mark it `aria-hidden` on the way in.
+   */
+  layer?: ReactNode
   /** Draws the broadcast seam at the top edge. Off for the first band. */
   seam?: boolean
   /**
@@ -99,6 +108,7 @@ export function Band({
   children,
   tone = 'plain',
   more,
+  layer,
   seam = true,
   sticker,
   stickerRotate = -6,
@@ -137,6 +147,7 @@ export function Band({
 
   return (
     <section className={classes} id={id}>
+      {layer}
       {seam ? <Seam /> : null}
 
       <Shell>

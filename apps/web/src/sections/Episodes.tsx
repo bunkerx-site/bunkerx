@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Band, Button, Log, LogEntry, PlatformIcon, Tile, truncate } from '@bunkerx/design-system'
+import { Band, Button, Log, LogEntry, PlatformIcon, Tile } from '@bunkerx/design-system'
+import { Pager } from '../components/Pager'
 import { CHANNELS, hash, PLATFORMS, SECTION } from '../content/site'
 import type { Episode } from '../lib/types'
 
@@ -88,21 +89,45 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
       stickerWidth="clamp(10rem, 28vw, 26rem)"
       stickerLift="42%"
       stickerMotion="orbit"
-      lead="O programa completo, toda segunda — no vídeo e no áudio. Aqui estão os mais recentes; o arquivo inteiro está nas plataformas."
+      /* Says what the section is, and stops there. It used to end with "o
+         arquivo inteiro está nas plataformas", which is a pointer at a footer
+         eight rows below it — the footer says that itself now, where a reader
+         who has reached the end of the list can act on it. */
+      lead="O programa completo, toda segunda — no vídeo e no áudio."
       more={
-        <div className="episodes__more">
-          <Button variant="outline" href={CHANNELS.youtube} external>
-            <PlatformIcon name="youtube" size="1.15em" />
-            Ver o canal no YouTube
-          </Button>
-          <Button variant="outline" href={CHANNELS.spotifyShow} external>
-            <PlatformIcon name="spotify" size="1.15em" />
-            Ouvir o arquivo completo
-          </Button>
-          {/* Every row offers three apps; this is for the reader who wants the
-              whole list and the feed itself. It stays on the page rather than
-              leaving it, which is why it is the quiet rank of the three. */}
-          <Button variant="quiet" href={hash(SECTION.listen)}>
+        <div className="cta">
+          <p className="cta__pitch">
+            O arquivo inteiro está no canal e nos apps de podcast. Siga por lá e o episódio novo
+            chega sem você procurar.
+          </p>
+
+          {/* The two carriers, as a pair. Neither is filled: the fold keeps
+              the page's one filled action. */}
+          <div className="cta__ways">
+            <Button variant="outline" href={CHANNELS.youtube} external>
+              <PlatformIcon name="youtube" size="1.15em" />
+              Ver o canal no YouTube
+            </Button>
+            {/* Named for where it goes, not for what is there. "Ouvir o
+                arquivo completo" said neither, and the line above the row now
+                covers the "completo" part for both carriers at once. */}
+            <Button variant="outline" href={CHANNELS.spotifyShow} external>
+              <PlatformIcon name="spotify" size="1.15em" />
+              Ouvir no Spotify
+            </Button>
+          </div>
+
+          {/*
+            Every row offers three apps; this is for the reader who wants the
+            whole list and the feed itself.
+
+            On its own line under the pair, and one size down. It is the only
+            one of the three that stays on the page rather than leaving it, so
+            it is not a peer of the two carriers — but it is doing the same
+            kind of job, and as a bare underlined link beside two pills it read
+            as a footnote someone forgot to style.
+          */}
+          <Button variant="outline" size="sm" href={hash(SECTION.listen)}>
             Ver todas as plataformas
           </Button>
         </div>
@@ -117,7 +142,11 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
                preferring the video: it is the richer of the two, and the one
                someone arriving from the thumbnail is expecting. */
             href={episode.videoUrl ?? episode.url}
-            summary={episode.summary ? truncate(episode.summary, 900) : undefined}
+            /* Whole, not truncated. The row shows two lines and "Ver mais"
+               reveals the rest, so a cut here only meant the disclosure ran
+               out mid-sentence — which it did on 130 of the 175 synopses once
+               the feed script stopped capping them at 400 characters. */
+            summary={episode.summary || undefined}
             publishedAt={episode.publishedAt}
             durationSeconds={episode.durationSeconds}
             artwork={episode.thumbnail ?? episode.image}
@@ -152,23 +181,12 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
         ))}
       </Log>
 
-      {/*
-        The button centred, and the tally under it rather than inside it.
-        Pressing "Carregar mais" and reading "8 de 174" are two different jobs:
-        one is a control, the other is a readout, and a number tucked inside a
-        label reads as part of what the button will do.
-      */}
-      <div className="episodes__grow">
-        {remaining > 0 ? (
-          <Button variant="outline" onClick={() => setShownCount((count) => count + BATCH)}>
-            Carregar mais
-          </Button>
-        ) : null}
-
-        <p className="episodes__tally" aria-live="polite">
-          {shown.length} <span>de</span> {all.length} episódios
-        </p>
-      </div>
+      <Pager
+        shown={shown.length}
+        total={all.length}
+        noun="episódios"
+        onMore={remaining > 0 ? () => setShownCount((count) => count + BATCH) : undefined}
+      />
     </Band>
   )
 }

@@ -34,6 +34,7 @@ export const STICKER_SIZES = {
   'note-truth': [229, 183],
   'photo-ufo': [219, 251],
   'radar': [229, 228],
+  'radar-station': [440, 667],
   'radio-dishes': [216, 316],
   'ring': [87, 120],
   'sketch-grey': [183, 236],

@@ -16,8 +16,23 @@
  */
 :root {
   /* --- SIGNAL register ------------------------------------------------ */
+  /*
+   * The two pigments, and the roles that normally point at them.
+   *
+   * `--bx-purple` and `--bx-green` are the brand's two colours and never mean
+   * anything else. `--bx-phosphor` is a role — "the live one, what an action
+   * is drawn in" — and it points at the green everywhere except on an
+   * inverted surface, where green on green is nothing and the role moves to
+   * the purple. The site's cuts band does exactly that.
+   *
+   * Which is why the pigment needs a name the role cannot shadow: a section
+   * that re-points `--bx-phosphor` still has to be able to say "paint this
+   * the brand green", and asking for `--bx-phosphor` there would hand it back
+   * whatever it had just re-pointed to.
+   */
   --bx-purple: #633693;        /* BRAND. the purple                       */
-  --bx-phosphor: #00ed67;      /* BRAND. the green                        */
+  --bx-green: #00ed67;         /* BRAND. the green                        */
+  --bx-phosphor: var(--bx-green);  /* role: the live one                  */
 
   --bx-void-deep: #0e0716;     /* the purple taken to near-black: the ground */
   --bx-void: #170e23;          /* one step up: inside of the bunker        */
@@ -26,7 +41,12 @@
   --bx-phosphor-hot: #6bffa6;  /* the green lifted: hover and emphasis     */
   --bx-phosphor-dim: #0a8f42;  /* the green dropped: inactive / powered down */
   --bx-magenta: #d06ce0;       /* nebula pink = RGB convergence error      */
-  --bx-signal: #f2ecff;        /* star white: primary text                 */
+  /* Star white, and the role that normally points at it. Same split as the
+     two pigments above, and for the same reason: the site's cuts band
+     re-points `--bx-signal` to the dark end of the palette, and a purple pill
+     sitting on that band still has to be able to ask for the white. */
+  --bx-star: #f2ecff;          /* star white                               */
+  --bx-signal: var(--bx-star); /* role: primary text                       */
   --bx-signal-mute: #a493c0;   /* secondary text, tinted toward the purple */
   --bx-alert: #ff4438;         /* warning lamp on the console: errors only */
 
@@ -162,6 +182,24 @@
   --bx-space-24: 6rem;
   --bx-space-32: 8rem;
   --bx-space-40: 10rem;
+
+  /* --- action rows -----------------------------------------------------
+   * How far apart two controls sit in a row.
+   *
+   * One value per control size, because the right gap is a property of the
+   * button rather than of the section it is in. Two full-size buttons read as
+   * one group of choices at 1rem and as two unrelated blocks at 2rem, and the
+   * same 1rem around a small chip swamps it.
+   *
+   * Every row of controls on the site uses one of these two. Each section used
+   * to pick its own — 1rem in the fold's watch row, 1.75rem in the row right
+   * under it, 2rem in the archive's footer — which is why the fold's two
+   * outlined buttons looked like they had been left over from different
+   * blocks: the only thing separating them was more air than the row above
+   * them used.
+   */
+  --bx-action-gap: var(--bx-space-4);
+  --bx-action-gap-sm: var(--bx-space-3);
 
   /* --- layout ----------------------------------------------------------
    * One column width for the whole site, and a narrow variant for anything

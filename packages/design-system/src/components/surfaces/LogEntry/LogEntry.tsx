@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { Seam } from '../../layout/Seam/Seam'
 import { Chip } from '../Chip/Chip'
 import { Frame } from '../Frame/Frame'
@@ -37,6 +37,16 @@ export type LogEntryProps = {
    * cropping a centred decal to a landscape frame beheads it.
    */
   artworkFits?: boolean
+  /**
+   * Extra fields for the meta chip, after the date and the length.
+   *
+   * A slot for the same reason `actions` is one: which facts a row has is the
+   * caller's knowledge. An episode has a date and a running time and that is
+   * all the feed gives; a clip scraped from its watch page also has a view
+   * count, and a season number would be a third. Each `<span>` becomes a
+   * field, divided from its neighbour by the chip's own rule.
+   */
+  meta?: ReactNode
   /**
    * The ways into this item. A slot rather than a set of props, because which
    * ones exist is the caller's knowledge: an episode with no matching upload
@@ -77,6 +87,7 @@ export function LogEntry({
   durationSeconds,
   artwork,
   artworkFits = true,
+  meta,
   actions,
   clamp = 2,
   className,
@@ -122,6 +133,7 @@ export function LogEntry({
         <Chip className="bx-log__meta">
           <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
           {duration ? <span>{duration}</span> : null}
+          {meta}
         </Chip>
 
         {summary ? (
@@ -129,7 +141,9 @@ export function LogEntry({
             <p
               className={`bx-log__summary${open ? '' : ' bx-log__summary--clamped'}`}
               id={id}
-              style={open ? undefined : { WebkitLineClamp: clamp }}
+              style={
+                open ? undefined : ({ '--bx-clamp-lines': clamp } as CSSProperties)
+              }
             >
               {summary}
             </p>

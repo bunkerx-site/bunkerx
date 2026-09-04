@@ -22,6 +22,10 @@ export type Video = {
   publishedAt: string
   url: string
   thumbnail: string
+  /** Length in seconds. From the watch page, so the RSS fallback lacks it. */
+  durationSeconds?: number
+  /** Lifetime view count, same caveat. */
+  views?: number
 }
 
 export type Product = {

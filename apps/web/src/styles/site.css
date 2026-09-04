@@ -49,34 +49,86 @@
 .shell--narrow { width: min(100% - 2.5rem, 58rem); }
 
 
-/* Both carriers' full catalogues, side by side — the section covers video and
-   audio, so its footer offers both rather than picking one. */
-/* The pager and the two catalogue links share the section's footer. */
-.episodes__more {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--bx-space-4) clamp(1rem, 3vw, 2rem);
-}
+/* =============================================================== pager == */
 
 /*
- * The one centred thing in the section.
+ * The end of a listing, and the way to extend it. Shared by the archive and
+ * the cuts — see components/Pager.tsx for what each part is doing.
  *
- * Everything else on this page is left aligned against the column, which is
- * what makes long reading comfortable. This is neither long nor reading — it
- * is a control at the end of a run — and centring it marks the end of the list
- * rather than looking like one more row that lost its picture.
+ * The rows above it are left aligned against the column, which is what makes a
+ * run of synopses comfortable to read. This is neither long nor reading — it
+ * is the edge of the list — so it is centred, which is what stops it looking
+ * like one more row that lost its picture.
  */
-.episodes__grow {
+.pager {
   display: grid;
   justify-items: center;
   gap: var(--bx-space-4);
-  margin-top: clamp(2.5rem, 5vw, 4rem);
+  /* Tighter than it was: the rule below now does the separating, and the last
+     row already carries three rem of its own bottom padding. */
+  margin-top: clamp(1rem, 2vw, 1.75rem);
+}
+
+/*
+ * The rule the pager sits in.
+ *
+ * A button in open space said nothing about what it was the end of — it read
+ * as an action belonging to whatever came next. The rule draws the list's
+ * bottom edge and the control interrupts it, which is the one arrangement
+ * that says both things at once: the list stops here, and this is the way
+ * through.
+ *
+ * It is a flex row rather than a border behind the button, because the ground
+ * under it is a tinted starfield: there is no opaque colour to knock a gap out
+ * of a border with.
+ */
+.pager__rule {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  width: 100%;
+}
+
+.pager__rule::before,
+.pager__rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--bx-hairline);
+}
+
+/* Once the archive is exhausted there is no control to make room for, so the
+   two halves close up into one continuous rule and the list still has an
+   edge. */
+.pager__rule:empty { gap: 0; }
+
+/*
+ * On a phone the rule goes above the control instead of through it.
+ *
+ * The button is most of the column at this width, which left the two halves of
+ * the rule as 60px stubs either side of it — they read as a rendering fault
+ * rather than as a line the button is sitting in. Stacked, the rule is
+ * continuous and says the same thing.
+ */
+@media (max-width: 34rem) {
+  .pager__rule {
+    display: grid;
+    justify-items: center;
+    border-top: 1px solid var(--bx-hairline);
+    padding-top: clamp(1.5rem, 6vw, 2.25rem);
+  }
+
+  .pager__rule::before,
+  .pager__rule::after { content: none; }
+
+  /* Nothing to hold up: with the archive exhausted the border is the whole
+     element, and the padding would leave it floating clear of the tally. */
+  .pager__rule:empty { padding-top: 0; }
 }
 
 /* Where you are in the archive. The mono face because it is a machine-emitted
    count, and tabular figures so it does not jitter as it climbs. */
-.episodes__tally {
+.pager__tally {
   margin: 0;
   font-family: var(--bx-font-mono);
   font-size: var(--bx-text-sm);
@@ -84,7 +136,45 @@
   font-variant-numeric: tabular-nums;
 }
 
-.episodes__tally span { opacity: 0.7; }
+.pager__tally span { opacity: 0.7; }
+
+/* ================================================================= cta == */
+
+/*
+ * The step out of a listing. Shared by the archive and the cuts.
+ *
+ * Centred, like the pager above it, because both belong to the end of the list
+ * rather than to the column of rows — a section's left-aligned reading measure
+ * stops at its last item. What makes this read as an ask rather than as a
+ * couple of leftover links is the line above it: the buttons say where they
+ * go, the line says what is waiting there, and that is the fact a reader who
+ * has just paged to the end of a screenful actually wants.
+ */
+.cta {
+  display: grid;
+  justify-items: center;
+  gap: var(--bx-space-5);
+  text-align: center;
+}
+
+.cta__pitch {
+  margin: 0;
+  /* Two lines over the row of buttons under it. At the lead's 46ch it broke
+     into three short ones and the block sat narrower than the row it
+     introduces. */
+  max-width: 54ch;
+  font-size: var(--bx-text-base);
+  line-height: 1.55;
+  color: var(--bx-signal-mute);
+}
+
+.cta__ways {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bx-action-gap);
+}
 
 /* ============================================================ masthead == */
 
@@ -107,6 +197,46 @@
 }
 
 .masthead--hidden { transform: translateY(-101%); }
+
+/*
+ * Over the cuts, the bar takes the purple.
+ *
+ * Not a flourish: the cuts band is a phosphor plate and so is this bar, and a
+ * green bar over a green section is not a bar — the masthead simply
+ * disappeared into it, wordmark and all. The purple is the other half of the
+ * brand and the only other colour in the system that can carry a whole
+ * surface, so the two plates trade. The type goes back to star white, because
+ * that is what is legible on the purple.
+ *
+ * It transitions with the same curve as the hide, so scrolling into the
+ * section reads as one movement rather than as a colour glitch.
+ */
+.masthead--over {
+  background: var(--bx-purple);
+  color: var(--bx-signal);
+  transition:
+    transform 260ms var(--bx-ease-crt),
+    background 220ms var(--bx-ease-crt),
+    color 220ms var(--bx-ease-crt),
+    box-shadow 260ms var(--bx-ease-crt);
+}
+
+/* Everything on the plate is drawn in "the ground colour" — see the masthead
+   rules below, which are all `color-mix(… var(--bx-void) …)`. Swapping what
+   that means is what turns the whole bar over at once. */
+.masthead--over { --bx-void: var(--bx-signal); }
+
+/* The support button is the inverse of the bar it sits on, so it inverts too:
+   on green it is dark type on a dark pill, on purple it is the plate's own
+   green. */
+.masthead--over .masthead__join {
+  background: var(--bx-phosphor);
+  color: var(--bx-void-deep);
+}
+
+/* The schedule lamp's own green reads as an alert on the purple; it is the
+   one dot on the bar and it keeps the brand colour. */
+.masthead--over .bx-lamp__dot { background: var(--bx-phosphor); }
 
 
 .masthead__inner {
@@ -283,7 +413,14 @@
   min-height: 100svh;
   display: grid;
   align-content: center;
-  padding-block: clamp(6.5rem, 13vh, 9rem) clamp(2.5rem, 7vh, 6rem);
+  /*
+   * Tuned against the shortest screen the fold still has to fit on rather than
+   * against how it looks on a large one. The top floor is what clears the
+   * fixed masthead — 6.25rem against its 5.25rem — and everything above the
+   * floor is height-driven, because on a 900px laptop the old 13vh/7vh pair
+   * was 180px of air and the fold overran the screen by 48.
+   */
+  padding-block: clamp(6.25rem, 11vh, 8rem) clamp(2.25rem, 5.5vh, 5rem);
   overflow: hidden;
 }
 
@@ -345,7 +482,7 @@
      the whole distance between the station and the programme. It wants to
      be generous: the rule reads as a boundary, and a boundary with the
      next headline crowding it reads as an underline instead. */
-  margin: 0 0 clamp(2.75rem, 6.5vh, 4.5rem);
+  margin: 0 0 clamp(1.75rem, 4.5vh, 3.75rem);
   max-width: 46ch;
   padding-bottom: clamp(0.9rem, 2vh, 1.4rem);
 }
@@ -470,14 +607,34 @@
   color: var(--bx-signal-mute);
 }
 
+/*
+ * The programme title: the headline of the screen.
+ *
+ * Two things size it. The clamp is the screen — width and height both, because
+ * a wide-but-short laptop is the case that overflows and vw alone says nothing
+ * about whether there is room underneath for the summary and the buttons. The
+ * factor is the title, and it comes from the component: see `titleFit` in
+ * Fold.tsx for why a headline that changes every week cannot have a fixed
+ * size. It scales the ceiling as well as the fluid middle, or a long title on
+ * a large screen would sit at the ceiling and overflow anyway.
+ *
+ * The ceiling came down from 4.25rem and the measure went out from 16ch. Both
+ * were spending the fold's height on the title: 16ch is a little over two
+ * words a line in this face, so a seven-word title took five lines, and every
+ * line cost more than the extra size was buying.
+ */
 .fold__title {
   font-family: var(--bx-font-display);
-  font-size: clamp(2.1rem, min(4.6vw, 7vh), 4.25rem);
-  line-height: 1.02;
+  font-size: clamp(
+    1.9rem,
+    calc(min(4.2vw, 6.3vh) * var(--fold-title-fit, 1)),
+    calc(3.9rem * var(--fold-title-fit, 1))
+  );
+  line-height: 1.04;
   letter-spacing: -0.015em;
   color: var(--bx-signal);
   margin: 0;
-  max-width: 16ch;
+  max-width: 24ch;
   text-wrap: balance;
   /* The beam is bright, and on a wide screen a long title reaches it. This
      keeps the letterforms readable where they overlap instead of relying on
@@ -485,27 +642,76 @@
   text-shadow: 0 2px 18px var(--bx-void-deep), 0 0 42px var(--bx-void-deep);
 }
 
+/*
+ * The synopsis, a step below where it was.
+ *
+ * It ran at --bx-text-lg, the same size as a section's lead, which made it the
+ * second-loudest thing on the screen and left the headline competing with it
+ * for the fold's height. At --bx-text-base it reads as what it is — the note
+ * under the title — and the fifty-odd pixels it gives back went to the
+ * headline, which is the thing someone is actually here to read.
+ */
 .fold__summary {
-  margin-top: clamp(1.25rem, 3vh, 2rem);
-  max-width: 46ch;
-  font-size: var(--bx-text-lg);
-  line-height: 1.6;
+  margin-top: clamp(1rem, 2.4vh, 1.6rem);
+  max-width: 52ch;
+  font-size: var(--bx-text-base);
+  line-height: 1.55;
   color: var(--bx-signal-mute);
   text-shadow: 0 1px 14px var(--bx-void-deep);
 }
 
-/* On a genuinely short screen the synopsis is the thing to give up: the title
-   and the two actions are what the fold is for. */
-@media (max-height: 44rem) {
+/*
+ * Where there is no room, the synopsis is what gives way.
+ *
+ * The fold is one screen — that is the whole idea of it — and the amount of
+ * copy in it is not fixed: the title is a different length every Monday and
+ * the synopsis runs to a couple of hundred words. Something has to yield, and
+ * of everything on this screen the synopsis is the one piece that is already
+ * somewhere else: the archive row for this same episode sits a scroll below
+ * with the whole thing behind "Ver mais". The title, the date, the watch
+ * button and the way onward are what the fold is *for*, and none of them is
+ * repeated anywhere above the fold.
+ *
+ * Two conditions, because there are two ways to run out of room. A short
+ * screen is the obvious one — measured at 800px tall the synopsis was the 192
+ * pixels that pushed the buttons off the bottom. A narrow one is the other:
+ * below 40rem the picture and the copy share a cell and the synopsis reflows
+ * from four lines to eleven, which is 346 pixels on a phone.
+ *
+ * It is hidden rather than clipped. A clipped paragraph is a paragraph cut
+ * mid-sentence with no way to finish it; an absent one sends the reader to the
+ * row below, which has it whole.
+ */
+@media (max-height: 52rem), (max-width: 40rem) {
   .fold__summary { display: none; }
   .ident { margin-bottom: var(--bx-space-5); }
+}
+
+/*
+ * The smallest screens the fold still has to fit on in one piece.
+ *
+ * The headline's floor comes down with the column — at 360px a title of any
+ * length is several lines whatever we do, and 1.75rem was buying a fifth one —
+ * and the gaps between the blocks under it come down with it. Those gaps were
+ * set by their floors here rather than by the vh in the middle of each clamp,
+ * so they were the same air a 900px screen gets, on a screen with 150 fewer
+ * pixels to spend.
+ */
+@media (max-width: 30rem) {
+  .fold__title { font-size: clamp(1.5rem, calc(8.5vw * var(--fold-title-fit, 1)), 2.25rem); }
+  .ident { margin-bottom: var(--bx-space-4); }
+  .fold__outlets { margin-top: var(--bx-space-3); }
+  .fold__more { margin-top: var(--bx-space-5); padding-top: var(--bx-space-4); }
+  /* The floor, not the vh: at 740px tall there is no air to spare under the
+     last button, and the section below opens with its own band padding. */
+  .fold { padding-bottom: var(--bx-space-6); }
 }
 
 .fold__actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--bx-space-4);
+  gap: var(--bx-action-gap);
   margin-top: clamp(1.5rem, 4vh, 2.5rem);
 }
 
@@ -520,7 +726,7 @@
 .fold__outlets {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--bx-space-2);
+  gap: var(--bx-action-gap-sm);
   margin-top: var(--bx-space-4);
   max-width: 44rem;
 }
@@ -537,7 +743,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: clamp(1rem, 2.5vw, 1.75rem);
+  gap: var(--bx-action-gap);
   margin-top: clamp(1.5rem, 3.5vh, 2.25rem);
   padding-top: clamp(1.1rem, 2.5vh, 1.6rem);
   max-width: 44rem;
@@ -546,6 +752,489 @@
 
 /* ============================================================= episodes == */
 
+
+/* ================================================================ cuts == */
+
+/*
+ * The cuts: a lit workbench, with the monitors standing on it.
+ *
+ * The one inverted surface on the site. Everything else here is light on dark
+ * — that is the whole look — and this band turns it over. The masthead already
+ * runs that way, so the treatment is not new, only bigger; what is new is
+ * using it to say this is a different channel rather than more of the same
+ * programme.
+ *
+ * Two materials and no third colour at rest. The ground is the show's green.
+ * Anything that is an *object* — the bezel round a still, a control — is cut
+ * out of the void, and the only thing lit inside that void is the green again.
+ * That is not a scheme invented for this page: every piece of equipment in the
+ * show's own artwork is a black case with a green screen in it.
+ *
+ * The version before this one had purple pills, purple buttons, a purple
+ * heading and a rebuilt colour burst, all on top of an already-loud surface.
+ * The plate is the statement; everything on it is quiet.
+ *
+ * It is built by re-pointing the palette inside the band rather than by
+ * writing new rules for everything in it. Every component here already draws
+ * itself out of these tokens, so swapping the tokens turns all of it over at
+ * once and nothing has to know it is on a plate.
+ */
+.cuts {
+  /*
+   * Built from `--bx-green`, the pigment, and not `--bx-phosphor`, the role —
+   * this block re-points the role below, and a custom property is substituted
+   * where it is used rather than where it is written, so a plate asking for
+   * `--bx-phosphor` here would come out re-pointed.
+   *
+   * Not the flat brand green either: at full chroma across a whole section it
+   * is a hazard light rather than a surface, so it is let down toward the
+   * powered-off green the system already has.
+   */
+  background: color-mix(in srgb, var(--bx-green) 86%, #0a8f42);
+
+  /* Ink. The dark end of the palette does what star white does elsewhere. */
+  --bx-signal: var(--bx-void-deep);
+  --bx-signal-mute: color-mix(in srgb, var(--bx-void-deep) 70%, transparent);
+
+  /*
+   * The lit green, for use inside the black objects only.
+   *
+   * Never on the plate: green on green is nothing, and this is the pigment the
+   * ground is already made of. It is the screen colour — the counter burnt
+   * into a still, the label on a control — and in every one of those places
+   * there is void behind it, where it measures about 12:1.
+   */
+  --cuts-screen: var(--bx-green);
+
+  /* Rules and rings. Dark on light reads heavier than light on dark at the
+     same percentage, so these come down rather than simply inverting. */
+  --bx-hairline: color-mix(in srgb, var(--bx-void-deep) 16%, transparent);
+  --bx-ring: color-mix(in srgb, var(--bx-void-deep) 20%, transparent);
+  --bx-ring-live: var(--bx-void-deep);
+  --bx-ring-quiet: color-mix(in srgb, var(--bx-void-deep) 30%, transparent);
+
+  /* Links and controls resolve to the void, so a control is an object cut out
+     of the plate rather than a coloured word on it. */
+  --bx-phosphor: var(--bx-void-deep);
+  --bx-phosphor-hot: var(--bx-purple);
+  --bx-link: var(--bx-void-deep);
+  --bx-link-hover: var(--bx-purple);
+
+  /* The frame's bloom is a green glow, and on a bright plate a green glow is
+     nothing. The ring alone does the work. */
+  --bx-glow-soft: 0 0 0 rgba(0, 0, 0, 0);
+  --bx-glow-hard: 0 0 0 rgba(0, 0, 0, 0);
+
+  /* One width for the station, because two things are measured from it: the
+     cut-out itself, and the particle field that has to sit exactly on top of
+     it without either of them knowing about the other. */
+  --cuts-station: clamp(9rem, 23vw, 20rem);
+}
+
+/*
+ * The particle field, on the station.
+ *
+ * Placed out of the band's own tokens rather than by measuring anything. The
+ * band's top padding is where its header starts; the station is far and away
+ * the tallest thing in that header, so the header row is the station's height
+ * and its top edge is the padding. The column offset is the same expression
+ * the shell and the seam already use. That makes this box the cut-out's box,
+ * derived twice from the same numbers instead of once from a ruler.
+ *
+ * The ratio is the artwork's own, 440 × 667.
+ */
+.cuts__station-field {
+  position: absolute;
+  /* A sixth of the station's width wider on each side, and pulled up by the
+     same, because the field sits *behind* the cut-out: anything inside the
+     machine's silhouette is hidden by it, so a field the exact size of the box
+     only ever shows at its edges. */
+  left: calc(max(var(--bx-gutter), calc(50% - var(--bx-shell) / 2)) - var(--cuts-station) / 6);
+  top: calc(var(--bx-band-pad) - var(--cuts-station) / 8);
+  /* Named as well as applied: `Motes` places each particle as a fraction of
+     these, because the path goes into a transform and a percentage there would
+     resolve against the dot rather than the field. */
+  --motes-w: calc(var(--cuts-station) * 4 / 3);
+  --motes-h: calc(var(--cuts-station) * 667 / 440 + var(--cuts-station) / 8);
+  width: var(--motes-w);
+  height: var(--motes-h);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/*
+ * Purple, not the beam's green.
+ *
+ * `bx-mote` is drawn in the phosphor, which is correct inside an abduction
+ * beam and invisible on a green plate. This is the section's third colour
+ * doing its one job: the masthead takes it over this band, the links take it
+ * under the cursor, and the machine gives it off.
+ */
+.motes__one {
+  /* Lifted off the brand purple. At full strength the pigment is close enough
+     in value to the plate that a 4px dot on it reads as a smudge; this is the
+     same hue with the light turned up, which is what a particle catching a
+     light actually looks like. */
+  background: color-mix(in srgb, var(--bx-nebula-soft) 78%, var(--bx-star));
+  box-shadow:
+    0 0 8px 2px color-mix(in srgb, var(--bx-purple) 75%, transparent),
+    0 0 18px 4px color-mix(in srgb, var(--bx-purple) 35%, transparent);
+}
+
+/* Below the stacking breakpoint the header puts the heading first and the
+   cut-out second, so the field's top edge is no longer the station's. It is
+   decoration; on a phone it simply goes. */
+@media (max-width: 48rem) {
+  .cuts__station-field { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cuts__station-field { display: none; }
+}
+
+/*
+ * Snow on the plate, very faint.
+ *
+ * The fold acquires the signal in a burst of it and then it is gone, which is
+ * deliberate — carried down the page it stops being an event and becomes
+ * wallpaper. This is the exception, and it earns it: the plate is the one flat
+ * colour on a site that is otherwise a starfield. Measured, not guessed — at
+ * 0.14 the plate read as a noise field and the titles sat in it. This is the
+ * level where you stop seeing grain and start seeing a green that is not
+ * perfectly even, which is the whole intent.
+ */
+.cuts__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/*
+ * Two columns, and no rule between the rows.
+ *
+ * The archive is one column read straight down, which is right for a hundred
+ * and seventy-five hour-long episodes: a full-width row per programme, and you
+ * scan the titles. Twenty-two clips of ten minutes are a different kind of
+ * list — few enough to see most of them at once, and no single one of them is
+ * an event — so they sit two across.
+ *
+ * The bezels are the structure. A hairline drawn between two black rectangles
+ * separates nothing that was not already separate, and this section had one
+ * for a while: first as a rebuilt colour burst, then as a plain rule, and it
+ * was clutter in both versions.
+ */
+.cuts__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2.5rem, 5vw, 4.5rem) clamp(2rem, 4vw, 3.5rem);
+}
+
+@media (max-width: 60rem) {
+  .cuts__grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/*
+ * One clip: a print taped into the album.
+ *
+ * See Cuts.tsx for why the section went this way. The short version: this
+ * show's subject is evidence somebody kept, and its own sticker set has been
+ * saying so from the start — taped photographs, a case folder, a note stuck to
+ * a wall. A still framed as a print belongs to that; a still framed as a card
+ * belongs to nothing.
+ */
+.cut { display: grid; align-content: start; }
+
+/*
+ * The print.
+ *
+ * Paper stock rather than the site's dark surfaces, which is the whole reason
+ * it reads as an object lying on the plate. Wide margin along the bottom,
+ * narrow everywhere else — that is the proportion of a photographic print, and
+ * the wide edge is there because it is the one you write on.
+ *
+ * Square corners, near enough. Every rounded thing on this site is a stamp or
+ * a control; a photograph is neither, and 2px is the radius of a cut edge
+ * rather than a decision about shape.
+ */
+.cut__print {
+  position: relative;
+  padding: 0.55rem 0.55rem 0;
+  border-radius: 2px;
+  background: linear-gradient(174deg, #efe9dc, #ded5c4);
+  /* Lying on the surface: one contact shadow tight under the paper and one
+     longer throw. The plate is bright, so both are dark rather than grey. */
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--bx-void-deep) 34%, transparent),
+    0 14px 24px -12px color-mix(in srgb, var(--bx-void-deep) 45%, transparent);
+  transition:
+    transform var(--bx-dur-base) var(--bx-ease-crt),
+    box-shadow var(--bx-dur-base) var(--bx-ease-crt);
+}
+
+/*
+ * Mounted by hand, not by a grid.
+ *
+ * The angles come from the print's position in the run rather than from a
+ * random number, so a wall of them looks placed by a person and still renders
+ * identically every load. Four values, because a repeat of two reads as a
+ * zigzag and the eye catches the pattern.
+ */
+.cut:nth-child(4n + 1) .cut__print { transform: rotate(-1.1deg); }
+.cut:nth-child(4n + 2) .cut__print { transform: rotate(0.8deg); }
+.cut:nth-child(4n + 3) .cut__print { transform: rotate(0.5deg); }
+.cut:nth-child(4n + 4) .cut__print { transform: rotate(-0.6deg); }
+
+/* Picking one up: it straightens and lifts off the page. The one motion in
+   this section, and it answers the cursor rather than running on its own. */
+.cut:hover .cut__print,
+.cut:focus-within .cut__print {
+  transform: rotate(0deg) translateY(-3px);
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--bx-void-deep) 34%, transparent),
+    0 22px 34px -14px color-mix(in srgb, var(--bx-void-deep) 55%, transparent);
+}
+
+/*
+ * The tape.
+ *
+ * Drawn rather than dropped in as artwork: the sticker set's tape strips carry
+ * printed words, which is right for a one-off decal on a dark page and wrong
+ * twenty-two times down a listing. Milky, not white — cellophane over a
+ * coloured ground takes the colour of what is under it, which here is half
+ * paper and half plate, so it is left translucent and lets both through.
+ *
+ * The ends are cut square and the strip is slightly off-square to the print,
+ * because tape torn off a roll never lands straight.
+ */
+.cut__tape {
+  position: absolute;
+  z-index: 2;
+  top: -0.6rem;
+  left: -1.1rem;
+  width: 4.5rem;
+  height: 1.5rem;
+  transform: rotate(-38deg);
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, #ffffff 34%, transparent),
+    color-mix(in srgb, #ffffff 52%, transparent) 45%,
+    color-mix(in srgb, #ffffff 30%, transparent)
+  );
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--bx-void-deep) 22%, transparent);
+  pointer-events: none;
+}
+
+/* The other corner, on alternate prints, so the wall does not develop a
+   diagonal of tape down one side. */
+.cut:nth-child(even) .cut__tape {
+  left: auto;
+  right: -1.1rem;
+  transform: rotate(38deg);
+}
+
+.cut__shot { display: block; position: relative; }
+
+/*
+ * The photograph itself.
+ *
+ * A print, so it loses the frame's stamp radius and its ring — those belong to
+ * a screen on a dark page. What it keeps is the frame's hover contract, which
+ * is how the whole clip lighting up reaches the picture.
+ */
+.cut__shot .bx-frame {
+  border-radius: 1px;
+  box-shadow: none;
+  background: #1a1712;
+}
+
+.cut__shot .bx-frame__img {
+  transition: filter var(--bx-dur-base) var(--bx-ease-crt);
+  /* Barely touched. These are bright YouTube thumbnails and a heavy sepia
+     wash would take the show's own graphics with it; this is enough to seat
+     the picture on the paper. */
+  filter: saturate(0.9) contrast(1.02);
+}
+
+.cut:hover .bx-frame__img,
+.cut:focus-within .bx-frame__img { filter: saturate(1) contrast(1.04); }
+
+/*
+ * Age, in two layers.
+ *
+ * The corners of a print go down first, and old emulsion carries a warm cast
+ * that is strongest where the light was. Both are faint on purpose: the point
+ * is that you cannot name what is happening to the picture, only that it is
+ * not a screenshot.
+ */
+.cut__age {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(112% 104% at 50% 44%, transparent 54%, rgba(28, 18, 6, 0.34) 100%),
+    linear-gradient(196deg, rgba(255, 226, 168, 0.12), transparent 46%);
+}
+
+/*
+ * The margin, written on.
+ *
+ * When it was taken on the left, how long it runs and who has seen it on the
+ * right — the three facts that were in a chip a version ago, in the material
+ * that actually suits them. Mono, because two of the three are counters and
+ * tabular figures keep the right-hand pair from shuffling between prints.
+ */
+.cut__caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bx-space-3);
+  padding: 0.6rem 0.25rem 0.7rem;
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: #4a4034;
+  white-space: nowrap;
+}
+
+.cut__marks { display: flex; gap: var(--bx-space-3); }
+
+/* On a phone the three fields do not fit one line of a print margin, so the
+   margin becomes two: when it was taken, and then what it is. `nowrap` stays
+   on the fields themselves so neither of them breaks mid-figure. */
+@media (max-width: 30rem) {
+  .cut__caption {
+    display: grid;
+    justify-items: start;
+    gap: 0.2rem;
+  }
+}
+
+/* The length is the one fact here that is about the recording rather than
+   about the filing of it, so it holds the ink while the rest steps back. */
+.cut__counter { color: #2e271e; }
+.cut__views { color: #6b6154; }
+
+/*
+ * The clip title, in the show's own face.
+ *
+ * Down a size from the archive's, because the column is half as wide and a
+ * clip is not a programme — but the same letterpress, because a section that
+ * dropped it stopped looking like this site.
+ */
+.cut__title {
+  margin: clamp(1rem, 2vw, 1.4rem) 0 0;
+  font-family: var(--bx-font-display);
+  font-size: clamp(1.25rem, 1.7vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.12;
+  text-wrap: pretty;
+  /* Two lines' worth whether or not the title fills them, so the synopses line
+     up across the pair. A three-line title still gets them and pushes — the
+     alternative is cutting it, and nothing here is worth that. */
+  min-height: 2.24em;
+}
+
+.cut__title a {
+  color: var(--bx-signal);
+  text-decoration: none;
+}
+
+/* The link answers the cursor in the purple — the one colour in the section
+   that is neither the plate nor the paper, kept for the states rather than
+   spent on the resting design. */
+.cut__title a:hover,
+.cut__title a:focus-visible { color: var(--bx-purple); }
+
+.cut__synopsis { margin-top: var(--bx-space-3); }
+
+.cut__text {
+  margin: 0;
+  max-width: 52ch;
+  font-size: var(--bx-text-base);
+  line-height: 1.55;
+  color: var(--bx-signal-mute);
+}
+
+/* Clamped to a whole number of lines with no ellipsis, the same way the
+   archive's synopsis is: a line-clamp puts its "…" wherever the line happens
+   to break, which is usually the middle of a word. */
+.cut__text--clamped {
+  overflow: hidden;
+  max-height: calc(2 * 1.55 * 1em);
+}
+
+.cut__reveal {
+  display: inline-block;
+  margin-top: var(--bx-space-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: var(--bx-text-sm);
+  color: var(--bx-signal);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--bx-void-deep) 40%, transparent);
+  transition: color var(--bx-dur-fast) var(--bx-ease-crt);
+}
+
+.cut__reveal:hover,
+.cut__reveal:focus-visible {
+  color: var(--bx-purple);
+  text-decoration-color: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cut__print,
+  .cut:hover .cut__print,
+  .cut:focus-within .cut__print { transform: none; transition: none; }
+}
+
+/*
+ * The controls: the same object as the bezels, with the screen lit in them.
+ *
+ * The section has exactly two materials, and a control is made of the second
+ * one — a case cut out of the void with the green switched on inside it. It is
+ * also the strongest pairing available here at about 12:1, where the purple
+ * type this went through measured 1.9 and the outlined version about 5.
+ *
+ * Hover is the purple, which is where that colour lives in this section.
+ */
+.cuts .bx-button--outline {
+  background: var(--bx-void-deep);
+  border-color: var(--bx-void-deep);
+  color: var(--cuts-screen);
+}
+
+.cuts .bx-button--outline:hover:not(:disabled),
+.cuts .bx-button--outline:focus-visible:not(:disabled) {
+  background: var(--bx-purple);
+  border-color: var(--bx-purple);
+  color: var(--bx-star);
+}
+
+/* The tally under the pager is a readout, and on the plate it is the only
+   thing left that was reading too light. */
+.cuts .pager__tally { color: color-mix(in srgb, var(--bx-void-deep) 62%, transparent); }
+
+/* The cut-out is drawn to read against the dark; on the plate it needs a
+   little of its own contrast back. */
+.cuts .bx-band__sticker { filter: contrast(1.12) saturate(0.8); }
+
+/*
+ * The header gives up most of its bottom margin.
+ *
+ * The station is a tall cut-out and it sets the height of the header row, so
+ * the band's usual gap under a heading was being added to a column of empty
+ * plate the sticker had already opened up.
+ */
+.cuts .bx-band__head { margin-bottom: clamp(0.5rem, 1.5vw, 1.5rem); }
 
 /* =============================================================== agents == */
 
@@ -614,7 +1303,7 @@
   z-index: 4;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--bx-space-4);
+  gap: var(--bx-action-gap);
   justify-content: center;
 }
 
