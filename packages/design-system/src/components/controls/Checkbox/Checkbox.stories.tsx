@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Checkbox } from './Checkbox'
-import { Stack } from '../../primitives/Stack/Stack'
 
 const meta = {
   title: 'Controls/Checkbox',
@@ -28,11 +27,11 @@ export const AsLamp: Story = {
     },
   },
   render: () => (
-    <Stack gap={3}>
+    <div style={{ display: "grid", gap: "var(--bx-space-3)" }}>
       <Checkbox label="Aviso de episódio novo" defaultChecked />
       <Checkbox label="Aviso de produto novo na loja" />
       <Checkbox label="Aceito ser abduzido em horário comercial" defaultChecked />
       <Checkbox label="Opção indisponível neste canal" disabled />
-    </Stack>
+    </div>
   ),
 }

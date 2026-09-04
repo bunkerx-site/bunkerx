@@ -1,9 +1,9 @@
-import { Block } from './Block'
+import { Avatar, Band } from '@bunkerx/design-system'
 import { HOSTS } from '../content/site'
 
 export function Agents() {
   return (
-    <Block
+    <Band
       id="agentes"
       title="Quem investiga"
       tone="nebula"
@@ -16,13 +16,11 @@ export function Agents() {
       <div className="agents">
         {HOSTS.map((host) => (
           <article className="agent" key={host.name}>
-            <img
+            <Avatar
               className="agent__portrait"
               src={host.portrait}
-              alt={`Retrato de ${host.name}`}
-              width={208}
-              height={208}
-              loading="lazy"
+              name={`Retrato de ${host.name}`}
+              tone="plain"
             />
             <div>
               <h3 className="agent__name">{host.name}</h3>
@@ -38,6 +36,6 @@ export function Agents() {
           </article>
         ))}
       </div>
-    </Block>
+    </Band>
   )
 }

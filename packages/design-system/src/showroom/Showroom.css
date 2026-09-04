@@ -70,3 +70,60 @@
 .sr-type__sample { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .sr-row { display: flex; flex-wrap: wrap; gap: var(--bx-space-4); align-items: center; }
+
+/*
+ * The showroom's own prose styles.
+ *
+ * It is a document about the system rather than a screen built out of it, so
+ * it sets its own type instead of leaning on primitives the site never
+ * adopted. See the note at the top of Showroom.stories.tsx.
+ */
+.sr-section__title {
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-text-2xl);
+  line-height: var(--bx-leading-tight);
+  color: var(--bx-signal);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.sr-panel__title {
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-text-xl);
+  line-height: var(--bx-leading-tight);
+  color: var(--bx-signal);
+  margin: 0;
+}
+
+.sr-note {
+  margin: 0;
+  max-width: var(--bx-measure);
+  font-size: var(--bx-text-sm);
+  line-height: var(--bx-leading-body);
+  color: var(--bx-signal-mute);
+}
+
+.sr-note--xs { font-size: var(--bx-text-xs); }
+.sr-note--mono { font-family: var(--bx-font-mono); color: var(--bx-phosphor); }
+
+.sr-body {
+  margin: 0 0 var(--bx-space-4);
+  max-width: var(--bx-measure);
+  font-size: var(--bx-text-base);
+  line-height: var(--bx-leading-body);
+  color: var(--bx-signal);
+}
+
+.sr-type__body { color: var(--bx-signal); }
+.sr-type__sample--display-1 { font-size: var(--bx-text-5xl); }
+.sr-type__sample--display-3 { font-size: var(--bx-text-3xl); }
+
+.sr-stack { display: grid; }
+
+.sr-rule {
+  border: 0;
+  height: 1px;
+  margin: var(--bx-space-8) 0;
+  background: var(--bx-hairline);
+}

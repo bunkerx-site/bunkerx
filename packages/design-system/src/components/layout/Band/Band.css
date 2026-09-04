@@ -25,6 +25,10 @@
  */
 .bx-band--overflow { overflow: visible; }
 
+/* A band with no seam above it needs far less air than one arriving after a
+   full change of surface. */
+.bx-band--tight { padding-top: clamp(1.5rem, 3.5vw, 3rem); }
+
 .bx-band__head { margin-bottom: var(--bx-band-head-gap); }
 
 .bx-band__title {
@@ -33,6 +37,10 @@
   line-height: var(--bx-leading-tight);
   color: var(--bx-signal);
   margin: 0;
+  /* Set in caps, echoing the wordmark. Caps in this letterpress face close up
+     without a little tracking, and at this size the loss is visible. */
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .bx-band__lead {
@@ -58,7 +66,10 @@
   align-items: center;
 }
 
-.bx-band__sticker { justify-self: end; }
+/* Behind whatever follows it: the content after the header comes later in the
+   source, so it paints over a cut-out that bleeds without either needing a
+   z-index. */
+.bx-band__sticker { justify-self: end; position: relative; }
 
 /* The side is chosen per band rather than derived from its ground, so the two
    are free to disagree — and so no reader gets a column of stickers down one

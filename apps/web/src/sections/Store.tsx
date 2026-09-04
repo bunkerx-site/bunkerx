@@ -1,12 +1,10 @@
-import { Block } from './Block'
-import { formatPrice } from '../lib/format'
+import { Band, Grid, MediaCard, Button, formatPrice } from '@bunkerx/design-system'
+import { CHANNELS } from '../content/site'
 import type { Product } from '../lib/types'
-
-const STORE_URL = 'https://montink.com/bunker-x/'
 
 export function Store({ products }: { products: Product[] }) {
   return (
-    <Block
+    <Band
       id="loja"
       title="Loja"
       tone="deep"
@@ -16,33 +14,29 @@ export function Store({ products }: { products: Product[] }) {
       stickerHalo="lift"
       lead="Estampas do programa. A produção e a entrega ficam com a Montink."
       more={
-        <a
-          className="action action--ghost"
-          href={STORE_URL}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
+        <Button variant="outline" href={CHANNELS.store} external>
           Ver as {products.length} peças
-        </a>
+        </Button>
       }
     >
-      <div className="goods">
+      <Grid min="16rem" gap="tight" fill>
         {products.slice(0, 6).map((product) => (
-          <a
-            className="good"
+          <MediaCard
             key={product.id}
             href={product.url}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <div className="good__frame">
-              <img src={product.image} alt={product.name} loading="lazy" />
-            </div>
-            <span className="good__name">{product.name}</span>
-            <span className="good__price">{formatPrice(product.price)}</span>
-          </a>
+            title={product.name}
+            /* A catalogue name is a label on a thing, not a headline. */
+            face="body"
+            note={formatPrice(product.price)}
+            noteTone="accent"
+            src={product.image}
+            /* The one place a picture identifies the item on its own, so it
+               carries real alt text. */
+            alt={product.name}
+            ratio="1"
+          />
         ))}
-      </div>
-    </Block>
+      </Grid>
+    </Band>
   )
 }

@@ -15,13 +15,29 @@
   --bx-link-hover: var(--bx-void);
 }
 
-/* Quiet type on the plate. `signal-mute` is tinted toward the purple and is
-   invisible here, so the muted register is the void at partial strength. */
-.bx-plate a,
-.bx-plate .bx-plate__quiet { color: color-mix(in srgb, var(--bx-void) 78%, transparent); }
+/*
+ * Everything below is wrapped in `:where()`, which contributes no specificity
+ * of its own.
+ *
+ * `.bx-plate a` looks harmless and is not: at one class plus one element it
+ * beats any single class a consumer puts on a link inside the plate, which is
+ * how the support button ended up painting dark-on-dark and losing its label
+ * entirely. That is the same defect `--bx-link` was introduced to remove, and
+ * writing a descendant selector here quietly brought it back.
+ *
+ * With `:where()` these land at the plate's own specificity, so a component
+ * that styles itself wins, and anything that does not still gets the plate's
+ * register for free.
+ */
+.bx-plate :where(a),
+.bx-plate :where(.bx-plate__quiet) {
+  color: color-mix(in srgb, var(--bx-void) 78%, transparent);
+}
 
-.bx-plate a:hover,
-.bx-plate a:focus-visible {
+/* Hover cannot be carried by colour here — there is nowhere darker to go that
+   is not simply black — so it is carried by an underline. */
+.bx-plate :where(a:hover),
+.bx-plate :where(a:focus-visible) {
   color: var(--bx-void);
   text-decoration: underline;
   text-underline-offset: 4px;

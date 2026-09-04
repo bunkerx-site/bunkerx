@@ -1,6 +1,5 @@
-import { Block } from './Block'
+import { Band, Stamp, formatDate } from '@bunkerx/design-system'
 import { BULLETIN } from '../content/site'
-import { formatDate } from '../lib/format'
 
 /**
  * The bulletin is set as a case file: a state on the right, a line of the
@@ -10,7 +9,7 @@ import { formatDate } from '../lib/format'
  */
 export function Bulletin() {
   return (
-    <Block
+    <Band
       id="boletim"
       title="Boletim"
       lead="O que apuramos entre um episódio e outro."
@@ -35,14 +34,13 @@ export function Bulletin() {
                 )}
               </span>
             </div>
-            <div className={`file__state${entry.stamp === 'Em apuração' ? ' file__state--open' : ''}`}>
-              {entry.stamp}
-              <br />
+            <div className="file__state">
+              <Stamp tone={entry.stamp === 'Em apuração' ? 'open' : 'closed'}>{entry.stamp}</Stamp>
               <time dateTime={entry.date}>{formatDate(entry.date)}</time>
             </div>
           </article>
         ))}
       </div>
-    </Block>
+    </Band>
   )
 }

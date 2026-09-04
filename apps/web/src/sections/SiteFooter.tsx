@@ -1,9 +1,9 @@
-import { Seam, Sticker } from '@bunkerx/design-system'
+import { Plate, Seam, Sticker } from '@bunkerx/design-system'
 import { MEMBERSHIP, NAV, PLATFORMS, SITE, SOCIALS } from '../content/site'
 
 export function SiteFooter() {
   return (
-    <footer className="footer">
+    <Plate as="footer" className="footer">
       {/* Pressed across the seam: half of it on the dark, half on the plate.
           A sticker stuck over a join is the whole reason it reads as stuck on
           rather than laid out. */}
@@ -84,6 +84,6 @@ export function SiteFooter() {
           <span>Feito num bunker, transmitido de segunda</span>
         </div>
       </div>
-    </footer>
+    </Plate>
   )
 }

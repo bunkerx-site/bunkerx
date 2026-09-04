@@ -1,8 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Background } from './Background'
-import { Heading } from '../../primitives/Heading/Heading'
-import { Stack } from '../../primitives/Stack/Stack'
-import { Text } from '../../primitives/Text/Text'
 
 const meta = {
   title: 'Signal/Background',
@@ -29,15 +26,15 @@ export const Default: Story = {
   render: (args) => (
     <>
       <Background {...args} />
-      <Stack gap={4}>
-        <Heading level={2} size={3}>
+      <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
+        <h3 style={{ fontFamily: "var(--bx-font-display)", fontSize: "var(--bx-text-xl)", margin: 0 }}>
           A imagem, não o tubo
-        </Heading>
-        <Text tone="mute">
+        </h3>
+        <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
           Três camadas: a nebulosa como chão, a poeira em duas profundidades e as faixas de
           dessintonia. Mexa nos controles para ver cada uma isolada.
-        </Text>
-      </Stack>
+        </p>
+      </div>
     </>
   ),
 }
@@ -98,14 +95,14 @@ export const Calm: Story = {
   render: (args) => (
     <>
       <Background {...args} />
-      <Stack gap={4}>
-        <Heading level={2} size={3}>
+      <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
+        <h3 style={{ fontFamily: "var(--bx-font-display)", fontSize: "var(--bx-text-xl)", margin: 0 }}>
           Sem interrupção
-        </Heading>
-        <Text tone="mute">
+        </h3>
+        <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
           A textura continua, o corte não. É a versão para quando o conteúdo é o que importa.
-        </Text>
-      </Stack>
+        </p>
+      </div>
     </>
   ),
 }
@@ -124,9 +121,9 @@ export const Seeds: Story = {
   render: (args) => (
     <>
       <Background {...args} />
-      <Text size="sm" mono tone="accent">
+      <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
         seed={args.seed}
-      </Text>
+      </p>
     </>
   ),
 }

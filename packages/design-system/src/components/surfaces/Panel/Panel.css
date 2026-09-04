@@ -13,6 +13,28 @@
 
 .bx-panel--flat { background: transparent; }
 
+/*
+ * The ask: the panel that stops informing and starts asking. See Panel.tsx for
+ * why this is the one centred thing on the site.
+ *
+ * The ring is drawn as a shadow rather than the border the plain panel uses,
+ * because at this size a 2px border on a tinted fill reads as a card edge
+ * while a ring at partial phosphor reads as the panel being lit.
+ */
+.bx-panel--ask {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+  padding: clamp(2.5rem, 6vw, 5rem);
+  text-align: center;
+  background: var(--bx-panel-fill);
+  border: 0;
+  box-shadow: 0 0 0 var(--bx-border-frame) var(--bx-ring-quiet);
+}
+
+.bx-panel--ask > * { margin-inline: auto; }
+
+.bx-panel--overflow { overflow: visible; }
+
 /* The corner ticks read as registration marks on a print sheet, and they mark
    the frame as a deliberate crop rather than a card with a border. */
 .bx-panel--marked::before,

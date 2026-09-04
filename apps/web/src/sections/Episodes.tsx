@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Log, LogEntry, PlatformIcon, Tile } from '@bunkerx/design-system'
-import { Block } from './Block'
-import { PLATFORMS } from '../content/site'
-import { truncate } from '../lib/format'
+import { Band, Button, Log, LogEntry, PlatformIcon, Tile, truncate } from '@bunkerx/design-system'
+import { CHANNELS, hash, PLATFORMS, SECTION } from '../content/site'
 import type { Episode } from '../lib/types'
 
-const ARCHIVE = 'https://open.spotify.com/show/1YOCI7QdvUloo4VopSr7qm'
 /* The podcast apps only: the video has its own button on every row. */
 const LISTEN = PLATFORMS.filter((platform) => platform.icon !== 'youtube')
-const CHANNEL = 'https://www.youtube.com/@bunkerx'
 const BATCH = 8
 
 /**
@@ -74,8 +70,8 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
 
 
   return (
-    <Block
-      id="episodios"
+    <Band
+      id={SECTION.episodes}
       title="Episódios"
       tone="deep"
       /* No seam above this one: the fold's own carrier burst sits a couple of
@@ -95,20 +91,20 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
       lead="O programa completo, toda segunda — no vídeo e no áudio. Aqui estão os mais recentes; o arquivo inteiro está nas plataformas."
       more={
         <div className="episodes__more">
-          <a className="action action--ghost" href={CHANNEL} target="_blank" rel="noreferrer noopener">
+          <Button variant="outline" href={CHANNELS.youtube} external>
             <PlatformIcon name="youtube" size="1.15em" />
             Ver o canal no YouTube
-          </a>
-          <a className="action action--ghost" href={ARCHIVE} target="_blank" rel="noreferrer noopener">
+          </Button>
+          <Button variant="outline" href={CHANNELS.spotifyShow} external>
             <PlatformIcon name="spotify" size="1.15em" />
             Ouvir o arquivo completo
-          </a>
+          </Button>
           {/* Every row offers three apps; this is for the reader who wants the
               whole list and the feed itself. It stays on the page rather than
               leaving it, which is why it is the quiet rank of the three. */}
-          <a className="action action--quiet" href="#ouvir">
+          <Button variant="quiet" href={hash(SECTION.listen)}>
             Ver todas as plataformas
-          </a>
+          </Button>
         </div>
       }
     >
@@ -129,15 +125,10 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
             actions={
               <>
                 {episode.videoUrl ? (
-                  <a
-                    className="action action--ghost action--sm"
-                    href={episode.videoUrl}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
+                  <Button variant="outline" size="sm" href={episode.videoUrl} external>
                     <PlatformIcon name="youtube" size="1.1em" />
                     Assistir
-                  </a>
+                  </Button>
                 ) : null}
 
                 {/* The podcast apps, as chips — the same set and the same
@@ -169,19 +160,15 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
       */}
       <div className="episodes__grow">
         {remaining > 0 ? (
-          <button
-            className="action action--ghost"
-            type="button"
-            onClick={() => setShownCount((count) => count + BATCH)}
-          >
+          <Button variant="outline" onClick={() => setShownCount((count) => count + BATCH)}>
             Carregar mais
-          </button>
+          </Button>
         ) : null}
 
         <p className="episodes__tally" aria-live="polite">
           {shown.length} <span>de</span> {all.length} episódios
         </p>
       </div>
-    </Block>
+    </Band>
   )
 }

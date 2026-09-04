@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import { Lamp, Plate } from '@bunkerx/design-system'
 import { useHideOnScroll } from '../hooks/useHideOnScroll'
-import { MEMBERSHIP, NAV, SITE } from '../content/site'
+import { hash, MEMBERSHIP, NAV, SECTION, SITE } from '../content/site'
 
 /*
  * The one nav target that must not hide the bar.
@@ -10,7 +11,7 @@ import { MEMBERSHIP, NAV, SITE } from '../content/site'
  * belongs — and clicking this while already up there fires no scroll at all,
  * so nothing would ever run the rule that brings it back.
  */
-const TOP = '#topo'
+const TOP = hash(SECTION.top)
 
 export function SiteHeader() {
   const { hidden, atTop, hideForJump } = useHideOnScroll()
@@ -38,26 +39,19 @@ export function SiteHeader() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
-  const classes = [
-    'masthead',
-    hidden && !open && 'masthead--hidden',
-    !atTop && 'masthead--stuck',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  /* `raised` is `Plate`'s own edge-once-scrolled, so the site only owns the
+     bar's position and its hide-on-scroll. */
+  const classes = ['masthead', hidden && !open && 'masthead--hidden'].filter(Boolean).join(' ')
 
   return (
     <>
-      <header className={classes}>
+      <Plate as="header" raised={!atTop} className={classes}>
         <div className="shell masthead__inner">
-          <a className="masthead__name" href="#topo">
+          <a className="masthead__name" href={hash(SECTION.top)}>
             {SITE.name}
           </a>
 
-          <span className="masthead__slot">
-            <span className="masthead__lamp" aria-hidden="true" />
-            {SITE.schedule}
-          </span>
+          <Lamp className="masthead__slot">{SITE.schedule}</Lamp>
 
           <nav className="masthead__nav" aria-label="Principal">
             {NAV.map((item) => (
@@ -93,10 +87,10 @@ export function SiteHeader() {
             {open ? 'Fechar' : 'Menu'}
           </button>
         </div>
-      </header>
+      </Plate>
 
       {open ? (
-        <nav className="menu" id="menu" aria-label="Principal">
+        <Plate as="nav" className="menu" id="menu" aria-label="Principal">
           {NAV.map((item) => (
             <a
               key={item.href}
@@ -119,7 +113,7 @@ export function SiteHeader() {
           >
             Apoiar
           </a>
-        </nav>
+        </Plate>
       ) : null}
     </>
   )

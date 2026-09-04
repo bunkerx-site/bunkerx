@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Field } from './Field'
-import { Stack } from '../../primitives/Stack/Stack'
 
 const meta = {
   title: 'Controls/Field',
@@ -46,10 +45,10 @@ export const CustomPrompt: Story = {
     },
   },
   render: () => (
-    <Stack gap={6}>
+    <div style={{ display: "grid", gap: "var(--bx-space-6)" }}>
       <Field label="Busca" prompt=">" placeholder="oumuamua" />
       <Field label="Coordenada" prompt="#" placeholder="-23.5505, -46.6333" />
-    </Stack>
+    </div>
   ),
 }
 

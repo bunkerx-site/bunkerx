@@ -1,6 +1,5 @@
-import { ABDUCTIONS, Glitch, Icon, PlatformIcon, Scene, Static, Tile } from '@bunkerx/design-system'
-import { MEMBERSHIP, PLATFORMS, SITE } from '../content/site'
-import { formatDate, formatDuration, truncate } from '../lib/format'
+import { ABDUCTIONS, Button, formatDate, formatDuration, Glitch, Icon, PlatformIcon, Scene, Static, Tile, truncate } from '@bunkerx/design-system'
+import { hash, MEMBERSHIP, PLATFORMS, SECTION, SITE } from '../content/site'
 import type { Episode } from '../lib/types'
 
 /**
@@ -97,15 +96,10 @@ export function Fold({ episode }: { episode: Episode }) {
             */}
             <div className="fold__actions">
               {episode.videoUrl ? (
-                <a
-                  className="action action--primary"
-                  href={episode.videoUrl}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
+                <Button variant="phosphor" href={episode.videoUrl} external>
                   <PlatformIcon name="youtube" size="1.15em" />
                   Assistir no YouTube
-                </a>
+                </Button>
               ) : null}
             </div>
 
@@ -136,23 +130,18 @@ export function Fold({ episode }: { episode: Episode }) {
               way.
             */}
             <div className="fold__more">
-              <a className="action action--ghost" href="#episodios">
+              <Button variant="outline" href={hash(SECTION.episodes)}>
                 <Icon name="archive" size="1.15em" />
                 Ver todos os episódios
-              </a>
+              </Button>
               {/* A peer of the archive link, not of the watch button. Both are
                   ways to leave this screen — one further into the show, one
                   into supporting it — so they share the outlined rank and the
                   filled button keeps the fold's one job to itself. */}
-              <a
-                className="action action--ghost"
-                href={MEMBERSHIP.orelo}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
+              <Button variant="outline" href={MEMBERSHIP.orelo} external>
                 <Icon name="signal" size="1.15em" />
                 Apoie o programa
-              </a>
+              </Button>
             </div>
           </div>
         </div>

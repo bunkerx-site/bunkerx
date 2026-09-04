@@ -1,6 +1,4 @@
-import { Block } from './Block'
-import type { StickerHalo, StickerMotion, StickerName } from '@bunkerx/design-system'
-import { formatDate, truncate } from '../lib/format'
+import { Band, Grid, MediaCard, type StickerHalo, type StickerMotion, type StickerName, Button, formatDate, truncate } from '@bunkerx/design-system'
 import type { Video } from '../lib/types'
 
 type WatchProps = {
@@ -43,7 +41,7 @@ export function Watch({
   stickerHalo,
 }: WatchProps) {
   return (
-    <Block
+    <Band
       id={id}
       title={title}
       lead={lead}
@@ -53,39 +51,25 @@ export function Watch({
       stickerMotion={stickerMotion}
       stickerHalo={stickerHalo}
       more={
-        <a
-          className="action action--ghost"
-          href={channelUrl}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
+        <Button variant="outline" href={channelUrl} external>
           {channelLabel}
-        </a>
+        </Button>
       }
     >
-      <div className={`reel${tight ? ' reel--tight' : ''}`}>
+      <Grid min={tight ? '17rem' : '25rem'} gap={tight ? 'tight' : 'loose'}>
         {videos.slice(0, count).map((video) => (
-          <a
-            className="clip"
+          <MediaCard
             key={video.id}
             href={video.url}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <div className="clip__frame">
-              <img src={video.thumbnail} alt="" loading="lazy" />
-              <span className="clip__scan" aria-hidden="true" />
-            </div>
-            <h3 className="clip__title">{video.title}</h3>
-            {!tight && video.summary ? (
-              <p className="clip__summary">{truncate(video.summary, 160)}</p>
-            ) : null}
-            <time className="clip__date" dateTime={video.publishedAt}>
-              {formatDate(video.publishedAt)}
-            </time>
-          </a>
+            title={video.title}
+            summary={!tight && video.summary ? truncate(video.summary, 160) : undefined}
+            note={<time dateTime={video.publishedAt}>{formatDate(video.publishedAt)}</time>}
+            src={video.thumbnail}
+            scan
+            glow
+          />
         ))}
-      </div>
-    </Block>
+      </Grid>
+    </Band>
   )
 }

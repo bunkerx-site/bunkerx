@@ -3,27 +3,32 @@ import './Stamp.css'
 
 export type StampProps = {
   children: ReactNode
-  tone?: 'classified' | 'verified' | 'archive'
-  /** Removes the hand-pressed rotation, for use inline in running text. */
-  straight?: boolean
+  /**
+   * `open` is still being worked on, `closed` is settled.
+   *
+   * The green is the system's "powered on, still live" colour, so an open case
+   * gets it and a closed one recedes to the muted tint. The word is what
+   * carries the state; the colour only reinforces it, which is what keeps this
+   * legible to anyone who cannot tell the two apart.
+   */
+  tone?: 'open' | 'closed'
   className?: string
 }
 
 /**
- * A short status pressed onto a surface: CLASSIFICADO, INÉDITO, ARQUIVO.
+ * The state of a case file: a short label saying where an item stands.
  *
- * This is the one place uppercase is allowed in the system — a stamp is a
- * stamp. Headings and labels elsewhere stay in sentence case.
+ * The first version of this was a rubber stamp — uppercase serif, rotated a
+ * few degrees, meant to look pressed on by hand. It was never used once, and
+ * the site grew this instead: a plain line of small type, because it sits in
+ * the corner of a row that already has a title and an excerpt competing for
+ * attention, and a tilted stamp in that corner read as a sticker rather than
+ * as a status.
  */
-export function Stamp({ children, tone = 'archive', straight = false, className }: StampProps) {
-  const classes = [
-    'bx-stamp',
-    `bx-stamp--${tone}`,
-    straight && 'bx-stamp--straight',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ')
-
-  return <span className={classes}>{children}</span>
+export function Stamp({ children, tone = 'closed', className }: StampProps) {
+  return (
+    <span className={['bx-stamp', `bx-stamp--${tone}`, className].filter(Boolean).join(' ')}>
+      {children}
+    </span>
+  )
 }

@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Stamp } from './Stamp'
-import { Stack } from '../../primitives/Stack/Stack'
-import { Text } from '../../primitives/Text/Text'
 
 const meta = {
   title: 'Surfaces/Stamp',
@@ -9,7 +7,7 @@ const meta = {
   argTypes: {
     tone: { control: { type: 'inline-radio' }, options: ['classified', 'verified', 'archive'] },
   },
-  args: { children: 'classificado', tone: 'classified' },
+  args: { children: 'classificado', tone: 'open' },
 } satisfies Meta<typeof Stamp>
 
 export default meta
@@ -20,11 +18,11 @@ export const Default: Story = {}
 export const Tones: Story = {
   name: 'Tons',
   render: () => (
-    <Stack direction="row" gap={6} align="center">
-      <Stamp tone="classified">classificado</Stamp>
-      <Stamp tone="verified">inédito</Stamp>
-      <Stamp tone="archive">arquivo</Stamp>
-    </Stack>
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
+      <Stamp tone="open">classificado</Stamp>
+      <Stamp tone="open">inédito</Stamp>
+      <Stamp tone="open">arquivo</Stamp>
+    </div>
   ),
 }
 
@@ -39,15 +37,15 @@ export const OnlyUppercase: Story = {
     },
   },
   render: () => (
-    <Stack gap={4}>
-      <Stamp tone="verified">inédito</Stamp>
-      <Text size="sm" tone="mute">
-        A rotação vem de ter sido pressionado à mão. Use `straight` só quando o carimbo aparecer no
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
+      <Stamp tone="open">inédito</Stamp>
+      <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
+        A rotação vem de ter sido pressionado à mão. Use `` só quando o carimbo aparecer no
         meio de uma linha de texto corrido.
-      </Text>
-      <Text size="sm">
-        Este episódio está <Stamp tone="archive" straight>arquivado</Stamp> desde agosto.
-      </Text>
-    </Stack>
+      </p>
+      <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
+        Este episódio está <Stamp tone="open" >arquivado</Stamp> desde agosto.
+      </p>
+    </div>
   ),
 }

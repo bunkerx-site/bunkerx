@@ -1,10 +1,9 @@
-import { Tile } from '@bunkerx/design-system'
-import { Block } from './Block'
+import { Band, Grid, Tile } from '@bunkerx/design-system'
 import { PLATFORMS } from '../content/site'
 
 export function Listen() {
   return (
-    <Block
+    <Band
       id="ouvir"
       title="Onde ouvir"
       tone="nebula"
@@ -16,13 +15,13 @@ export function Listen() {
       {/* The same component as the chips in the fold, at full rank. Here the
           six links are the whole point of the section, so they get plates you
           aim at rather than a quiet row. */}
-      <div className="outlets">
+      <Grid min="15rem" gap="tight">
         {PLATFORMS.map((platform) => (
           <Tile key={platform.label} icon={platform.icon} href={platform.href}>
             {platform.label}
           </Tile>
         ))}
-      </div>
-    </Block>
+      </Grid>
+    </Band>
   )
 }

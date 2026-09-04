@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Glitch } from './Glitch'
-import { Stack } from '../../primitives/Stack/Stack'
-import { Text } from '../../primitives/Text/Text'
 
 const meta = {
   title: 'Signal/Glitch',
@@ -28,18 +26,18 @@ export const Offsets: Story = {
     },
   },
   render: () => (
-    <Stack gap={6}>
+    <div style={{ display: "grid", gap: "var(--bx-space-6)" }}>
       {(['none', 'nudge', 'break'] as const).map((offset) => (
         <div key={offset}>
-          <Text size="xs" mono tone="mute">
+          <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
             offset={offset}
-          </Text>
+          </p>
           <Glitch offset={offset} as="div" style={{ fontSize: 'var(--bx-text-3xl)' }}>
             sua dose semanal de verdade
           </Glitch>
         </div>
       ))}
-    </Stack>
+    </div>
   ),
 }
 
@@ -71,13 +69,13 @@ export const Accessibility: Story = {
     },
   },
   render: () => (
-    <Stack gap={4}>
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
       <Glitch offset="break" as="h2" style={{ fontSize: 'var(--bx-text-4xl)' }}>
         Bunker X
       </Glitch>
-      <Text size="sm" tone="mute">
+      <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
         Inspecione o elemento: existem três cópias do texto, e só a de cima é anunciada.
-      </Text>
-    </Stack>
+      </p>
+    </div>
   ),
 }

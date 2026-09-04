@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Avatar } from './Avatar'
-import { Stack } from '../../primitives/Stack/Stack'
-import { Text } from '../../primitives/Text/Text'
 
 const meta = {
   title: 'Surfaces/Avatar',
@@ -25,21 +23,21 @@ export const Hosts: Story = {
     },
   },
   render: () => (
-    <Stack direction="row" gap={6}>
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
       <Avatar src="/hosts/affonso-solano.png" name="Affonso Solano" size={160} showName />
       <Avatar src="/hosts/afonso-3d.png" name="Afonso 3D" size={160} showName />
-    </Stack>
+    </div>
   ),
 }
 
 export const Sizes: Story = {
   name: 'Tamanhos',
   render: () => (
-    <Stack direction="row" gap={4} align="center">
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
       {[40, 64, 96, 160].map((size) => (
         <Avatar key={size} src="/hosts/afonso-3d.png" name="Afonso 3D" size={size} />
       ))}
-    </Stack>
+    </div>
   ),
 }
 
@@ -53,11 +51,11 @@ export const Frozen: Story = {
     },
   },
   render: () => (
-    <Stack gap={3}>
+    <div style={{ display: "grid", gap: "var(--bx-space-3)" }}>
       <Avatar src="/hosts/affonso-solano.png" name="Affonso Solano" size={120} live={false} />
-      <Text size="xs" tone="mute">
+      <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
         Use em listas longas, onde o retorno de cor a cada linha vira ruído.
-      </Text>
-    </Stack>
+      </p>
+    </div>
   ),
 }

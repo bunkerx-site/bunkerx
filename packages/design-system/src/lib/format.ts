@@ -6,17 +6,15 @@
  * publishes is in pt-BR, and a duration written `1h12min` in one place and
  * `1:12:00` in another is the same inconsistency as two different greens.
  *
- * They were duplicated before this file existed — the episode card carried its
- * own copy of the date format and the duration rule, and it had already
- * drifted from the app's.
+ * They were duplicated before this file existed: the design system's own
+ * episode card carried one copy and the app's `lib/format` another, and the
+ * two had already drifted apart.
  */
 
 const DATE = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })
-const DATE_SHORT = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' })
 const MONEY = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 
 export const formatDate = (iso: string) => DATE.format(new Date(iso))
-export const formatDateShort = (iso: string) => DATE_SHORT.format(new Date(iso))
 export const formatPrice = (value: number) => MONEY.format(value)
 
 /**
@@ -31,21 +29,6 @@ export function formatDuration(seconds?: number): string | undefined {
   const hours = Math.floor(seconds / 3600)
   const minutes = Math.round((seconds % 3600) / 60)
   return hours > 0 ? `${hours}h${String(minutes).padStart(2, '0')}` : `${minutes}min`
-}
-
-/**
- * Day and month as a stamped mark: `28.08`.
- *
- * This is the log's anchor in place of an episode number, which cannot be
- * trusted: the feed leaves its most recent entries unnumbered and interleaves
- * two seasons with overlapping numbering. The date is the one identifier every
- * entry actually has.
- */
-export function formatStampDate(iso: string): string {
-  const date = new Date(iso)
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  return `${day}.${month}`
 }
 
 /** Cuts a summary at a word boundary, so nothing ever ends mid-word. */

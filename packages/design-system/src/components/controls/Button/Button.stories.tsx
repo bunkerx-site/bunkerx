@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Button } from './Button'
-import { Stack } from '../../primitives/Stack/Stack'
-import { Text } from '../../primitives/Text/Text'
 
 const meta = {
   title: 'Controls/Button',
@@ -29,34 +27,34 @@ export const Variants: Story = {
     },
   },
   render: () => (
-    <Stack direction="row" gap={4} align="center">
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
       <Button variant="phosphor">Ouvir episódio</Button>
       <Button variant="outline">Ver todos</Button>
-      <Button variant="ghost">Cancelar</Button>
-    </Stack>
+      <Button variant="quiet">Cancelar</Button>
+    </div>
   ),
 }
 
 export const Sizes: Story = {
   name: 'Tamanhos',
   render: () => (
-    <Stack direction="row" gap={4} align="center">
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
       <Button size="sm">Pequeno</Button>
       <Button>Médio</Button>
-      <Button size="lg">Grande</Button>
-    </Stack>
+      <Button size="md">Grande</Button>
+    </div>
   ),
 }
 
 export const Disabled: Story = {
   name: 'Desabilitado',
   render: () => (
-    <Stack direction="row" gap={4} align="center">
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
       <Button disabled>Indisponível</Button>
       <Button variant="outline" disabled>
         Indisponível
       </Button>
-    </Stack>
+    </div>
   ),
 }
 
@@ -71,19 +69,19 @@ export const Labelling: Story = {
     },
   },
   render: () => (
-    <Stack gap={4}>
-      <Stack direction="row" gap={4} align="center">
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
+      <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
         <Button>Salvar alterações</Button>
-        <Text size="sm" tone="mute">
+        <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
           diz o que acontece
-        </Text>
-      </Stack>
-      <Stack direction="row" gap={4} align="center">
+        </p>
+      </div>
+      <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
         <Button variant="outline">Enviar</Button>
-        <Text size="sm" tone="mute">
+        <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
           não diz — enviar o quê, para onde?
-        </Text>
-      </Stack>
-    </Stack>
+        </p>
+      </div>
+    </div>
   ),
 }

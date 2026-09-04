@@ -1,21 +1,10 @@
-/*
- * A rubber stamp on a case file. Rotation is what sells it as pressed by hand
- * rather than typeset, so it is part of the component, not a decoration.
- */
 .bx-stamp {
-  display: inline-block;
-  padding: var(--bx-space-1) var(--bx-space-3);
-  border: var(--bx-border-frame) solid currentColor;
-  border-radius: 2px;
-  font-family: var(--bx-font-display);
+  display: block;
   font-size: var(--bx-text-sm);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transform: rotate(-3deg);
-  opacity: 0.85;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
-.bx-stamp--classified { color: var(--bx-alert); }
-.bx-stamp--verified { color: var(--bx-phosphor); }
-.bx-stamp--archive { color: var(--bx-signal-mute); }
-.bx-stamp--straight { transform: none; }
+/* Still live, so it takes the green. */
+.bx-stamp--open { color: var(--bx-phosphor); }
+.bx-stamp--closed { color: var(--bx-signal-mute); }

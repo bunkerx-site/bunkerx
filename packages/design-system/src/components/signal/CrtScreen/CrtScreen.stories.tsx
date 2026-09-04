@@ -1,8 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { CrtScreen } from './CrtScreen'
-import { Heading } from '../../primitives/Heading/Heading'
-import { Stack } from '../../primitives/Stack/Stack'
-import { Text } from '../../primitives/Text/Text'
 
 const meta = {
   title: 'Signal/CrtScreen',
@@ -24,18 +21,18 @@ type Story = StoryObj<typeof meta>
 export const Glass: Story = {
   name: 'O vidro',
   render: () => (
-    <Stack gap={4}>
-      <Heading level={2} size={3}>
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
+      <h3 style={{ fontFamily: "var(--bx-font-display)", fontSize: "var(--bx-text-xl)", margin: 0 }}>
         A vinheta
-      </Heading>
-      <Text tone="mute">
+      </h3>
+      <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
         A vinheta escurece as bordas como o vidro curvo de um monitor real. É tudo que sobrou
         desta camada: qualquer coisa mais forte aqui passa por cima de texto.
-      </Text>
-      <Text tone="mute">
+      </p>
+      <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
         Como todas as stories já renderizam dentro de um `CrtScreen` e de um `Background`, o que
         você vê aqui é o efeito real do site, não uma simulação.
-      </Text>
-    </Stack>
+      </p>
+    </div>
   ),
 }

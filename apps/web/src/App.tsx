@@ -13,6 +13,7 @@ import { SiteFooter } from './sections/SiteFooter'
 import episodes from './data/episodes-latest.json'
 import cuts from './data/cuts.json'
 import products from './data/products.json'
+import { CHANNELS, SECTION } from './content/site'
 import type { Episode, Product, Video } from './lib/types'
 import './styles/site.css'
 
@@ -34,7 +35,7 @@ export function App() {
       <Background />
       <SiteHeader />
 
-      <main id="topo">
+      <main id={SECTION.top}>
         <Fold episode={EPISODES[0]} />
         {/* The newest episode is the entire fold, so the log starts at the
             second one rather than repeating it immediately underneath. */}
@@ -45,11 +46,11 @@ export function App() {
             cuts are a different channel and a different thing, so they keep
             their own section. */}
         <Watch
-          id="cortes"
+          id={SECTION.cuts}
           title="Cortes"
           lead="Trechos soltos, para quem tem dez minutos."
           videos={CUTS}
-          channelUrl="https://www.youtube.com/@CortesBunkerX"
+          channelUrl={CHANNELS.cuts}
           channelLabel="Ver o canal de cortes"
           sticker="night-vision"
           stickerMotion="handheld"

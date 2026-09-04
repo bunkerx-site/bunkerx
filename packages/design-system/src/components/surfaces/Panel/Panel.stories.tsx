@@ -1,8 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Panel } from './Panel'
-import { Heading } from '../../primitives/Heading/Heading'
-import { Text } from '../../primitives/Text/Text'
-import { Stack } from '../../primitives/Stack/Stack'
 
 const meta = {
   title: 'Surfaces/Panel',
@@ -17,12 +14,12 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: (args) => (
     <Panel {...args}>
-      <Heading level={3} size={5}>
+      <h3 style={{ fontFamily: "var(--bx-font-display)", fontSize: "var(--bx-text-xl)", margin: 0 }}>
         Arquivo 174
-      </Heading>
-      <Text size="sm" tone="mute" style={{ marginTop: '0.5rem' }}>
+      </h3>
+      <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
         Três registros, dois telescópios e uma explicação que ninguém quis assinar.
-      </Text>
+      </p>
     </Panel>
   ),
 }
@@ -52,24 +49,24 @@ export const Tones: Story = {
     },
   },
   render: () => (
-    <Stack direction="row" gap={4} align="stretch">
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
       <Panel marked style={{ flex: 1 }}>
-        <Heading level={3} size={5}>
+        <h3 style={{ fontFamily: "var(--bx-font-display)", fontSize: "var(--bx-text-xl)", margin: 0 }}>
           Elevado
-        </Heading>
-        <Text size="sm" tone="mute" style={{ marginTop: '0.5rem' }}>
+        </h3>
+        <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
           Fundo próprio, borda de fósforo. O padrão para bloco de conteúdo.
-        </Text>
+        </p>
       </Panel>
       <Panel tone="flat" style={{ flex: 1 }}>
-        <Heading level={3} size={5}>
+        <h3 style={{ fontFamily: "var(--bx-font-display)", fontSize: "var(--bx-text-xl)", margin: 0 }}>
           Plano
-        </Heading>
-        <Text size="sm" tone="mute" style={{ marginTop: '0.5rem' }}>
+        </h3>
+        <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
           Só o contorno. Não acrescenta fundo sobre um fundo que já existe.
-        </Text>
+        </p>
       </Panel>
-    </Stack>
+    </div>
   ),
 }
 

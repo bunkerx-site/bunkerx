@@ -269,7 +269,18 @@ console.log(`  ${matched}/${linked.length} episódios casados com um vídeo`)
 
 await write('episodes', linked)
 await write('episodes-latest', linked.slice(0, 12))
-await write('videos', videos)
+/*
+ * The main channel's uploads are not written out any more.
+ *
+ * They are still fetched, because matching an episode to its video is what
+ * `linkVideos` does with them — but nothing imports the file. The archive
+ * carries every episode's video alongside its audio now, so a separate list
+ * of uploads had no reader.
+ *
+ * Four of the fifteen uploads are not episodes (two clips, two mini-features)
+ * and currently appear nowhere on the site. Restoring one `write` call brings
+ * the list back if they are given a home.
+ */
 await write('cuts', cuts)
 await write('products', products)
 console.log('pronto.')

@@ -1,49 +1,94 @@
+/*
+ * The site's buttons.
+ *
+ * Three ranks in three forms — filled, outlined, and neither — because rank
+ * carried by colour alone stops being legible the moment two of them sit side
+ * by side. See Button.tsx for what each one is for.
+ */
 .bx-button {
-  --bx-converge: 0px;
   display: inline-flex;
   align-items: center;
-  gap: var(--bx-space-2);
-  padding: var(--bx-space-3) var(--bx-space-6);
+  gap: 0.6rem;
+  padding: 1rem 1.75rem;
   border: var(--bx-border-frame) solid transparent;
+  /* A control's shape. See the shape block in tokens.css. */
   border-radius: var(--bx-radius-pill);
-  font-family: var(--bx-font-body);
-  font-size: var(--bx-text-sm);
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  cursor: pointer;
   background: transparent;
+  font-family: var(--bx-font-body);
+  font-size: var(--bx-text-base);
+  font-weight: 600;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
   transition:
     background var(--bx-dur-fast) var(--bx-ease-crt),
     color var(--bx-dur-fast) var(--bx-ease-crt),
+    border-color var(--bx-dur-fast) var(--bx-ease-crt),
     box-shadow var(--bx-dur-base) var(--bx-ease-crt);
 }
 
 .bx-button:disabled { cursor: not-allowed; opacity: 0.45; }
 
-/* Primary: the phosphor plate. This is the "powered on" control. */
+/*
+ * The filled action.
+ *
+ * The hover brightens the fill and holds the label dark. Letting the label go
+ * light green instead — which is what the base sheet's `a:hover` did before
+ * `--bx-link` existed — measured 1.24:1; this measures 14.67:1.
+ */
 .bx-button--phosphor {
   background: var(--bx-phosphor);
   border-color: var(--bx-phosphor);
   color: var(--bx-void);
 }
-.bx-button--phosphor:hover:not(:disabled) {
+
+.bx-button--phosphor:hover:not(:disabled),
+.bx-button--phosphor:focus-visible:not(:disabled) {
   background: var(--bx-phosphor-hot);
   border-color: var(--bx-phosphor-hot);
+  color: var(--bx-void-deep);
   box-shadow: var(--bx-glow-hard);
 }
 
-/* Secondary: outline only, like a stencil sprayed on the bunker wall. */
 .bx-button--outline {
-  border-color: var(--bx-phosphor-dim);
+  border-color: var(--bx-phosphor);
   color: var(--bx-phosphor);
 }
-.bx-button--outline:hover:not(:disabled) {
-  border-color: var(--bx-phosphor);
-  box-shadow: var(--bx-glow-soft);
+
+.bx-button--outline:hover:not(:disabled),
+.bx-button--outline:focus-visible:not(:disabled) {
+  background: color-mix(in srgb, var(--bx-phosphor) 15%, transparent);
+  border-color: var(--bx-phosphor-hot);
+  color: var(--bx-phosphor-hot);
 }
 
-.bx-button--ghost { color: var(--bx-signal-mute); }
-.bx-button--ghost:hover:not(:disabled) { color: var(--bx-signal); }
+/* No border, no fill: for the one that only moves the page. */
+.bx-button--quiet {
+  padding-inline: 0.25rem;
+  font-weight: 500;
+  color: var(--bx-signal-mute);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--bx-signal-mute) 45%, transparent);
+  text-underline-offset: 6px;
+}
 
-.bx-button--sm { padding: var(--bx-space-2) var(--bx-space-4); font-size: var(--bx-text-xs); }
-.bx-button--lg { padding: var(--bx-space-4) var(--bx-space-8); font-size: var(--bx-text-base); }
+.bx-button--quiet:hover:not(:disabled),
+.bx-button--quiet:focus-visible:not(:disabled) {
+  color: var(--bx-signal);
+  text-decoration-color: currentColor;
+}
+
+/*
+ * The small rank, for an action inside a list row.
+ *
+ * Same registers, less weight: eight rows each carrying a full-size button
+ * would out-shout the one filled action the page has, and a row is there to be
+ * scanned before it is pressed.
+ */
+.bx-button--sm {
+  padding: 0.55rem 1rem;
+  gap: 0.45rem;
+  font-size: var(--bx-text-sm);
+}
+
+.bx-button--quiet.bx-button--sm { padding-inline: 0.25rem; }

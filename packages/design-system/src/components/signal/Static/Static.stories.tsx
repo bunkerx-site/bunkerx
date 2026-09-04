@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Static } from './Static'
-import { Stack } from '../../primitives/Stack/Stack'
-import { Text } from '../../primitives/Text/Text'
 
 const meta = {
   title: 'Signal/Static',
@@ -35,18 +33,18 @@ export const Intensities: Story = {
     },
   },
   render: () => (
-    <Stack direction="row" gap={4}>
+    <div style={{ display: "grid", gap: "var(--bx-space-4)" }}>
       {[0.12, 0.28, 0.55].map((intensity) => (
         <div key={intensity} style={{ flex: 1 }}>
-          <Text size="xs" mono tone="mute">
+          <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
             intensity={intensity}
-          </Text>
+          </p>
           <div style={{ height: 180, marginTop: '0.5rem', background: 'var(--bx-void-deep)' }}>
             <Static intensity={intensity} />
           </div>
         </div>
       ))}
-    </Stack>
+    </div>
   ),
 }
 
@@ -61,13 +59,13 @@ export const ReducedMotion: Story = {
     },
   },
   render: () => (
-    <Stack gap={3}>
+    <div style={{ display: "grid", gap: "var(--bx-space-3)" }}>
       <div style={{ height: 200, background: 'var(--bx-void-deep)' }}>
         <Static />
       </div>
-      <Text size="sm" tone="mute">
+      <p style={{ margin: 0, color: "var(--bx-signal-mute)", fontSize: "var(--bx-text-sm)" }}>
         Ative a preferência no sistema operacional e recarregue para comparar.
-      </Text>
-    </Stack>
+      </p>
+    </div>
   ),
 }

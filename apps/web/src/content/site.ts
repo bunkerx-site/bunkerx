@@ -18,17 +18,60 @@ export const SITE = {
   url: 'https://www.bunkerx.com.br',
 }
 
+/**
+ * The page's own anchors.
+ *
+ * Named rather than written as `"#episodios"` wherever one is needed: they are
+ * referenced from the nav, from the fold, from the archive and from the
+ * header's own "don't hide the bar for this one" rule, and a renamed section
+ * that only got updated in three of those four places fails silently.
+ */
+export const SECTION = {
+  top: 'topo',
+  episodes: 'episodios',
+  cuts: 'cortes',
+  hosts: 'agentes',
+  bulletin: 'boletim',
+  listen: 'ouvir',
+  store: 'loja',
+  membership: 'membro',
+} as const
+
+/**
+ * A section id as a link target.
+ *
+ * The ids are stored bare because that is what an `id` attribute takes, and
+ * one helper knows the fragment syntax rather than every caller slicing a
+ * leading character off.
+ */
+export const hash = (section: string) => `#${section}`
+
+/**
+ * Where the show lives, off the site.
+ *
+ * All of it here, including the two catalogue links the archive uses: those
+ * were written out again inside the section, which meant the Spotify show URL
+ * and the YouTube channel URL each existed twice with nothing keeping them in
+ * step.
+ */
+export const CHANNELS = {
+  youtube: 'https://www.youtube.com/@bunkerx',
+  cuts: 'https://www.youtube.com/@CortesBunkerX',
+  spotifyShow: 'https://open.spotify.com/show/1YOCI7QdvUloo4VopSr7qm',
+  store: 'https://montink.com/bunker-x/',
+} as const
+
 export const NAV = [
   /* The way back up. The wordmark links here too, but a person scanning a nav
      bar for "how do I get out of this section" reads the list, not the logo. */
-  { label: 'Início', href: '#topo' },
-  { label: 'Episódios', href: '#episodios' },
-  { label: 'Cortes', href: '#cortes' },
-  { label: 'Quem investiga', href: '#agentes' },
-  { label: 'Boletim', href: '#boletim' },
-  { label: 'Onde ouvir', href: '#ouvir' },
-  { label: 'Loja', href: '#loja' },
-]
+  { label: 'Início', href: hash(SECTION.top) },
+  { label: 'Episódios', href: hash(SECTION.episodes) },
+  { label: 'Cortes', href: hash(SECTION.cuts) },
+  { label: 'Quem investiga', href: hash(SECTION.hosts) },
+  { label: 'Boletim', href: hash(SECTION.bulletin) },
+  { label: 'Onde ouvir', href: hash(SECTION.listen) },
+  { label: 'Loja', href: hash(SECTION.store) },
+] as const
 
 export const MEMBERSHIP = {
   youtube: 'https://www.youtube.com/channel/UCp45QZZjzscyReCPrzcP3gQ/join',
@@ -88,9 +131,9 @@ export const PLATFORMS = [
   {
     label: 'Spotify',
     icon: 'spotify',
-    href: 'https://open.spotify.com/show/1YOCI7QdvUloo4VopSr7qm',
+    href: CHANNELS.spotifyShow,
   },
-  { label: 'YouTube', icon: 'youtube', href: 'https://www.youtube.com/@bunkerx' },
+  { label: 'YouTube', icon: 'youtube', href: CHANNELS.youtube },
   {
     label: 'Apple Podcasts',
     icon: 'apple-podcasts',
@@ -107,8 +150,8 @@ export const SOCIALS = [
   { label: 'Instagram', icon: 'instagram', href: 'https://instagram.com/bunkerxpodcast' },
   { label: 'TikTok', icon: 'tiktok', href: 'https://tiktok.com/@bunkerxpodcast' },
   { label: 'X', icon: 'x', href: 'https://twitter.com/bunkerxpodcast' },
-  { label: 'YouTube', icon: 'youtube', href: 'https://www.youtube.com/@bunkerx' },
-  { label: 'Cortes', icon: 'youtube', href: 'https://www.youtube.com/@CortesBunkerX' },
+  { label: 'YouTube', icon: 'youtube', href: CHANNELS.youtube },
+  { label: 'Cortes', icon: 'youtube', href: CHANNELS.cuts },
 ] as const
 
 /**
