@@ -15,7 +15,7 @@ export function Store({ products }: { products: Product[] }) {
       lead="Estampas do programa. A produção e a entrega ficam com a Montink."
       more={
         <a
-          className="fold__action fold__action--ghost"
+          className="action action--ghost"
           href={STORE_URL}
           target="_blank"
           rel="noreferrer noopener"

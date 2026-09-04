@@ -1,5 +1,5 @@
-import { Static, Sticker } from '@bunkerx/design-system'
-import { SITE } from '../content/site'
+import { ABDUCTIONS, Glitch, Icon, PlatformIcon, Scene, Static, Tile } from '@bunkerx/design-system'
+import { MEMBERSHIP, PLATFORMS, SITE } from '../content/site'
 import { formatDate, formatDuration, truncate } from '../lib/format'
 import type { Episode } from '../lib/types'
 
@@ -28,51 +28,166 @@ export function Fold({ episode }: { episode: Episode }) {
         <Static intensity={0.05} fps={14} grain={3} />
       </div>
 
-      {/* The abducting saucer sits in the half of the fold the headline does
-          not use. The tilt is not passed as a prop here: the hover animation
-          owns the transform, so the angle lives in its keyframes instead. */}
-      <Sticker
-        name="ufo-beam"
-        width="clamp(13rem, 40vw, 38rem)"
-        opacity={0.85}
-        eager
-        className="fold__ufo"
-      />
-
       <div className="shell fold__inner">
-        {/* The h1 names the show; the episode is an h2 under it. A visitor sees
-            the episode first, and a crawler still gets the site's identity. */}
-        <h1 className="fold__site">
-          <strong>{SITE.name}</strong> — {SITE.tagline.toLowerCase()}. {SITE.schedule}.
-        </h1>
+        <div className="fold__copy">
+          {/*
+            The station identification.
 
-        <div className="fold__lock">
-          <span className="fold__slug">
-            No ar desde{' '}
-            <time dateTime={episode.publishedAt}>{formatDate(episode.publishedAt)}</time>
-            {duration ? ` · ${duration}` : ''}
-          </span>
+            This h1 is not the headline of the screen — the episode below it is.
+            What it does is say which station you are tuned to and when it
+            transmits, which is exactly what a broadcast says about itself
+            between programmes: call sign, slogan, schedule.
 
-          <h2 className="fold__title">{episode.title}</h2>
+            The call sign carries the misconvergence, and it is the only place
+            on the site that does. The design system calls that "the system's
+            emphasis mechanism, standing in for one accent colour" and asks for
+            one per screen; the one string that *is* the brand is where it
+            belongs. It arrives out of register and pulls into alignment, then
+            the programme locks in underneath — one sequence, in the order a
+            transmission actually starts.
+          */}
+          <h1 className="ident">
+            <Glitch as="span" offset="nudge" settle className="ident__sign">
+              {SITE.name}
+            </Glitch>
+            {/* Stacked, not run on. Inline, the call sign's display face and
+                the body type beside it sat on the same line at different sizes,
+                which left the baseline lumpy and wrapped the schedule onto a
+                line of its own anyway. Two deliberate lines beat three
+                accidental ones. */}
+            <span className="ident__says">
+              {SITE.tagline}. {SITE.schedule}.
+            </span>
+          </h1>
 
-          {episode.summary ? (
-            <p className="fold__summary">{truncate(episode.summary, 240)}</p>
-          ) : null}
+          <div className="fold__lock">
+            <h2 className="fold__title">{episode.title}</h2>
 
-          <div className="fold__actions">
-            <a
-              className="fold__action fold__action--primary"
-              href={episode.videoUrl ?? episode.url}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              {episode.videoUrl ? 'Assistir agora' : 'Ouvir agora'}
-            </a>
-            <a className="fold__action fold__action--ghost" href="#episodios">
-              Ver os episódios
-            </a>
+            {/*
+              Under the title, not above it.
+
+              Above, it was the first thing read on the screen — and when an
+              episode went out is not what anyone came for. Below, the title
+              lands first and the two facts about it follow: two fields, not a
+              sentence. "No ar desde" was framing that the date says already.
+            */}
+            <span className="stamp-chip">
+              <time className="stamp-chip__field" dateTime={episode.publishedAt}>
+                {formatDate(episode.publishedAt)}
+              </time>
+              {duration ? <span className="stamp-chip__field">{duration}</span> : null}
+            </span>
+
+            {episode.summary ? (
+              <p className="fold__summary">{truncate(episode.summary, 240)}</p>
+            ) : null}
+
+            {/*
+              Watch goes to the video; the places to listen sit under it, all on
+              screen rather than behind a disclosure.
+
+              A dropdown made the reader click once just to find out what the
+              options were, for four short names that fit on one line. The chips
+              are a rank below the filled button in size and in ring weight,
+              which is what keeps five links from reading as five equal
+              actions.
+
+              When an episode has no matching upload there is nothing to watch,
+              so the watch button is simply absent.
+            */}
+            <div className="fold__actions">
+              {episode.videoUrl ? (
+                <a
+                  className="action action--primary"
+                  href={episode.videoUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  <PlatformIcon name="youtube" size="1.15em" />
+                  Assistir no YouTube
+                </a>
+              ) : null}
+            </div>
+
+            {/*
+              The podcast apps only. YouTube is the filled button above — the
+              same word appeared twice within thirty pixels, once pointing at
+              this episode's video and once at the channel, which made the
+              loudest element on the screen and a quiet chip look like the same
+              offer. The split now reads cleanly: watch on YouTube, listen in
+              one of these. "Onde ouvir" further down still lists everything.
+            */}
+            <div className="fold__outlets">
+              {PLATFORMS.filter((platform) => platform.icon !== 'youtube').map((platform) => (
+                <Tile key={platform.label} size="sm" icon={platform.icon} href={platform.href}>
+                  {platform.label}
+                </Tile>
+              ))}
+            </div>
+
+            {/*
+              The way onward, under everything else.
+
+              It used to sit beside the watch button, where its only distinction
+              was being unstyled — which made it look like a peer of the one
+              action the screen exists for. Down here it is the last thing read
+              and the only thing offering to leave, with a hairline above it
+              doing the saying: the fold's content ends, and the archive is that
+              way.
+            */}
+            <div className="fold__more">
+              <a className="action action--ghost" href="#episodios">
+                <Icon name="archive" size="1.15em" />
+                Ver todos os episódios
+              </a>
+              {/* A peer of the archive link, not of the watch button. Both are
+                  ways to leave this screen — one further into the show, one
+                  into supporting it — so they share the outlined rank and the
+                  filled button keeps the fold's one job to itself. */}
+              <a
+                className="action action--ghost"
+                href={MEMBERSHIP.orelo}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                <Icon name="signal" size="1.15em" />
+                Apoie o programa
+              </a>
+            </div>
           </div>
         </div>
+
+        {/*
+          The abduction stands immediately to the right of the copy, centred on
+          the same line, as the fold's second column.
+
+          It is a real layout item rather than an absolutely placed decoration,
+          and that is the point: the two columns are measured against each
+          other, so the picture can never end up on top of the headline no
+          matter how long an episode title runs or how short the screen is.
+
+          A scene rather than a sticker — each one has a ground in it, a fence
+          and the patch of field whatever is being taken was lifted off — so it
+          is level and planted. The picture itself never drifts; what moves is
+          the light and what the light is carrying. `beam` puts motes in the
+          cone, drawn upward and converging on the emitter, with a pulse of
+          light running up behind them, and that direction is what turns a
+          painted cone into an abduction in progress.
+
+          The picture is drawn from the whole set on each visit: the cow, the
+          alien, the man and his furniture, the astronaut. Only the one that is
+          picked is ever downloaded, so the variety costs nothing.
+        */}
+        <Scene
+          name={ABDUCTIONS}
+          height="min(72svh, 44rem)"
+          opacity={0.92}
+          sizes="49vh"
+          transmit
+          beam
+          eager
+          className="fold__scene"
+        />
       </div>
     </section>
   )

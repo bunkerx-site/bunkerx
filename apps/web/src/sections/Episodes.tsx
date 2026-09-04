@@ -19,7 +19,7 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
       lead="O programa completo, toda segunda. Aqui estão os mais recentes; o arquivo inteiro está nas plataformas."
       more={
         <a
-          className="fold__action fold__action--ghost"
+          className="action action--ghost"
           href="https://open.spotify.com/show/1YOCI7QdvUloo4VopSr7qm"
           target="_blank"
           rel="noreferrer noopener"

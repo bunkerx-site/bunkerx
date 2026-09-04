@@ -2,8 +2,18 @@ import { useEffect, useState } from 'react'
 import { useHideOnScroll } from '../hooks/useHideOnScroll'
 import { MEMBERSHIP, NAV, SITE } from '../content/site'
 
+/*
+ * The one nav target that must not hide the bar.
+ *
+ * Everywhere else the bar has to clear out so the section starts at the very
+ * top of the screen. The top of the page is the one place the bar always
+ * belongs — and clicking this while already up there fires no scroll at all,
+ * so nothing would ever run the rule that brings it back.
+ */
+const TOP = '#topo'
+
 export function SiteHeader() {
-  const { hidden, atTop } = useHideOnScroll()
+  const { hidden, atTop, hideForJump } = useHideOnScroll()
   const [open, setOpen] = useState(false)
 
   // The sheet covers the page, so the page behind it must not scroll, and a
@@ -51,7 +61,15 @@ export function SiteHeader() {
 
           <nav className="masthead__nav" aria-label="Principal">
             {NAV.map((item) => (
-              <a key={item.href} className="masthead__link" href={item.href}>
+              <a
+                key={item.href}
+                className="masthead__link"
+                href={item.href}
+                /* Anchor targets reserve no space above themselves, so the bar
+                   has to leave for the section to actually start at the top.
+                   See `hideForJump`. */
+                onClick={item.href === TOP ? undefined : hideForJump}
+              >
                 {item.label}
               </a>
             ))}
@@ -84,7 +102,10 @@ export function SiteHeader() {
               key={item.href}
               className="menu__link"
               href={item.href}
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false)
+                if (item.href !== TOP) hideForJump()
+              }}
             >
               {item.label}
             </a>

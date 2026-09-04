@@ -1,4 +1,4 @@
-import { Sticker } from '@bunkerx/design-system'
+import { Seam, Sticker } from '@bunkerx/design-system'
 import { MEMBERSHIP, NAV, PLATFORMS, SITE, SOCIALS } from '../content/site'
 
 export function SiteFooter() {
@@ -67,6 +67,17 @@ export function SiteFooter() {
             </ul>
           </div>
         </div>
+
+        {/*
+          The sign-off's own colour burst.
+
+          The same gesture every section above opens with, inverted for the
+          plate — so the page closes on the device it has been using to start
+          things, saying the opposite: not that the signal picks up again, but
+          that this was the last of it. It replaces a plain inset hairline that
+          was doing the same job with none of the character.
+        */}
+        <Seam tone="plate" inline className="footer__seam" />
 
         <div className="footer__bottom">
           <span>© {new Date().getFullYear()} {SITE.name}</span>

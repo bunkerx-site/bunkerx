@@ -19,6 +19,9 @@ export const SITE = {
 }
 
 export const NAV = [
+  /* The way back up. The wordmark links here too, but a person scanning a nav
+     bar for "how do I get out of this section" reads the list, not the logo. */
+  { label: 'Início', href: '#topo' },
   { label: 'Episódios', href: '#episodios' },
   { label: 'Vídeos', href: '#videos' },
   { label: 'Cortes', href: '#cortes' },
@@ -64,25 +67,49 @@ export const HOSTS = [
  * Google Podcasts are absent on purpose: no Bunker X Deezer page was found,
  * and Google Podcasts was shut down in 2024.
  */
+/**
+ * Where the feed is distributed.
+ *
+ * `icon` names a mark in the design system's `PlatformIcon`. Amazon Music and
+ * Orelo have no official mark available — Amazon withdrew its brand from the
+ * icon set and Orelo is too small to be in it — so both fall through to the
+ * system's waveform, and their labels do the identifying. See PlatformIcon.tsx.
+ *
+ * Ordered by where people actually arrive from, not alphabetically.
+ *
+ * Orelo is not here on purpose: it is where the hosts ask people to *support*
+ * the show, and it already has the membership panel and the masthead button to
+ * itself. Listing it as a fourth way to press play buried that. RSS is out for
+ * the same kind of reason — a podcast app finds the feed from the
+ * `<link rel="alternate">` in the document head without being told, and the
+ * people who hand-paste feed URLs are not the ones this row is for.
+ */
 export const PLATFORMS = [
-  { label: 'Spotify', href: 'https://open.spotify.com/show/1YOCI7QdvUloo4VopSr7qm' },
-  { label: 'YouTube', href: 'https://www.youtube.com/@bunkerx' },
-  { label: 'Apple Podcasts', href: 'https://podcasts.apple.com/us/podcast/bunker-x/id1683012389' },
+  {
+    label: 'Spotify',
+    icon: 'spotify',
+    href: 'https://open.spotify.com/show/1YOCI7QdvUloo4VopSr7qm',
+  },
+  { label: 'YouTube', icon: 'youtube', href: 'https://www.youtube.com/@bunkerx' },
+  {
+    label: 'Apple Podcasts',
+    icon: 'apple-podcasts',
+    href: 'https://podcasts.apple.com/us/podcast/bunker-x/id1683012389',
+  },
   {
     label: 'Amazon Music',
+    icon: 'amazon-music',
     href: 'https://music.amazon.com.br/podcasts/67ee32af-357f-47cd-a3cd-2b1a214be669/bunker-x',
   },
-  { label: 'Orelo', href: 'https://orelo.cc/bunkerx' },
-  { label: 'RSS', href: 'https://anchor.fm/s/d02d9508/podcast/rss' },
-]
+] as const
 
 export const SOCIALS = [
-  { label: 'Instagram', href: 'https://instagram.com/bunkerxpodcast' },
-  { label: 'TikTok', href: 'https://tiktok.com/@bunkerxpodcast' },
-  { label: 'X', href: 'https://twitter.com/bunkerxpodcast' },
-  { label: 'YouTube', href: 'https://www.youtube.com/@bunkerx' },
-  { label: 'Cortes', href: 'https://www.youtube.com/@CortesBunkerX' },
-]
+  { label: 'Instagram', icon: 'instagram', href: 'https://instagram.com/bunkerxpodcast' },
+  { label: 'TikTok', icon: 'tiktok', href: 'https://tiktok.com/@bunkerxpodcast' },
+  { label: 'X', icon: 'x', href: 'https://twitter.com/bunkerxpodcast' },
+  { label: 'YouTube', icon: 'youtube', href: 'https://www.youtube.com/@bunkerx' },
+  { label: 'Cortes', icon: 'youtube', href: 'https://www.youtube.com/@CortesBunkerX' },
+] as const
 
 /**
  * Placeholder bulletin entries.

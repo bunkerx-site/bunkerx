@@ -24,7 +24,7 @@ export function Join() {
         </div>
         <div className="join__actions">
           <a
-            className="fold__action fold__action--primary"
+            className="action action--primary"
             href={MEMBERSHIP.orelo}
             target="_blank"
             rel="noreferrer noopener"
@@ -32,7 +32,7 @@ export function Join() {
             Apoiar pelo Orelo
           </a>
           <a
-            className="fold__action fold__action--ghost"
+            className="action action--ghost"
             href={MEMBERSHIP.youtube}
             target="_blank"
             rel="noreferrer noopener"

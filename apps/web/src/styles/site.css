@@ -1,19 +1,10 @@
 /* ============================================================== chrome == */
 
 /*
- * In-page navigation moves rather than jumps, so it is obvious the page went
- * somewhere else instead of appearing to have changed content in place. The
- * offset keeps a heading from landing underneath the fixed header.
+ * Smooth scrolling and the anchor offset both live in the design system's
+ * base sheet now, applied once on the scroll container. Restating either here
+ * is what produced a 224px landing: the two offsets stacked.
  */
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 7rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-}
-
 /* The scrollbar is on screen the whole time, so it is part of the design:
    phosphor thumb over a nebula track. */
 * { scrollbar-color: var(--bx-phosphor-dim) color-mix(in srgb, var(--bx-nebula) 55%, transparent); scrollbar-width: thin; }
@@ -61,7 +52,6 @@ html {
    started, which is why there is no chrome above each heading doing that job. */
 .block { position: relative; padding-block: clamp(5rem, 11vw, 10rem); overflow: hidden; }
 .block > .shell { position: relative; z-index: 1; }
-.block:target { scroll-margin-top: 7rem; }
 
 /*
  * Alternating grounds. Full-bleed bands rather than boxed panels: a band edge
@@ -182,6 +172,14 @@ html {
   text-decoration: none;
   white-space: nowrap;
   position: relative;
+  /*
+   * Optically centred, not box-centred.
+   *
+   * The display face has no descenders, so flexbox centring left the wordmark
+   * with 79px of plate above it and 102px below — four pixels high, and
+   * visibly so next to the nav beside it. See `--bx-display-nudge`.
+   */
+  transform: translateY(var(--bx-display-nudge));
   transition: text-decoration-color 140ms var(--bx-ease-crt);
 }
 
@@ -267,7 +265,7 @@ html {
 .masthead__join {
   position: relative;
   padding: 0.6rem 1.5rem;
-  border-radius: var(--bx-radius-stamp);
+  border-radius: var(--bx-radius-pill);
   background: var(--bx-void);
   color: var(--bx-phosphor);
   font-size: var(--bx-text-base);
@@ -288,7 +286,7 @@ html {
   padding: 0.55rem 1.1rem;
   position: relative;
   border: 2px solid var(--bx-void);
-  border-radius: var(--bx-radius-stamp);
+  border-radius: var(--bx-radius-pill);
   background: transparent;
   color: var(--bx-void);
   font-family: var(--bx-font-body);
@@ -391,25 +389,153 @@ html {
 
 .fold__inner { position: relative; }
 
-.fold__site {
+/* ============================================================== ident ==== */
+
+/*
+ * The station identification.
+ *
+ * Three fields, and the reason they are laid out rather than punctuated: the
+ * line used to be `NAME — fragment` joined by a spaced em dash, which is the
+ * chrome that turns up on any page whatever it is about. The call sign now
+ * carries its own weight and face, the slogan runs on from it as a real
+ * sentence, and a rule under the whole thing separates the station from the
+ * programme.
+ */
+.ident {
+  position: relative;
   /* This h1 is a sentence, not a headline. Every h1 gets the display face from
      base.css, which is right for a title and wrong for running text — in the
-     display face the line stops being readable at this size. */
+     display face the line stops being readable at this size. The call sign
+     inside it puts the display face back where it belongs. */
   font-family: var(--bx-font-body);
   font-weight: 400;
-  font-size: var(--bx-text-base);
-  color: var(--bx-signal-mute);
-  margin: 0 0 clamp(1.5rem, 4vh, 2.5rem);
-  max-width: 40ch;
+  /* The carrier rule is the bottom edge of this block, so this margin is
+     the whole distance between the station and the programme. It wants to
+     be generous: the rule reads as a boundary, and a boundary with the
+     next headline crowding it reads as an underline instead. */
+  margin: 0 0 clamp(2.75rem, 6.5vh, 4.5rem);
+  max-width: 46ch;
+  padding-bottom: clamp(0.9rem, 2vh, 1.4rem);
 }
 
-.fold__site strong { color: var(--bx-signal); font-weight: 500; }
-
-.fold__slug {
+/*
+ * The call sign, at the size it deserves.
+ *
+ * Fluid, and tied to the same axes as the episode title so the two never swap
+ * rank: the title runs 2.1–4.25rem, this runs 1.5–2.4rem, which keeps it a
+ * clear step below at every viewport. A fixed size here would have been larger
+ * than the title's own floor on a narrow screen and inverted the hierarchy on
+ * exactly the devices where it matters most.
+ */
+.ident__sign {
   display: block;
-  margin-bottom: var(--bx-space-5);
+  font-family: var(--bx-font-display);
+  font-size: clamp(1.5rem, min(2.6vw, 4vh), 2.4rem);
+  line-height: 1.05;
+  letter-spacing: 0.005em;
+  color: var(--bx-signal);
+}
+
+.ident__says {
+  display: block;
+  margin-top: 0.45rem;
   font-size: var(--bx-text-base);
+  line-height: 1.45;
+  color: var(--bx-signal-mute);
+}
+
+/*
+ * The carrier: the head of the transmission.
+ *
+ * A short run of test-card colour, then a rule running right and dissolving
+ * before it reaches the picture. It is the same gesture the seam makes at the
+ * top of every section below, which is the point — the page's structural
+ * device is introduced here, by the station identifying itself, and every
+ * section afterwards repeats it.
+ *
+ * Structural rather than decorative: above it is the station, below it is
+ * tonight's programme, and it points at where the signal is coming from.
+ */
+.ident::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: -8%;
+  bottom: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--bx-phosphor) 0 1.1rem,
+    var(--bx-phosphor-hot) 1.1rem 1.9rem,
+    var(--bx-signal) 1.9rem 2.4rem,
+    var(--bx-magenta) 2.4rem 3.4rem,
+    var(--bx-nebula-soft) 3.4rem 4.4rem,
+    /* Past the burst it drops to a hairline, so the strip reads as colour
+       running out into a rule rather than as a thick band all the way. */
+      transparent 4.4rem 100%
+  );
+}
+
+/* The rule the burst runs into, on its own so it can sit at 1px while the
+   bars stay at 3. */
+.ident::before {
+  content: '';
+  position: absolute;
+  left: 4.7rem;
+  right: -8%;
+  bottom: 1px;
+  height: 1px;
+  background: var(--bx-hairline);
+  mask-image: linear-gradient(to right, black 45%, transparent);
+}
+
+/* ======================================================== stamped chip ==== */
+
+/*
+ * Two fields on one stamped surface: when it went out, and how long it runs.
+ *
+ * Fully rounded, like every other control on the page. The system now carries
+ * two shapes and the split is by class of object: `pill` for what you press,
+ * `stamp` for what you read. See the shape block in tokens.css.
+ *
+ * The fields are divided by a hairline tick rather than joined by a middle
+ * dot, because they are two different kinds of fact and a divider says so
+ * where punctuation only runs them together. The tick is drawn as an inset
+ * shadow, so the rounded ends stay clean where a border would square them.
+ */
+.stamp-chip {
+  display: inline-flex;
+  align-items: stretch;
+  /*
+   * Close to the title, and nothing below.
+   *
+   * These two facts are about the episode named directly above them, so they
+   * belong to that block rather than floating between it and the synopsis.
+   * Enough air to clear the title's descenders at 1.02 line-height, and no
+   * more — the summary's own top margin carries the gap underneath, which
+   * keeps the two spacings from stacking into one large one.
+   */
+  margin: clamp(1rem, 2.2vh, 1.5rem) 0 0;
+  border-radius: var(--bx-radius-pill);
+  background: color-mix(in srgb, var(--bx-void-deep) 55%, transparent);
+  box-shadow: inset 0 0 0 1px var(--bx-ring-quiet);
+  font-size: var(--bx-text-sm);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.stamp-chip__field {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.85rem;
+  /* The date is the news; the length is a detail you check second. */
   color: var(--bx-phosphor);
+}
+
+.stamp-chip__field + .stamp-chip__field {
+  box-shadow: inset 1px 0 0 var(--bx-ring-quiet);
+  color: var(--bx-signal-mute);
 }
 
 .fold__title {
@@ -440,48 +566,143 @@ html {
    and the two actions are what the fold is for. */
 @media (max-height: 44rem) {
   .fold__summary { display: none; }
-  .fold__site { margin-bottom: var(--bx-space-5); }
+  .ident { margin-bottom: var(--bx-space-5); }
 }
 
 .fold__actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--bx-space-4);
   margin-top: clamp(1.5rem, 4vh, 2.5rem);
 }
 
-.fold__action {
-  padding: 1rem 2rem;
-  border-radius: var(--bx-radius-stamp);
-  font-size: var(--bx-text-base);
-  font-weight: 600;
-  text-decoration: none;
-  border: 2px solid var(--bx-phosphor);
-  transition: background 140ms var(--bx-ease-crt), color 140ms var(--bx-ease-crt),
-    box-shadow 200ms var(--bx-ease-crt);
+/*
+ * The six places to listen, as a wrapping row of chips under the actions.
+ *
+ * Closer to the actions than the actions are to the summary, because they
+ * belong to the same decision — watch it, or open it in one of these. The gap
+ * is what groups them; nothing labels the row, because a label above six
+ * platform names would be telling the reader what they can already see.
+ */
+.fold__outlets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bx-space-2);
+  margin-top: var(--bx-space-4);
+  max-width: 44rem;
 }
 
 /*
- * Same specificity problem as the logo, and the same consequence: on hover the
- * label turned light green on a green fill. The hover now brightens the fill
- * and holds the label dark, which reads as clearly interactive and measures
- * 14.67:1 instead of 1.24:1.
+ * The way onward.
+ *
+ * The hairline is the whole device: it closes the fold's copy and marks this
+ * as the step out of it, which is work a bare link beside the watch button
+ * could not do. Held to the copy column's width so the rule ends where the
+ * text does rather than running under the picture.
  */
-.fold__action--primary { background: var(--bx-phosphor); color: var(--bx-void); }
+.fold__more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  margin-top: clamp(1.5rem, 3.5vh, 2.25rem);
+  padding-top: clamp(1.1rem, 2.5vh, 1.6rem);
+  max-width: 44rem;
+  border-top: 1px solid var(--bx-hairline);
+}
 
-.fold__action--primary:hover,
-.fold__action--primary:focus-visible {
+/* ============================================================= actions ==== */
+
+/*
+ * The site's buttons. Named for what they are rather than for the fold, which
+ * is where they happened to be written first — five sections use them.
+ *
+ * Three ranks, not two: one filled action per screen, one outlined
+ * alternative beside it, and a quiet third for the link that merely moves you
+ * down the page. The old pair made "Ver os episódios" look like a peer of
+ * "Assistir", which it is not.
+ */
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.75rem;
+  border-radius: var(--bx-radius-pill);
+  font-family: var(--bx-font-body);
+  font-size: var(--bx-text-base);
+  font-weight: 600;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: transparent;
+  transition:
+    background var(--bx-dur-fast) var(--bx-ease-crt),
+    color var(--bx-dur-fast) var(--bx-ease-crt),
+    border-color var(--bx-dur-fast) var(--bx-ease-crt),
+    box-shadow var(--bx-dur-base) var(--bx-ease-crt);
+}
+
+/*
+ * The filled action.
+ *
+ * The hover brightens the fill and holds the label dark. Painting the label
+ * light green instead — which is what the base sheet's `a:hover` did before
+ * `--bx-link` existed — measured 1.24:1; this measures 14.67:1.
+ */
+.action--primary {
+  background: var(--bx-phosphor);
+  border-color: var(--bx-phosphor);
+  color: var(--bx-void);
+}
+
+.action--primary:hover,
+.action--primary:focus-visible {
   background: var(--bx-phosphor-hot);
   border-color: var(--bx-phosphor-hot);
   color: var(--bx-void-deep);
   box-shadow: var(--bx-glow-hard);
 }
-.fold__action--ghost { color: var(--bx-phosphor); background: transparent; }
-.fold__action--ghost:hover { background: color-mix(in srgb, var(--bx-phosphor) 15%, transparent); }
 
-/* The lock-on. Channels separate, noise sits over the type, then it settles. */
+.action--ghost {
+  color: var(--bx-phosphor);
+  border-color: var(--bx-phosphor);
+}
+
+.action--ghost:hover,
+.action--ghost:focus-visible {
+  background: color-mix(in srgb, var(--bx-phosphor) 15%, transparent);
+  color: var(--bx-phosphor-hot);
+  border-color: var(--bx-phosphor-hot);
+}
+
+/* No border, no fill: for the one that only scrolls the page. */
+.action--quiet {
+  padding-inline: 0.25rem;
+  font-weight: 500;
+  color: var(--bx-signal-mute);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--bx-signal-mute) 45%, transparent);
+  text-underline-offset: 6px;
+}
+
+.action--quiet:hover,
+.action--quiet:focus-visible {
+  color: var(--bx-signal);
+  text-decoration-color: currentColor;
+}
+
+/*
+ * The lock-on, second half of one sequence.
+ *
+ * The station identifies itself first — the call sign's channels pulling into
+ * register — and the programme comes in behind it. The delay is what makes the
+ * two read as one event in the order a broadcast actually starts, instead of
+ * as two entrances racing each other from the same frame.
+ */
 .fold__lock {
-  animation: bx-lock 1500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: bx-lock 1500ms cubic-bezier(0.16, 1, 0.3, 1) 420ms both;
 }
 
 @keyframes bx-lock {
@@ -756,16 +977,6 @@ html {
 
 .outlets { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: var(--bx-space-4); }
 
-.outlet {
-  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.25rem, 2.5vw, 1.75rem);
-  border-radius: var(--bx-radius-stamp);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bx-signal) 16%, transparent);
-  color: var(--bx-signal);
-  font-size: var(--bx-text-lg);
-  text-decoration: none;
-  transition: box-shadow 160ms var(--bx-ease-crt), color 160ms var(--bx-ease-crt);
-}
-.outlet:hover { box-shadow: inset 0 0 0 2px var(--bx-phosphor); color: var(--bx-phosphor); }
 
 /* ============================================================= stickers == */
 
@@ -802,39 +1013,66 @@ html {
 }
 
 /*
- * The saucer sits in the half of the fold the headline does not use. It is
- * absolutely placed because it is meant to overlap the picture, but its width
- * is fluid, so it shrinks with the screen rather than disappearing.
+ * The abduction scene: the fold's second column.
  *
- * It hovers. A saucer holding position is the one thing on this page where
- * continuous motion is the subject rather than an effect — and the drift is
- * slow and small enough that it never pulls the eye off the headline.
+ * Laid out rather than absolutely placed, and that is the whole reason it sits
+ * correctly. The copy and the picture are two cells of one grid measured
+ * against each other, so the scene lands immediately to the right of the text
+ * whatever the text is doing — a long episode title, a missing synopsis, a
+ * short screen — and it can never come to rest on top of the headline. The
+ * earlier version was positioned against the section's edges instead, which
+ * meant its distance from the words it stands beside changed with every
+ * viewport.
  *
- * The tilt lives in the keyframes, not on the element: an inline rotate would
- * be overwritten the moment the animation set its own transform.
+ * `align-items: center` is the vertical alignment: both cells centre on the
+ * row's middle line, so the beam runs down beside the copy rather than past
+ * it.
  */
-.fold__ufo {
-  position: absolute;
-  /* Held to the outer third. The headline is the reason the screen exists, so
-     the saucer gets whatever is left rather than the other way round. */
-  right: clamp(-4rem, -2vw, 0rem);
-  top: 6%;
-  z-index: 0;
-  /* The beam reads as light, so it should spill a little onto what is behind. */
-  filter: drop-shadow(0 2rem 3rem rgba(0, 237, 103, 0.16));
-  animation: bx-hover 11s ease-in-out infinite;
-  will-change: transform;
+.fold__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
 }
 
-@keyframes bx-hover {
-  0% { transform: translate3d(0, 0, 0) rotate(-4deg); }
-  30% { transform: translate3d(-0.8%, -2.4%, 0) rotate(-2.6deg); }
-  62% { transform: translate3d(0.6%, -3.4%, 0) rotate(-5deg); }
-  100% { transform: translate3d(0, 0, 0) rotate(-4deg); }
-}
+.fold__copy { min-width: 0; }
 
-@media (prefers-reduced-motion: reduce) {
-  .fold__ufo { animation: none; transform: rotate(-4deg); }
+/* The picture is level. Its horizon is, so it is — the tilt and the drift the
+   old cut-out saucer had would both read as a fault here. The only motion is
+   the light, which lives in `Scene`'s `transmit`. */
+.fold__scene { justify-self: end; }
+
+@media (max-width: 64rem) {
+  /*
+   * One column, with both cells stacked into the same cell rather than one
+   * under the other.
+   *
+   * Below this width there is no room for a column of picture beside a column
+   * of type without squeezing the headline into three words a line. Putting
+   * the scene under the copy instead would push the actions off the screen, so
+   * the two share a cell: the beam rises through the middle of the fold behind
+   * the text, which reads as the ground the words are standing on.
+   */
+  .fold__inner { grid-template-columns: minmax(0, 1fr); }
+  .fold__copy { grid-area: 1 / 1; z-index: 1; }
+
+  .fold__scene {
+    grid-area: 1 / 1;
+    justify-self: center;
+    z-index: 0;
+    /* Well back, because here it really is behind running text rather than
+       beside it. */
+    opacity: 0.3 !important;
+    /*
+     * Bigger here, not smaller. Standing beside the copy the picture is a
+     * second column and has to leave room for one; sitting behind the copy it
+     * is the ground, and a small beam floating in the middle of a screen of
+     * text reads as an illustration that got lost. Capped against the width
+     * too, so it grows on a tall phone without the cone running off both
+     * sides at once.
+     */
+    --bx-scene-height: min(82svh, 122vw);
+  }
 }
 
 /*
@@ -933,6 +1171,10 @@ html {
 }
 
 .footer__grid { position: relative; }
+
+/* The burst sits where the inset hairline used to, carrying the same job with
+   the vocabulary the rest of the page uses. */
+.footer__seam { margin-top: clamp(3rem, 6vw, 5rem); }
 
 /*
  * The globe over the episode log.
@@ -1088,12 +1330,6 @@ html {
   margin-top: var(--bx-space-8);
 }
 
-@media (max-width: 40rem) {
-  /* On a phone the fold is entirely text, so the saucer drops below it and
-     pulls back to where it cannot compete with the headline. */
-  .fold__ufo { opacity: 0.4 !important; top: auto; bottom: 3%; right: -4rem; }
-}
-
 /* ============================================================== signoff == */
 
 /*
@@ -1160,4 +1396,4 @@ html {
   text-decoration: none;
 }
 .footer__list a:hover { color: var(--bx-void); text-decoration: underline; text-underline-offset: 4px; }
-.footer__bottom { margin-top: clamp(3rem, 6vw, 5rem); padding-top: var(--bx-space-6); box-shadow: inset 0 1px 0 color-mix(in srgb, var(--bx-void) 25%, transparent); font-size: var(--bx-text-sm); color: color-mix(in srgb, var(--bx-void) 70%, transparent); display: flex; flex-wrap: wrap; gap: var(--bx-space-4); justify-content: space-between; }
+.footer__bottom { padding-top: var(--bx-space-6); font-size: var(--bx-text-sm); color: color-mix(in srgb, var(--bx-void) 70%, transparent); display: flex; flex-wrap: wrap; gap: var(--bx-space-4); justify-content: space-between; }

@@ -48,7 +48,7 @@ export function Watch({
       stickerSide={stickerSide}
       more={
         <a
-          className="fold__action fold__action--ghost"
+          className="action action--ghost"
           href={channelUrl}
           target="_blank"
           rel="noreferrer noopener"
