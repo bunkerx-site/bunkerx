@@ -1,5 +1,5 @@
 import { Block } from './Block'
-import type { StickerName } from '@bunkerx/design-system'
+import type { StickerHalo, StickerMotion, StickerName } from '@bunkerx/design-system'
 import { formatDate, truncate } from '../lib/format'
 import type { Video } from '../lib/types'
 
@@ -16,6 +16,8 @@ type WatchProps = {
   tone?: 'plain' | 'nebula' | 'deep'
   sticker?: StickerName
   stickerSide?: 'left' | 'right'
+  stickerMotion?: StickerMotion
+  stickerHalo?: StickerHalo
 }
 
 /**
@@ -37,6 +39,8 @@ export function Watch({
   tone = 'plain',
   sticker,
   stickerSide,
+  stickerMotion,
+  stickerHalo,
 }: WatchProps) {
   return (
     <Block
@@ -46,6 +50,8 @@ export function Watch({
       tone={tone}
       sticker={sticker}
       stickerSide={stickerSide}
+      stickerMotion={stickerMotion}
+      stickerHalo={stickerHalo}
       more={
         <a
           className="action action--ghost"

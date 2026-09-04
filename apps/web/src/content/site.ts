@@ -23,10 +23,10 @@ export const NAV = [
      bar for "how do I get out of this section" reads the list, not the logo. */
   { label: 'Início', href: '#topo' },
   { label: 'Episódios', href: '#episodios' },
-  { label: 'Vídeos', href: '#videos' },
   { label: 'Cortes', href: '#cortes' },
   { label: 'Quem investiga', href: '#agentes' },
   { label: 'Boletim', href: '#boletim' },
+  { label: 'Onde ouvir', href: '#ouvir' },
   { label: 'Loja', href: '#loja' },
 ]
 

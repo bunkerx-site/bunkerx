@@ -11,7 +11,6 @@ import { Listen } from './sections/Listen'
 import { SignOff } from './sections/SignOff'
 import { SiteFooter } from './sections/SiteFooter'
 import episodes from './data/episodes-latest.json'
-import videos from './data/videos.json'
 import cuts from './data/cuts.json'
 import products from './data/products.json'
 import type { Episode, Product, Video } from './lib/types'
@@ -26,7 +25,6 @@ import './styles/site.css'
  * not exist yet.
  */
 const EPISODES = episodes as Episode[]
-const VIDEOS = videos as Video[]
 const CUTS = cuts as Video[]
 const PRODUCTS = products as Product[]
 
@@ -41,17 +39,11 @@ export function App() {
         {/* The newest episode is the entire fold, so the log starts at the
             second one rather than repeating it immediately underneath. */}
         <Episodes episodes={EPISODES.slice(1)} />
-        <Watch
-          id="videos"
-          title="No vídeo"
-          lead="O programa inteiro, com câmera, no canal principal."
-          videos={VIDEOS}
-          channelUrl="https://www.youtube.com/@bunkerx"
-          channelLabel="Ver o canal no YouTube"
-          sticker="camera"
-          stickerSide="left"
-          count={4}
-        />
+        {/* There is no separate "No vídeo" block any more: eleven of the
+            fifteen uploads on the main channel are episodes, and the archive
+            above now carries every episode's video alongside its audio. The
+            cuts are a different channel and a different thing, so they keep
+            their own section. */}
         <Watch
           id="cortes"
           title="Cortes"
@@ -60,7 +52,10 @@ export function App() {
           channelUrl="https://www.youtube.com/@CortesBunkerX"
           channelLabel="Ver o canal de cortes"
           sticker="night-vision"
+          stickerMotion="handheld"
+          stickerHalo="phosphor"
           tone="nebula"
+          stickerSide="left"
           tight
           count={6}
         />

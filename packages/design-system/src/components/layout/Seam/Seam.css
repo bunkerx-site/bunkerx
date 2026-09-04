@@ -43,6 +43,14 @@
 }
 
 /*
+ * The row-scale burst. Shorter run of bars and a finer strip, so it still
+ * reads as the same decoration without competing with the section boundary it
+ * sits inside.
+ */
+.bx-seam--sm { height: 3px; gap: var(--bx-space-3); }
+.bx-seam--sm .bx-seam__bars { width: clamp(2.5rem, 5vw, 4rem); border-radius: 2px; }
+
+/*
  * Inline: an ordinary divider rather than a section's top edge.
  *
  * Drops the absolute positioning and the indent, because a seam used this way

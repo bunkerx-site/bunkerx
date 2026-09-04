@@ -10,6 +10,7 @@ export function Agents() {
       stickerSide="left"
       sticker="case-folder"
       stickerRotate={6}
+      stickerMotion="identify"
       lead="Dois sujeitos que levam o assunto a sério o suficiente para rir dele."
     >
       <div className="agents">

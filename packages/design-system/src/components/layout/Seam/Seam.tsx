@@ -16,6 +16,15 @@ export type SeamProps = {
    * already inside the column.
    */
   inline?: boolean
+  /**
+   * `md` marks a change of section. `sm` marks a change of item inside one.
+   *
+   * The same gesture at two scales, because they are not the same size of
+   * event: arriving at a new section is a bigger thing than moving to the next
+   * episode in a list. Six full-scale bursts down one section would stop
+   * reading as punctuation and become wallpaper.
+   */
+  size?: 'md' | 'sm'
   className?: string
 }
 
@@ -35,10 +44,11 @@ export type SeamProps = {
  * Decorative, so it is hidden from assistive technology — the heading
  * underneath is what actually announces the new section.
  */
-export function Seam({ tone = 'signal', inline = false, className }: SeamProps) {
+export function Seam({ tone = 'signal', inline = false, size = 'md', className }: SeamProps) {
   const classes = [
     'bx-seam',
     tone !== 'signal' && `bx-seam--${tone}`,
+    size !== 'md' && `bx-seam--${size}`,
     inline && 'bx-seam--inline',
     className,
   ]

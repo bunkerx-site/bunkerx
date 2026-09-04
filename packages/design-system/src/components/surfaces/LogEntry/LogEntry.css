@@ -1,83 +1,153 @@
-.bx-log { border-top: var(--bx-border-hair) solid var(--bx-hairline); }
+.bx-log { display: grid; }
 
+/*
+ * Two columns: the still, and everything that is said about it.
+ *
+ * The date used to have a column of its own, stamped in the margin. The chip
+ * carries it now, which frees that width for the picture — and one place for
+ * "when it went out" beats two.
+ */
 .bx-log__entry {
   display: grid;
-  /* Still, date, body, length. The still comes first and at a size worth
-     actually looking at; the date hangs in its own column so the log reads
-     down the left edge. */
-  grid-template-columns: 21rem 5.5rem minmax(0, 1fr) auto;
-  gap: clamp(1.5rem, 4vw, 3.5rem);
+  grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: start;
-  padding-block: clamp(2rem, 4vw, 3rem);
-  border-bottom: var(--bx-border-hair) solid var(--bx-hairline);
-  transition: border-color var(--bx-dur-base) var(--bx-ease-crt);
+  /* The seam is pinned to this edge, so the row is the positioning context. */
+  position: relative;
+  padding-block: clamp(2.25rem, 4.5vw, 3.25rem);
+}
+
+/* Its own top edge, indented to nothing: the row is already inside the column. */
+.bx-log__seam {
+  position: absolute;
+  inset: 0 0 auto;
+  padding-inline: 0;
 }
 
 /*
- * Hovering anywhere in the row lights the row and the still inside it.
+ * The row under the cursor lifts onto the purple, and its seam brightens.
  *
- * The still's ring is not set here — `bx-hoverable` on the row flips the two
- * inherited properties that `Frame` reads, so the coupling runs through a
- * value rather than through a selector reaching into another component.
+ * Elevation is what the nebula is for in this system — "a panel above the
+ * ground" — so the hovered row becomes exactly that. The wash bleeds a little
+ * past the column so the row reads as a band the width of the section rather
+ * than a box drawn around the text, and it sits behind the content on its own
+ * layer so nothing inside has to be re-stacked.
  */
-.bx-log__entry:hover { border-bottom-color: color-mix(in srgb, var(--bx-phosphor) 55%, transparent); }
+.bx-log__entry::before {
+  content: '';
+  position: absolute;
+  inset: 1px clamp(-1rem, -2vw, -0.5rem) 0;
+  z-index: -1;
+  border-radius: var(--bx-radius-stamp);
+  background: color-mix(in srgb, var(--bx-nebula) 30%, transparent);
+  opacity: 0;
+  transition: opacity var(--bx-dur-base) var(--bx-ease-crt);
+  pointer-events: none;
+}
+
+.bx-log__entry:hover::before { opacity: 1; }
+
+.bx-log__entry:hover .bx-seam__rule {
+  background: color-mix(in srgb, var(--bx-phosphor) 45%, transparent);
+}
 
 .bx-log__art { display: block; }
 
-.bx-log__date {
-  font-family: var(--bx-font-display);
-  font-size: var(--bx-text-xl);
-  line-height: 1;
-  color: var(--bx-phosphor);
-  padding-top: 0.35rem;
-}
-
-.bx-log__year {
-  display: block;
-  margin-top: 0.35rem;
-  font-size: var(--bx-text-sm);
-  color: var(--bx-signal-mute);
-}
+.bx-log__body { min-width: 0; }
 
 .bx-log__title {
   font-family: var(--bx-font-display);
   font-size: var(--bx-display-row);
   line-height: 1.1;
   margin: 0;
-  text-wrap: balance;
+  /*
+   * `pretty`, not `balance`. Balancing evens the lines out by shortening all
+   * of them, which on a three-line episode title left a visible column of dead
+   * space down the right of the row — the hover wash made it obvious. `pretty`
+   * only pulls back a stranded last word, so the title uses the width it has.
+   */
+  text-wrap: pretty;
+  /*
+   * Holds its own where a decoration crosses it. A section's cut-out is
+   * allowed to bleed into the top of the log, so the row cannot assume the
+   * ground behind it is flat — the same reason the fold's headline carries
+   * one, and cheaper than forbidding the overlap.
+   */
+  text-shadow: 0 1px 12px var(--bx-void-deep), 0 0 28px var(--bx-void-deep);
 }
 
 .bx-log__title a { color: var(--bx-signal); text-decoration: none; }
 .bx-log__title a:hover { color: var(--bx-phosphor-hot); }
 
+.bx-log__meta { margin-top: var(--bx-space-4); }
+
+.bx-log__synopsis { margin-top: var(--bx-space-4); }
+
 .bx-log__summary {
-  margin: var(--bx-space-4) 0 0;
-  max-width: 58ch;
+  margin: 0;
+  /*
+   * Wider than the 58ch it started at, but still capped: past about 70
+   * characters the eye loses its place returning to the start of a line. The
+   * cap is what the column can give it or that limit, whichever is smaller.
+   */
+  max-width: min(100%, 68ch);
   font-size: var(--bx-text-base);
   line-height: var(--bx-leading-body);
   color: var(--bx-signal-mute);
 }
 
-.bx-log__duration {
-  font-size: var(--bx-text-base);
-  color: var(--bx-signal-mute);
-  padding-top: 0.6rem;
-  white-space: nowrap;
+/*
+ * Clamped by line count rather than by height, so the cut always lands between
+ * lines. The number comes in as an inline style because it is a prop — a
+ * height in rem would have to be recalculated against the line-height, and
+ * would slice a line in half at any size it was not tuned for.
+ */
+.bx-log__summary--clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* The length is the first thing to give up its own column: it is the shortest
-   piece of information in the row and the one a reader scans for last. */
-@media (max-width: 74rem) {
-  .bx-log__entry { grid-template-columns: 15rem 5rem minmax(0, 1fr); }
-  .bx-log__duration { grid-column: 2 / -1; padding-top: 0; }
+/*
+ * The disclosure.
+ *
+ * Set as a link because it behaves like one to the eye, but it is a button:
+ * it changes the page rather than leaving it. The underline is what marks it
+ * as the one interactive word in a paragraph of grey.
+ */
+.bx-log__more {
+  display: inline-block;
+  margin-top: var(--bx-space-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: var(--bx-text-sm);
+  color: var(--bx-phosphor);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--bx-phosphor) 45%, transparent);
+  transition: color var(--bx-dur-fast) var(--bx-ease-crt);
 }
 
-@media (max-width: 52rem) {
-  .bx-log__entry { grid-template-columns: 1fr; gap: var(--bx-space-3); }
-  .bx-log__art { max-width: 28rem; }
-  .bx-log__duration { grid-column: auto; padding-top: 0; }
-  /* Stacked, the date has a whole line to itself, so day and year sit side by
-     side on it rather than one above the other. */
-  .bx-log__date { display: flex; align-items: baseline; gap: var(--bx-space-3); padding-top: 0; }
-  .bx-log__year { margin: 0; }
+.bx-log__more:hover { color: var(--bx-phosphor-hot); text-decoration-color: currentColor; }
+
+.bx-log__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bx-space-3);
+  margin-top: var(--bx-space-5);
+}
+
+/*
+ * The still gives up its column first.
+ *
+ * Below this width two columns leave the title three words a line, and a
+ * cramped headline costs more than a picture at half size. Stacked, the still
+ * is capped so it does not become the whole screen.
+ */
+@media (max-width: 60rem) {
+  .bx-log__entry { grid-template-columns: minmax(0, 1fr); gap: var(--bx-space-5); }
+  .bx-log__art { max-width: 30rem; }
 }

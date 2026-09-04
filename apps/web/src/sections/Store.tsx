@@ -12,6 +12,8 @@ export function Store({ products }: { products: Product[] }) {
       tone="deep"
       sticker="sketch-grey"
       stickerRotate={-5}
+      stickerMotion="sway"
+      stickerHalo="lift"
       lead="Estampas do programa. A produção e a entrega ficam com a Montink."
       more={
         <a

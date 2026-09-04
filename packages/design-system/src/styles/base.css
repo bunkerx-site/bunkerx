@@ -34,8 +34,10 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Headings use the letterpress serif. No uppercase transform: the logo is
-   already all-caps, headings do not need to repeat the trick. */
+/* Headings use the letterpress serif. Whether they are set in caps is decided
+   per role rather than here: section titles are (they echo the wordmark, which
+   is always uppercase), while a headline carrying an episode's own title keeps
+   the case the feed gave it. */
 h1, h2, h3, h4 {
   font-family: var(--bx-font-display);
   font-weight: 400;

@@ -123,7 +123,15 @@ async function podcast() {
   return list(channel.item).map((item) => ({
     id: String(item.guid?.['#text'] ?? item.guid ?? item.link),
     title: trimTitle(plain(item.title)),
-    summary: synopsis(item.description).slice(0, 400),
+    /*
+     * Long enough that "Ver mais" has something to reveal.
+     *
+     * At 400 this was shorter than the two lines the archive shows collapsed
+     * plus a little, so expanding a row gained the reader almost nothing. The
+     * cap is still here because a handful of these descriptions carry the
+     * show's entire credits block, and none of that is a synopsis.
+     */
+    summary: synopsis(item.description).slice(0, 1800),
     publishedAt: new Date(item.pubDate).toISOString(),
     durationSeconds: toSeconds(item['itunes:duration']),
     episode: item['itunes:episode'] ? Number(item['itunes:episode']) : undefined,

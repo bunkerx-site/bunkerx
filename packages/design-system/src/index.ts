@@ -42,6 +42,7 @@ export { Checkbox, type CheckboxProps } from './components/controls/Checkbox/Che
 export { Panel, type PanelProps } from './components/surfaces/Panel/Panel'
 export { Plate, type PlateProps } from './components/surfaces/Plate/Plate'
 export { Frame, type FrameProps } from './components/surfaces/Frame/Frame'
+export { Chip, type ChipProps } from './components/surfaces/Chip/Chip'
 export { Tile, type TileProps } from './components/surfaces/Tile/Tile'
 export { Stamp, type StampProps } from './components/surfaces/Stamp/Stamp'
 export { Avatar, type AvatarProps } from './components/surfaces/Avatar/Avatar'

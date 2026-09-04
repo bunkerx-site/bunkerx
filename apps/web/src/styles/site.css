@@ -59,6 +59,10 @@
  * one more card. Both tints are transparent enough that the drifting dust
  * behind them still shows.
  */
+/* The section under the fold has no seam above it, so it needs far less air
+   than one arriving after a full band change. */
+.block--tight { padding-top: clamp(1.5rem, 3.5vw, 3rem); }
+
 .block--nebula { background: color-mix(in srgb, var(--bx-nebula) 42%, transparent); }
 .block--deep { background: color-mix(in srgb, var(--bx-void-deep) 62%, transparent); }
 
@@ -118,6 +122,10 @@
   line-height: var(--bx-leading-tight);
   color: var(--bx-signal);
   margin: 0;
+  /* Set in caps, like the wordmark. Caps in this letterpress face close up
+     without a little tracking, and at this size the loss is visible. */
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .block__lead {
@@ -129,6 +137,43 @@
 }
 
 .block__more { margin-top: clamp(2.5rem, 5vw, 4rem); }
+
+/* Both carriers' full catalogues, side by side — the section covers video and
+   audio, so its footer offers both rather than picking one. */
+/* The pager and the two catalogue links share the section's footer. */
+.episodes__more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bx-space-4) clamp(1rem, 3vw, 2rem);
+}
+
+/*
+ * The one centred thing in the section.
+ *
+ * Everything else on this page is left aligned against the column, which is
+ * what makes long reading comfortable. This is neither long nor reading — it
+ * is a control at the end of a run — and centring it marks the end of the list
+ * rather than looking like one more row that lost its picture.
+ */
+.episodes__grow {
+  display: grid;
+  justify-items: center;
+  gap: var(--bx-space-4);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+/* Where you are in the archive. The mono face because it is a machine-emitted
+   count, and tabular figures so it does not jitter as it climbs. */
+.episodes__tally {
+  margin: 0;
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-sm);
+  color: var(--bx-signal-mute);
+  font-variant-numeric: tabular-nums;
+}
+
+.episodes__tally span { opacity: 0.7; }
 
 /* ============================================================ masthead == */
 
@@ -677,6 +722,19 @@
   border-color: var(--bx-phosphor-hot);
 }
 
+/*
+ * The small rank, for an action inside a list row.
+ *
+ * Same registers, less weight: six rows each carrying a full-size button would
+ * out-shout the fold's one filled action, and the row's job is to be scanned
+ * rather than pressed.
+ */
+.action--sm {
+  padding: 0.55rem 1rem;
+  gap: 0.45rem;
+  font-size: var(--bx-text-sm);
+}
+
 /* No border, no fill: for the one that only scrolls the page. */
 .action--quiet {
   padding-inline: 0.25rem;
@@ -720,113 +778,17 @@
 
 /* ============================================================= episodes == */
 
-/*
- * The archive of a weekly show is a log, so it is set as one: full-width rows
- * with the date hanging in the margin. A grid of equal cards would have made
- * the newest episode look the same size as one from 2023.
- */
-.log { border-top: 1px solid color-mix(in srgb, var(--bx-signal) 14%, transparent); }
 
-.entry {
-  display: grid;
-  grid-template-columns: 21rem 5.5rem minmax(0, 1fr) auto;
-  gap: clamp(1.5rem, 4vw, 3.5rem);
-  align-items: start;
-  padding-block: clamp(2rem, 4vw, 3rem);
-  border-bottom: 1px solid color-mix(in srgb, var(--bx-signal) 14%, transparent);
-  transition: border-color 200ms var(--bx-ease-crt);
-}
 
-.entry:hover { border-bottom-color: color-mix(in srgb, var(--bx-phosphor) 55%, transparent); }
 
-/*
- * The still sits first, at a size worth actually looking at.
- *
- * Every row is 16:9 regardless of what the source gave us — matched episodes
- * bring a YouTube thumbnail, the rest fall back to square cover art that gets
- * cropped to fit. A column of mixed ratios made the log look broken, and the
- * cover art is centred artwork that survives the crop.
- */
-.entry__art {
-  display: block;
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--bx-radius-stamp);
-  background: var(--bx-void-deep);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bx-signal) 12%, transparent);
-  aspect-ratio: 16 / 9;
-  transition: box-shadow 200ms var(--bx-ease-crt);
-}
 
-.entry:hover .entry__art { box-shadow: 0 0 0 2px color-mix(in srgb, var(--bx-phosphor) 70%, transparent); }
-/* Matched episodes bring a 16:9 still, which fills the frame. The rest fall
-   back to square cover art: letterboxed rather than cropped, because cropping
-   a centred decal to 16:9 beheads it. The gap reads as "no video for this
-   one", which is the truth. */
-.entry__img { width: 100%; height: 100%; object-fit: cover; }
 
-.entry__img--square {
-  object-fit: contain;
-  padding: 0.4rem;
-  background:
-    radial-gradient(60% 80% at 50% 50%, color-mix(in srgb, var(--bx-nebula) 55%, transparent), transparent),
-    var(--bx-void-deep);
-}
 
-.entry__date {
-  font-family: var(--bx-font-display);
-  font-size: var(--bx-text-xl);
-  line-height: 1;
-  color: var(--bx-phosphor);
-  padding-top: 0.35rem;
-}
 
-.entry__year {
-  display: block;
-  margin-top: 0.35rem;
-  font-size: var(--bx-text-sm);
-  color: var(--bx-signal-mute);
-}
 
-.entry__title {
-  font-family: var(--bx-font-display);
-  font-size: clamp(1.6rem, 3vw, 2.35rem);
-  line-height: 1.1;
-  margin: 0;
-  text-wrap: balance;
-}
 
-.entry__title a { color: var(--bx-signal); text-decoration: none; }
-.entry__title a:hover { color: var(--bx-phosphor-hot); }
 
-.entry__summary {
-  margin: var(--bx-space-4) 0 0;
-  max-width: 58ch;
-  font-size: var(--bx-text-base);
-  line-height: var(--bx-leading-body);
-  color: var(--bx-signal-mute);
-}
 
-.entry__duration {
-  font-size: var(--bx-text-base);
-  color: var(--bx-signal-mute);
-  padding-top: 0.6rem;
-  white-space: nowrap;
-}
-
-@media (max-width: 74rem) {
-  .entry { grid-template-columns: 15rem 5rem minmax(0, 1fr); }
-  .entry__duration { grid-column: 2 / -1; padding-top: 0; }
-}
-
-@media (max-width: 52rem) {
-  .entry { grid-template-columns: 1fr; gap: var(--bx-space-3); }
-  .entry__art { max-width: 28rem; }
-  .entry__duration { grid-column: auto; }
-  .entry__date { display: flex; align-items: baseline; gap: var(--bx-space-3); padding-top: 0; }
-  .entry__year { margin: 0; }
-  .entry__duration { padding-top: 0; }
-}
 
 /* =============================================================== videos == */
 
@@ -996,7 +958,9 @@
   align-items: center;
 }
 
-.block__sticker { justify-self: end; }
+/* Behind whatever follows it: the log rows come later in the source, so they
+   paint over the cut-out without either needing a z-index. */
+.block__sticker { justify-self: end; position: relative; }
 
 /* The side is chosen per block rather than derived from its background, so the
    two are free to disagree — and so no reader gets a column of stickers down
@@ -1175,152 +1139,6 @@
 /* The burst sits where the inset hairline used to, carrying the same job with
    the vocabulary the rest of the page uses. */
 .footer__seam { margin-top: clamp(3rem, 6vw, 5rem); }
-
-/*
- * The globe over the episode log.
- *
- * Not a spin: it is a flat picture of a planet, and rotating it would read as a
- * wheel turning rather than a world. What it does instead is hold position and
- * breathe — the atmosphere brightens and dims on a slow cycle, so it reads as
- * lit and transmitting, which is what the section under it is about.
- *
- * The drift and the glow run on different periods, so they never land together
- * and the loop does not become countable.
- */
-#episodios .block__sticker {
-  animation: bx-orbit 19s ease-in-out infinite, bx-atmosphere 7s ease-in-out infinite;
-  will-change: transform, filter;
-}
-
-@keyframes bx-orbit {
-  0% { transform: translate3d(0, 0, 0) rotate(-6deg); }
-  50% { transform: translate3d(-1.5%, -3%, 0) rotate(-3deg); }
-  100% { transform: translate3d(0, 0, 0) rotate(-6deg); }
-}
-
-@keyframes bx-atmosphere {
-  0%, 100% { filter: drop-shadow(0 0 1.2rem rgba(0, 237, 103, 0.18)); }
-  50% { filter: drop-shadow(0 0 2.6rem rgba(0, 237, 103, 0.42)); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #episodios .block__sticker {
-    animation: none;
-    transform: rotate(-6deg);
-    filter: drop-shadow(0 0 1.6rem rgba(0, 237, 103, 0.24));
-  }
-}
-
-/*
- * The camera over the video block.
- *
- * It pans, the way a mounted camera does: rotation anchored at the bracket so
- * the body swings and the mount stays put, with a long hold at each end rather
- * than a smooth sweep. A camera that moved continuously would read as a
- * pendulum; one that stops to look reads as a camera.
- */
-#videos .block__sticker {
-  transform-origin: 88% 22%;
-  animation: bx-pan 16s cubic-bezier(0.45, 0, 0.2, 1) infinite;
-  will-change: transform;
-}
-
-@keyframes bx-pan {
-  0%, 18% { transform: rotate(-6deg); }
-  38%, 58% { transform: rotate(5deg); }
-  78%, 100% { transform: rotate(-6deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #videos .block__sticker { animation: none; transform: rotate(-6deg); }
-}
-
-/*
- * The night-vision scope over the cuts.
- *
- * It used to pulse like an image intensifier gaining and settling. On screen
- * that read as a fault rather than as equipment — a hard stepped flicker next
- * to a column of thumbnails looks like something is broken. It drifts instead,
- * slowly, the way a scope held up to the eye never sits quite still.
- */
-#cortes .block__sticker {
-  animation: bx-handheld 15s ease-in-out infinite;
-  filter: drop-shadow(0 0 1.6rem rgba(0, 237, 103, 0.28));
-  will-change: transform;
-}
-
-@keyframes bx-handheld {
-  0% { transform: translate3d(0, 0, 0) rotate(-6deg); }
-  30% { transform: translate3d(-1%, -2.2%, 0) rotate(-4.4deg); }
-  65% { transform: translate3d(0.8%, -1.2%, 0) rotate(-7.2deg); }
-  100% { transform: translate3d(0, 0, 0) rotate(-6deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #cortes .block__sticker { animation: none; transform: rotate(-6deg); }
-}
-
-/*
- * The case folder over the hosts.
- *
- * The handprint on it is the reason this cut-out is here, so the effect is a
- * biometric read: a long dim hold while it is being compared, one hard flash
- * when it matches, then it settles. The rhythm is the point — a folder that
- * pulsed evenly would just be a glowing rectangle.
- *
- * Stepped, not eased. A match is a decision, and decisions do not fade in.
- */
-#agentes .block__sticker {
-  animation: bx-identify 9s steps(1, end) infinite;
-  will-change: filter, transform;
-}
-
-@keyframes bx-identify {
-  0%, 62% { filter: drop-shadow(0 0 1rem rgba(99, 54, 147, 0.5)); transform: rotate(6deg); }
-  62.01%, 66% { filter: drop-shadow(0 0 2.8rem rgba(0, 237, 103, 0.75)); transform: rotate(6deg) scale(1.02); }
-  66.01%, 70% { filter: drop-shadow(0 0 0.8rem rgba(0, 237, 103, 0.2)); transform: rotate(6deg); }
-  70.01%, 76% { filter: drop-shadow(0 0 2.2rem rgba(0, 237, 103, 0.6)); transform: rotate(6deg) scale(1.01); }
-  76.01%, 100% { filter: drop-shadow(0 0 1.2rem rgba(0, 237, 103, 0.3)); transform: rotate(6deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #agentes .block__sticker {
-    animation: none;
-    transform: rotate(6deg);
-    filter: drop-shadow(0 0 1.4rem rgba(0, 237, 103, 0.3));
-  }
-}
-
-/*
- * The taped sketch over the shop.
- *
- * It replaced a cut-out portrait that ended in a flat edge across the
- * shoulders. Masking that edge into a fade did hide it, but pairing
- * `mask-image` with `drop-shadow` made the glow trace the element's box
- * instead of the artwork's alpha — a purple rectangle behind the head. Neither
- * is needed here: this cut-out is a torn sheet with its own irregular outline,
- * so it can simply be drawn.
- *
- * It hangs from its tape and sways, which is what a sheet stuck to a wall by
- * one corner does. The origin is the taped corner, not the centre.
- */
-#loja .block__sticker {
-  transform-origin: 22% 6%;
-  animation: bx-pinned 13s ease-in-out infinite;
-  filter: drop-shadow(0 0.8rem 1.4rem rgba(11, 6, 22, 0.55));
-  will-change: transform;
-}
-
-@keyframes bx-pinned {
-  0% { transform: rotate(-5deg); }
-  35% { transform: rotate(-2.2deg); }
-  70% { transform: rotate(-6.4deg); }
-  100% { transform: rotate(-5deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #loja .block__sticker { animation: none; transform: rotate(-5deg); }
-}
 
 /* The moon running out, under the sign-off. */
 .signoff__moons {
