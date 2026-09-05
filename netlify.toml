@@ -1,0 +1,46 @@
+# Netlify builds the whole workspace: the web app imports the design system as
+# a workspace package, and turbo's `dependsOn: ["^build"]` builds it first.
+[build]
+  command = "pnpm build"
+  publish = "apps/web/dist"
+
+[build.environment]
+  # Vite 8 needs Node 20.19+; the repo's engines field asks for the same floor.
+  NODE_VERSION = "22"
+  # pnpm blocks install scripts unless allowlisted, and esbuild's platform
+  # binary comes from one. The allowlist lives in pnpm-workspace.yaml.
+  PNPM_FLAGS = "--frozen-lockfile"
+
+# Vite fingerprints everything under /assets, so it can never go stale.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# The files copied verbatim from public/ keep their names across deploys, so
+# they get a week rather than a year.
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/brand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/decor/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/hosts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
