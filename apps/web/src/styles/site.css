@@ -41,6 +41,18 @@
  * sizes is harder to return to on each line.
  */
 
+/*
+ * Nothing bleeds sideways.
+ *
+ * Several decorations are deliberately wider than the column — the case
+ * folder, the shop's mascot, the fold's scene — and they are meant to run off
+ * the edge of the screen, not to open a horizontal scrollbar under the whole
+ * page. `clip` rather than `hidden`: it does the clipping without turning
+ * `main` into a scroll container, which would have broken anchor scrolling and
+ * anything sticky inside it.
+ */
+main { overflow-x: clip; }
+
 .shell {
   width: min(100% - 2.5rem, 78rem);
   margin-inline: auto;
@@ -356,6 +368,35 @@
 .masthead__link:hover::after,
 .masthead__link:focus-visible::after { transform: scaleX(1); }
 
+/*
+ * Where you are.
+ *
+ * The same underline the cursor draws, held — because it is the same
+ * statement: this is the word the page is currently about. A second marker
+ * invented for the current section would have meant two vocabularies in a bar
+ * six words wide.
+ *
+ * It is thinner than the hover, though, and that difference is the point: the
+ * held one is a state and the drawn one is an answer to something you just
+ * did, so hovering the section you are already in still does something.
+ */
+.masthead__link[aria-current] { color: var(--bx-void); }
+
+.masthead__link[aria-current]::after {
+  transform: scaleX(1);
+  height: 1px;
+  /* Grown from the left like the hover, so arriving at a section reads as the
+     same gesture the cursor makes rather than as a line appearing. */
+  transition:
+    transform 260ms var(--bx-ease-crt),
+    height 120ms var(--bx-ease-crt);
+}
+
+/* Hovering the section you are in thickens the rule back to the hover weight,
+   so the control still answers. */
+.masthead__link[aria-current]:hover::after,
+.masthead__link[aria-current]:focus-visible::after { height: 2px; }
+
 .masthead__join {
   position: relative;
   padding: 0.6rem 1.5rem;
@@ -386,6 +427,15 @@
   font-family: var(--bx-font-body);
   font-size: var(--bx-text-base);
   cursor: pointer;
+}
+
+/* The sheet says where you are the same way the bar does. Its links are set
+   large and centred, so the mark is a rule under the word rather than a colour
+   change nobody would read as a state. */
+.menu__link[aria-current] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
 }
 
 /* Full-screen menu on small viewports: at these type sizes a dropdown would
@@ -835,11 +885,12 @@
 /*
  * The cuts: a lit workbench, with the monitors standing on it.
  *
- * The one inverted surface on the site. Everything else here is light on dark
- * — that is the whole look — and this band turns it over. The masthead already
- * runs that way, so the treatment is not new, only bigger; what is new is
- * using it to say this is a different channel rather than more of the same
- * programme.
+ * One of the two inverted surfaces on the site. Everything else here is light
+ * on dark — that is the whole look — and these bands turn it over. The
+ * masthead already runs that way, so the treatment is not new, only bigger;
+ * what is new is using it to say this is a different thing rather than more of
+ * the same programme. The shop is the other one, and the two share `.plate`
+ * below rather than each describing the inversion again.
  *
  * Two materials and no third colour at rest. The ground is the show's green.
  * Anything that is an *object* — the bezel round a still, a control — is cut
@@ -856,7 +907,20 @@
  * itself out of these tokens, so swapping the tokens turns all of it over at
  * once and nothing has to know it is on a plate.
  */
-.cuts {
+/*
+ * The plate: the palette, turned over.
+ *
+ * Built by re-pointing the palette on the band rather than by writing new
+ * rules for everything in it. Every component already draws itself out of
+ * these tokens, so swapping the tokens turns all of it over at once and
+ * nothing inside has to know it is on a plate.
+ *
+ * Two sections use it — the cuts and the shop — and it is shared rather than
+ * repeated because a second copy of fifteen re-pointed tokens is a second copy
+ * that can drift. What is not shared is what each section does on top: the
+ * cuts stand equipment on it, the shop pins things to it.
+ */
+.plate {
   /*
    * Built from `--bx-green`, the pigment, and not `--bx-phosphor`, the role —
    * this block re-points the role below, and a custom property is substituted
@@ -878,10 +942,10 @@
    *
    * Never on the plate: green on green is nothing, and this is the pigment the
    * ground is already made of. It is the screen colour — the counter burnt
-   * into a still, the label on a control — and in every one of those places
-   * there is void behind it, where it measures about 12:1.
+   * into a still, the price on a tag — and in every one of those places there
+   * is void behind it, where it measures about 12:1.
    */
-  --cuts-screen: var(--bx-green);
+  --plate-screen: var(--bx-green);
 
   /* Rules and rings. Dark on light reads heavier than light on dark at the
      same percentage, so these come down rather than simply inverting. */
@@ -901,7 +965,29 @@
      nothing. The ring alone does the work. */
   --bx-glow-soft: 0 0 0 rgba(0, 0, 0, 0);
   --bx-glow-hard: 0 0 0 rgba(0, 0, 0, 0);
+}
 
+/*
+ * Snow on the plate, very faint.
+ *
+ * The fold acquires the signal in a burst of it and then it is gone, which is
+ * deliberate — carried down the page it stops being an event and becomes
+ * wallpaper. The plates are the exception, and they earn it: they are the only
+ * flat colour on a site that is otherwise a starfield. Measured, not guessed —
+ * at 0.14 the plate read as a noise field and the titles sat in it. This is
+ * the level where you stop seeing grain and start seeing a green that is not
+ * perfectly even, which is the whole intent.
+ */
+.plate__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.cuts {
   /* One width for the station, because two things are measured from it: the
      cut-out itself, and the particle field that has to sit exactly on top of
      it without either of them knowing about the other. */
@@ -940,14 +1026,19 @@
 }
 
 /*
- * Purple, not the beam's green.
+ * Purple, not the beam's green — and only here.
  *
  * `bx-mote` is drawn in the phosphor, which is correct inside an abduction
  * beam and invisible on a green plate. This is the section's third colour
  * doing its one job: the masthead takes it over this band, the links take it
  * under the cursor, and the machine gives it off.
+ *
+ * Scoped to the plate for exactly that reason. The hosts section runs the same
+ * field around the case folder, on the dark ground, where the phosphor is both
+ * the artwork's own rim light and the colour every live thing on the page is
+ * drawn in — so that one is left alone.
  */
-.motes__one {
+.cuts .motes__one {
   /* Lifted off the brand purple. At full strength the pigment is close enough
      in value to the plate that a 4px dot on it reads as a smudge; this is the
      same hue with the light turned up, which is what a particle catching a
@@ -967,26 +1058,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .cuts__station-field { display: none; }
-}
-
-/*
- * Snow on the plate, very faint.
- *
- * The fold acquires the signal in a burst of it and then it is gone, which is
- * deliberate — carried down the page it stops being an event and becomes
- * wallpaper. This is the exception, and it earns it: the plate is the one flat
- * colour on a site that is otherwise a starfield. Measured, not guessed — at
- * 0.14 the plate read as a noise field and the titles sat in it. This is the
- * level where you stop seeing grain and start seeing a green that is not
- * perfectly even, which is the whole intent.
- */
-.cuts__grain {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0.05;
-  mix-blend-mode: multiply;
-  pointer-events: none;
 }
 
 /*
@@ -1036,11 +1107,48 @@
  * a control; a photograph is neither, and 2px is the radius of a cut edge
  * rather than a decision about shape.
  */
-.cut__print {
+/*
+ * The paper stock.
+ *
+ * Shared by the two sections that put a photograph on a bright plate — the
+ * cuts and the shop. Paper rather than one of the site's dark surfaces is the
+ * whole reason either of them reads as an object lying on the plate; wide
+ * margin along the bottom, narrow everywhere else, because that is the
+ * proportion of a photographic print and the wide edge is the one you write
+ * on.
+ *
+ * Square corners, near enough. Every rounded thing on this site is a stamp or
+ * a control; a photograph is neither, and 2px is the radius of a cut edge
+ * rather than a decision about shape.
+ *
+ * What is not here is what each section does with it: the cuts tape theirs
+ * down and hang them at an angle, the shop pins its stock up.
+ */
+.print {
   position: relative;
   padding: 0.55rem 0.55rem 0;
   border-radius: 2px;
-  background: linear-gradient(174deg, #efe9dc, #ded5c4);
+  /*
+   * Paper, with a tooth.
+   *
+   * Two layers. The gradient is the stock — lighter than the first version,
+   * which at #efe9dc→#ded5c4 read as card that had been in a drawer for a
+   * decade; this is closer to a photographic print, which is nearly white with
+   * the warmth left in.
+   *
+   * Over it, fractal noise generated by the browser rather than downloaded: an
+   * inline SVG filter, multiplied in at a strength you cannot see as grain,
+   * only as a surface that is not perfectly flat. It is the same argument the
+   * plate's own grain makes — flat colour is the one thing this design is not
+   * — and at 120px the tile is large enough that no two prints show the same
+   * patch of it.
+   */
+  background-color: #f7f4ec;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23p)' opacity='0.28'/%3E%3C/svg%3E"),
+    linear-gradient(174deg, #fbf8f2, #ece6da);
+  background-size: 120px 120px, auto;
+  background-blend-mode: multiply, normal;
   /* Lying on the surface: one contact shadow tight under the paper and one
      longer throw. The plate is bright, so both are dark rather than grey. */
   box-shadow:
@@ -1083,10 +1191,13 @@
  * coloured ground takes the colour of what is under it, which here is half
  * paper and half plate, so it is left translucent and lets both through.
  *
+ * Shared with the shop, which tapes its stock to the board the same way. Only
+ * the placement belongs to each section.
+ *
  * The ends are cut square and the strip is slightly off-square to the print,
  * because tape torn off a roll never lands straight.
  */
-.cut__tape {
+.tape {
   position: absolute;
   z-index: 2;
   top: -0.6rem;
@@ -1274,23 +1385,28 @@
 }
 
 /*
- * The controls: the same object as the bezels, with the screen lit in them.
+ * The controls on a plate: the same object as the bezels, with the screen lit
+ * in them.
  *
- * The section has exactly two materials, and a control is made of the second
- * one — a case cut out of the void with the green switched on inside it. It is
- * also the strongest pairing available here at about 12:1, where the purple
- * type this went through measured 1.9 and the outlined version about 5.
+ * A plate has exactly two materials, and a control is made of the second one —
+ * a case cut out of the void with the green switched on inside it. It is also
+ * the strongest pairing available here at about 12:1, where the purple type
+ * this went through measured 1.9 and the outlined version about 5.
  *
- * Hover is the purple, which is where that colour lives in this section.
+ * Hover is the purple, which is where that colour lives on a plate.
+ *
+ * On `.plate` rather than on the cuts, because the shop is a plate too and its
+ * one button had been left as an outline drawn in the void — the same 5:1
+ * version this rule exists to replace.
  */
-.cuts .bx-button--outline {
+.plate .bx-button--outline {
   background: var(--bx-void-deep);
   border-color: var(--bx-void-deep);
-  color: var(--cuts-screen);
+  color: var(--plate-screen);
 }
 
-.cuts .bx-button--outline:hover:not(:disabled),
-.cuts .bx-button--outline:focus-visible:not(:disabled) {
+.plate .bx-button--outline:hover:not(:disabled),
+.plate .bx-button--outline:focus-visible:not(:disabled) {
   background: var(--bx-purple);
   border-color: var(--bx-purple);
   color: var(--bx-star);
@@ -1315,22 +1431,914 @@
 
 /* =============================================================== agents == */
 
-.agents { display: grid; gap: clamp(3rem, 7vw, 6rem); }
+/*
+ * The break between two sections, sitting on the join.
+ *
+ * Everywhere else the burst is a band's own top edge, indented to the content
+ * column, and that is deliberate in the system: left-anchored it says where
+ * the column begins as well as that the signal has started again, where a
+ * centred rule can only be decoration.
+ *
+ * These two are asked to do the other job — to be the boundary rather than the
+ * start of what comes after it. So they are centred, run a rule out of both
+ * sides, are a size up from the ones that introduce a section, and above all
+ * they are not inside either band: they sit between the two in the flow, and
+ * the negative margin pulls them back by half their own height so they take no
+ * space and land across the join, half in the section above and half in the
+ * one below. A band clips, so a burst inside one could never cross out of it.
+ *
+ * Vertically that lands in the exact middle of the gap by construction: every
+ * band pads by the same `--bx-band-pad` top and bottom, so the join between
+ * two of them is already the midpoint between their contents.
+ */
+.band-break {
+  --break-height: clamp(0.7rem, 1.2vw, 1rem);
 
-.agent { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: clamp(1.75rem, 4vw, 3.5rem); align-items: start; }
+  position: relative;
+  /* Above both neighbours' grounds. The bands are positioned but unlayered, so
+     without this the next one's background paints straight over the bars. */
+  z-index: 1;
+  justify-content: center;
+  gap: clamp(0.75rem, 2.5vw, 1.75rem);
+  height: var(--break-height);
+  margin-block: calc(var(--break-height) / -2);
+}
 
+.band-break .bx-seam__bars { width: clamp(8rem, 15vw, 13rem); }
 
-.agent__name { font-family: var(--bx-font-display); font-size: var(--bx-text-2xl); line-height: 1.05; margin: 0; color: var(--bx-signal); }
-.agent__bio { margin: var(--bx-space-5) 0 0; max-width: 54ch; font-size: var(--bx-text-lg); line-height: 1.65; color: var(--bx-signal-mute); }
-.agent__links { display: flex; gap: var(--bx-space-6); margin-top: var(--bx-space-5); }
-.agent__links a { font-size: var(--bx-text-base); color: var(--bx-phosphor); text-decoration: none; border-bottom: 1px solid currentColor; }
+/* The rule runs out of both sides. A burst with one tail is pointing
+   somewhere; this one is not going anywhere, it is marking a place. */
+.band-break::before {
+  content: '';
+  flex: 1;
+  align-self: center;
+  height: 1px;
+  background: color-mix(in srgb, var(--bx-signal) 22%, transparent);
+  mask-image: linear-gradient(to left, black, transparent 92%);
+  -webkit-mask-image: linear-gradient(to left, black, transparent 92%);
+}
+
+/*
+ * Quem investiga: two files, and the folder they came out of.
+ *
+ * The section used to be two rows of portrait-and-bio under a small case
+ * folder decal — the least this page does anywhere. The archive has a globe
+ * turning over it, the cuts have a lit workbench with a receiving station
+ * standing on it, and the two people who make the programme had a sticker.
+ *
+ * So the dossier is the second column now, at the size of a real object lying
+ * on the desk, and the two agents are what came out of it: a file each, with
+ * the person on a monitor that has not quite locked onto the picture. Nothing
+ * in here is a card. The show's subject is evidence somebody kept, and a
+ * person is filed the same way a photograph is.
+ *
+ * One variable drives the composition. The folder's width sets its own column,
+ * the bleed past the shell, and the box the particle field is placed in, so
+ * none of the three is measured against either of the others.
+ */
+.agents {
+  --agents-folder: clamp(12rem, 28vw, 23rem);
+  /*
+   * The set, and the column it stands in.
+   *
+   * Wider than the portrait it replaced, because only three fifths of a
+   * television is screen: at the 12rem the framed portrait used, the picture
+   * inside the casing came out smaller than a thumbnail. This is the width at
+   * which the face in the window is about the size the portrait used to be,
+   * and the folder gives up the difference — it is decoration, and the two
+   * people are not.
+   */
+  --agents-tube: clamp(11rem, 21vw, 17.5rem);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--agents-folder);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+/* One file under the other, separated by air alone. A rule between two people
+   would make them rows in a table. */
+.agents__files { display: grid; gap: clamp(2.5rem, 6vw, 4.5rem); }
+
+.agent {
+  display: grid;
+  grid-template-columns: var(--agents-tube) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3.5vw, 2.5rem);
+  align-items: start;
+}
+
+/*
+ * The set.
+ *
+ * A television drawn with its picture area cut out, so the portrait sits
+ * behind the casing rather than inside a border made of CSS. Everything that
+ * used to be declared here — the bezel, its radius, the ring that lit on hover
+ * — is in the artwork now, along with a great deal that was never going to be:
+ * the aerials, the tuning dials, the tape stuck to the lid, the VHF lamp.
+ *
+ * The artwork is square, so the box is too, and the screen window is placed
+ * inside it as fractions of that box. Those four numbers are the only measured
+ * thing in this section: they come from the alpha channel of the file — the
+ * transparent window runs from 17.9% to 77.1% across and 35.9% to 82.8% down —
+ * and they are given a point of overlap on every side so the picture disappears
+ * under the bezel instead of stopping exactly at it.
+ */
+.agent__tube {
+  position: relative;
+  aspect-ratio: 1;
+}
+
+/*
+ * The set, hanging.
+ *
+ * Not a bob: a bob is a boat. This rides a few pixels and turns about a degree
+ * on a long, uneven period, which is what an object being carried by something
+ * else does — the same motion the design system gives a saucer keeping
+ * station, spent here on the thing underneath one.
+ *
+ * The wrapper exists so the screen and the casing move as one object. They are
+ * registered to each other to a fraction of a percent, and animating them
+ * separately would slide the picture out of its own window.
+ */
+.agent__craft {
+  position: absolute;
+  inset: 0;
+  animation: agent-float 7.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* The second set keeps its own period, and starts partway through it. Two
+   televisions rising and falling together would read as a carousel. */
+.agent:nth-child(even) .agent__craft {
+  animation-duration: 9.2s;
+  animation-delay: -3.4s;
+}
+
+@keyframes agent-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.5deg); }
+  35% { transform: translate3d(0.4%, -2.6%, 0) rotate(0.4deg); }
+  70% { transform: translate3d(-0.3%, -1.1%, 0) rotate(0.9deg); }
+}
+
+/*
+ * The dust it is coming up through.
+ *
+ * The section's one particle population again — the folder has a field, and so
+ * does each set — placed against the tube's box and let down in opacity, since
+ * three fields of the same dots at full strength is weather rather than a
+ * detail. Held in the phosphor: this is the light of the thing doing the
+ * lifting, and it is the same green that is already ringing the screen.
+ */
+.agent__field {
+  position: absolute;
+  z-index: 0;
+  left: -18%;
+  bottom: -4%;
+  --motes-w: calc(var(--agents-tube) * 1.36);
+  --motes-h: calc(var(--agents-tube) * 1.15);
+  width: var(--motes-w);
+  height: var(--motes-h);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* The casing, over the picture. A drop-shadow rather than a box-shadow: the
+   file is a cut-out, and a box-shadow would draw a rectangle of light around a
+   television that is not rectangular. */
+.agent__set {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  transition: filter var(--bx-dur-base) var(--bx-ease-crt);
+  pointer-events: none;
+}
+
+.agent__screen {
+  position: absolute;
+  z-index: 1;
+  left: 17.2%;
+  top: 35.1%;
+  width: 60.7%;
+  height: 48.5%;
+  overflow: hidden;
+  background: var(--bx-void-deep);
+}
+
+/*
+ * The portrait, filling the window.
+ *
+ * `Avatar` is kept for what it knows — the phosphor tint, the tube's own
+ * lines, and colour returning when you look at it — and stripped of what the
+ * artwork now provides. Its square ratio goes with the border: the window is
+ * wider than it is tall, and a square portrait in it would letterbox the
+ * screen of a television.
+ */
+.agent__portrait {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+}
+
+/*
+ * The picture, held down until the signal locks.
+ *
+ * A weak signal is a dim picture, so the rest state is dim — but the practical
+ * job here is that one grading has to hold two photographs shot in completely
+ * different light. Multiply is what does it: it compresses the bright one,
+ * where the wall map behind Afonso was coming out as a white rectangle with a
+ * face in it, and leaves the low-key one alone, because multiplying something
+ * that is already near black changes almost nothing.
+ */
+.agent__screen::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background: var(--bx-void-deep);
+  mix-blend-mode: multiply;
+  opacity: 0.42;
+  transition: opacity var(--bx-dur-slow) var(--bx-ease-crt);
+  pointer-events: none;
+}
+
+.agent:hover .agent__screen::after,
+.agent:focus-within .agent__screen::after { opacity: 0; }
+
+.agent__snow {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  /* Screen, so the grain is light arriving on the picture rather than dirt
+     laid over it — the same reason the tint underneath it is its own layer
+     instead of being flattened into the image. */
+  mix-blend-mode: screen;
+  /*
+   * Low, and measured rather than guessed.
+   *
+   * At 0.4 the snow was the picture: two hosts nobody could pick out of the
+   * noise, which is a broken monitor and not a weak signal. This is the level
+   * where the grain reads as interference sitting on a face you can still
+   * recognise — the same judgement the cuts' grain had to make on the plate.
+   */
+  opacity: 0.16;
+  transition: opacity var(--bx-dur-slow) var(--bx-ease-crt);
+  pointer-events: none;
+}
+
+/*
+ * The lock-on.
+ *
+ * Driven from the file rather than from the set, so reading the bio holds the
+ * picture in colour and tabbing to a link does the same thing the cursor does.
+ * Three layers move together and not one of them moves position: the snow
+ * clears, the television lights, and the person comes back in colour — which is
+ * `Avatar`'s own hover state, reached from out here so the whole row triggers
+ * it.
+ */
+.agent:hover .agent__snow,
+.agent:focus-within .agent__snow { opacity: 0.1; }
+
+/* The set lights: the halo traces the television rather than its box, which is
+   the whole reason the system keeps a filter version of the glow. */
+.agent:hover .agent__set,
+.agent:focus-within .agent__set { filter: var(--bx-halo-phosphor); }
+
+/*
+ * Brighter than the monitor tone's own grading.
+ *
+ * `Avatar` grades for a portrait sitting on the page: grayscale, a touch of
+ * contrast, and the brightness pulled slightly down. Behind the glass of a set
+ * whose screen is ringed in green light, that came out as a dark shape in a
+ * bright window — and one of the two portraits is a low-key photograph to
+ * begin with. Lifted here, and only here.
+ */
+.agent__portrait .bx-avatar__image {
+  /*
+   * Near neutral, and it has to be: the two photographs were not taken in the
+   * same light. One is a low-key portrait against black, the other is lit hard
+   * against a bright wall map — and the brightness that rescued the first blew
+   * the second into a white shape. So the exposure is left alone and the wash
+   * over it is what comes down instead.
+   */
+  filter: grayscale(0.55) contrast(1.05) brightness(1.02);
+  /* The window is wider than the square the portraits are cropped to, so the
+     cover crop eats the top and the bottom. Weighted toward the top, because
+     what it is cutting into up there is a forehead and what it is cutting into
+     below is a shoulder. */
+  object-position: center 28%;
+}
+
+/*
+ * The phosphor wash, let down from the 0.45 the monitor tone ships with.
+ *
+ * That value is right for a portrait with nothing over it. Here the snow is
+ * also pushing the picture toward white, and the two stacked took the faces
+ * past a green cast and into a green shape.
+ */
+.agent__portrait .bx-avatar__tint { opacity: 0.2; }
+.agent__portrait .bx-avatar__tint { transition: opacity var(--bx-dur-slow) var(--bx-ease-crt); }
+
+.agent:hover .agent__portrait,
+.agent:focus-within .agent__portrait { border-color: var(--bx-phosphor); }
+
+.agent:hover .agent__portrait .bx-avatar__image,
+.agent:focus-within .agent__portrait .bx-avatar__image { filter: none; }
+
+.agent:hover .agent__portrait .bx-avatar__tint,
+.agent:focus-within .agent__portrait .bx-avatar__tint { opacity: 0.12; }
+
+/* The name is a title inside a file row, which is the role `--bx-display-band`
+   exists for — the same size the archive gives an episode. Not set in caps:
+   the band heading above is, and an episode title is not. */
+.agent__name {
+  margin: 0;
+  /*
+   * Started a little below the top of the row.
+   *
+   * The set's box is square but the television is not: the top of it is two
+   * aerials and air, and the casing does not begin until well down. A name
+   * flush with the top of that box lines up with nothing, so the file's text
+   * starts against the set instead. Reset where the row stacks, since there is
+   * nothing beside it to line up with there.
+   */
+  padding-top: var(--bx-space-5);
+  font-family: var(--bx-font-display);
+  font-size: var(--bx-display-band);
+  line-height: 1.1;
+  color: var(--bx-signal);
+}
+
+/* Body copy, not a lead. The section's own lead is set in `--bx-text-lg`, and
+   a bio at the same size flattens the two into one register. */
+.agent__dossier { margin-top: var(--bx-space-4); }
+
+.agent__bio {
+  margin: 0;
+  max-width: 46ch;
+  font-size: var(--bx-text-base);
+  line-height: var(--bx-leading-body);
+  color: var(--bx-signal-mute);
+}
+
+/* Three lines, cut between them and never through one — the archive's rule,
+   and the reason neither place uses `line-clamp`. Three rather than the log's
+   two: a bio is a whole thought where a synopsis is a trailer, and two lines
+   stop it mid-introduction. */
+.agent__bio--clamped {
+  overflow: hidden;
+  max-height: calc(3 * var(--bx-leading-body) * 1em);
+}
+
+/* The disclosure. Set as a link because that is what it looks like, but it is
+   a button: it changes the page rather than leaving it. */
+.agent__reveal {
+  display: inline-block;
+  margin-top: var(--bx-space-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: var(--bx-text-sm);
+  color: var(--bx-phosphor);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  transition: color var(--bx-dur-fast) var(--bx-ease-crt);
+}
+
+.agent__reveal:hover,
+.agent__reveal:focus-visible {
+  color: var(--bx-phosphor-hot);
+  text-decoration-color: currentColor;
+}
+
+.agent__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bx-action-gap);
+  margin-top: var(--bx-space-5);
+}
+
+/*
+ * Where to find the agent.
+ *
+ * The rule sits under the label rather than under the whole link: an underline
+ * running beneath the mark reads as a box somebody forgot to close. Quiet at
+ * rest and at full strength under the cursor, so a pair of them can sit in the
+ * file without competing with the name above.
+ */
+.agent__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bx-space-2);
+  font-size: var(--bx-text-base);
+  text-decoration: none;
+}
+
+.agent__link span {
+  border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  transition: border-color var(--bx-dur-fast) var(--bx-ease-crt);
+}
+
+.agent__link:hover span { border-bottom-color: currentColor; }
+
+/*
+ * The dossier.
+ *
+ * Pulled past the right edge of the column, which is the whole reason it reads
+ * as an object rather than an illustration sitting in a box — a bleed says the
+ * thing carried on past the frame. The band clips, so it stops at the screen
+ * edge and can never run into the section underneath.
+ *
+ * The bleed is a fraction of the artwork's own width rather than a length, so
+ * it is the same gesture at 12rem as at 23rem.
+ */
+.agents__folder {
+  position: relative;
+  justify-self: end;
+  width: var(--agents-folder);
+  margin-right: calc(var(--agents-folder) * -0.18);
+  /* Centred on the pair of files. The grid starts its items at the top, which
+     is right for two files that have to line up with each other and wrong for
+     the object standing beside them: hung from the top it left the whole
+     bottom of the section empty on one side. */
+  align-self: center;
+}
+
+/* Lying on the surface. The system's sticker lift, and nothing else: the
+   artwork carries its own green rim light, and a halo under it would be the
+   same statement made twice. */
+.agents__art {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  filter: var(--bx-lift-sticker);
+}
+
+/*
+ * The folder being read.
+ *
+ * The section's ambient motion, and it is not another drift: the particles
+ * already do that, and a second thing wandering around the same object reads
+ * as two effects rather than one place. This is a single event on a long
+ * cycle — a bar of phosphor light crossing the dossier top to bottom, once
+ * every eleven seconds, the way a scanner passes over a page or a tube redraws
+ * a frame it has been holding. The rest of the cycle is still, which is what
+ * makes the pass an event when it comes.
+ *
+ * Masked to the artwork's own alpha, so the light lands on the folder and on
+ * nothing else — no rectangle of glow around it, which is what gives away a
+ * gradient laid over a cut-out.
+ */
+.agents__scan {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  mask-image: url('/decor/classified.png');
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-image: url('/decor/classified.png');
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  pointer-events: none;
+}
+
+/*
+ * The bar itself.
+ *
+ * Screen, so it is light arriving on the artwork rather than paint over it —
+ * the same blend the snow uses on the portraits. Soft-edged with a brighter
+ * core: a scan is a beam with falloff, and a hard-edged band would read as a
+ * rectangle sliding past.
+ *
+ * It travels on a transform, which is why it is a separate element from the
+ * mask above: masking the moving one would carry the mask along with it and
+ * walk the light off the folder.
+ */
+.agents__beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 26%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--bx-phosphor) 18%, transparent) 38%,
+    color-mix(in srgb, var(--bx-phosphor-hot) 55%, transparent) 50%,
+    color-mix(in srgb, var(--bx-phosphor) 18%, transparent) 62%,
+    transparent
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  /* Linear, and it matters. The house easing is a arrival curve — fast, then
+     settling — which on a travelling bar means it whips across the folder in
+     the first fraction of a second and then crawls off the bottom edge unseen.
+     A scan passes at one speed. */
+  animation: agents-scan 11s linear infinite;
+}
+
+/*
+ * A quarter of the cycle is the pass; the rest is the folder sitting there.
+ * The fade is inside the travel rather than at its ends, so the bar is already
+ * moving when it appears and still moving when it goes — a beam crossing the
+ * object, not a light switched on over it.
+ */
+@keyframes agents-scan {
+  0% { transform: translateY(-120%); opacity: 0; }
+  4% { opacity: 0.85; }
+  22% { opacity: 0.85; }
+  27% { transform: translateY(430%); opacity: 0; }
+  100% { transform: translateY(430%); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agents__scan { display: none; }
+}
+
+/*
+ * The dust coming off the folder.
+ *
+ * The same population the cuts give their station — `bx-mote`, the site's one
+ * particle field — placed against this box instead of that one. The box is the
+ * artwork's, widened and lifted: the field sits behind the folder, so one the
+ * exact size of it would only ever show along the edges. The ratio is the
+ * file's own, 687 × 720.
+ */
+.agents__field {
+  position: absolute;
+  z-index: 0;
+  left: -14%;
+  bottom: 0;
+  /* Named as well as applied: `Motes` places each particle as a fraction of
+     these, because the path goes into a transform and a percentage there would
+     resolve against the dot rather than the field. */
+  --motes-w: calc(var(--agents-folder) * 1.28);
+  --motes-h: calc(var(--agents-folder) * 720 / 687 * 1.15);
+  width: var(--motes-w);
+  height: var(--motes-h);
+  pointer-events: none;
+}
+
+/*
+ * Below the two-column width the folder goes above the files instead of beside
+ * them, which is the order the section reads in anyway: the dossier, then what
+ * came out of it. It keeps its side and its bleed — half an object leaving the
+ * screen is the gesture, and it works at any width.
+ */
+@media (max-width: 64rem) {
+  .agents {
+    --agents-folder: clamp(11rem, 34vw, 18rem);
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .agents__folder { order: 1; }
+  .agents__files { order: 2; }
+}
 
 @media (max-width: 48rem) {
-  .agent { grid-template-columns: 1fr; }
-  .agent__portrait { max-width: 11rem; }
+  /* The set stops being a column and stands at the head of the file. Capped,
+     because a television that fills a phone screen is a poster. */
+  .agent { grid-template-columns: minmax(0, 1fr); gap: var(--bx-space-5); }
+  .agent__tube { width: min(100%, 17rem); }
+  .agent__name { padding-top: 0; }
+  /* The field is placed off `--agents-tube`, and here the set is not that
+     wide. It is dust around a decoration; on a phone it goes. */
+  .agent__field { display: none; }
+}
+
+/* What moves on its own, and what it moves for. Nobody who has asked for less
+   of it needs dust, a scan, or two televisions riding an updraught. */
+@media (prefers-reduced-motion: reduce) {
+  .agents__field,
+  .agent__field { display: none; }
+  .agent__craft { animation: none; }
 }
 
 /* ================================================================ store == */
+
+/*
+ * The shop: a board with the stock pinned to it.
+ *
+ * The second plate, and deliberately the same green: this is the other place
+ * on the page where you are not watching the programme but handling something
+ * it made. What is different is what is on the surface. The cuts stand
+ * equipment on their plate and tape photographs to it; the shop pins its stock
+ * up, at the uneven heights anything ever pinned to a real board ends up at,
+ * and every piece carries a tag.
+ */
+.store {
+  /* One width for the mascot, because the header has to reserve room for it
+     and the two must agree. */
+  --store-mascot: clamp(11rem, 27vw, 25rem);
+}
+
+/*
+ * The mascot, standing on the plate.
+ *
+ * Absolutely placed, but inside the shell rather than in the band's decorative
+ * layer: the shell is the positioned box, so `top: 0` is the line the heading
+ * starts on and `right` is measured from the column edge — the same two edges
+ * the type is aligned to, with nothing measured against the viewport.
+ *
+ * It hangs slightly past the column, because an object that stops exactly at
+ * the text's right margin reads as a picture in a box.
+ */
+.store__mascot {
+  position: absolute;
+  /*
+   * Two stacking decisions, and they pull in opposite directions on purpose.
+   *
+   * Above the section before it: the figure is lifted clear of the band's own
+   * top edge, so its head and shoulders stand out over the purple above rather
+   * than starting where the green does. That is what `overflow` on the band is
+   * for — see Store.tsx — since a band clips by default and would cut it off
+   * at the join.
+   *
+   * Below the stock: `z-index: 0` puts it under `.store__board`, which is
+   * layered at 1. In front it covered the piece in the top right corner, and
+   * an illustration that hides a product is a shop window with something
+   * leaning against it. The prints cross its legs instead, which is what a
+   * figure standing behind a board looks like.
+   *
+   * The lift is a fraction of its own width rather than a pixel count, so the
+   * same proportion of it clears the join at every size.
+   */
+  z-index: 0;
+  /*
+   * A little more than it looks: the top of the file is transparent glow, so
+   * about a fifth of this lift is spent before the cap clears the join.
+   */
+  top: calc(var(--store-mascot) * -0.68);
+  right: calc(var(--store-mascot) * -0.16);
+  width: var(--store-mascot);
+  height: auto;
+  filter: var(--bx-lift-sticker);
+  pointer-events: none;
+}
+
+/*
+ * The header gives up the width the mascot occupies, and only the width.
+ *
+ * Derived from the same variable, so the two can never disagree about how much
+ * that is. Nothing is reserved vertically: the figure is drawn at the size it
+ * deserves and the first row of prints crosses its legs, which is what a
+ * figure standing behind a board looks like. Reserving the full height instead
+ * kept every pixel of it visible and left a column of empty plate the height
+ * of a person down the middle of the section.
+ */
+.store .bx-band__head { padding-right: calc(var(--store-mascot) * 1.05); }
+
+.store__board { position: relative; z-index: 1; }
+
+/* Between shelves: the distance that says a new kind of thing starts, at the
+   scale of a shelf rather than of a section. */
+.shelf + .shelf { margin-top: clamp(2.5rem, 6vw, 4.5rem); }
+
+/*
+ * A shelf's label.
+ *
+ * Body face, not the display one. The display face is what the page uses for
+ * things it is announcing — a section, an episode, a person — and a shelf is
+ * a heading over stock, closer to the label on a drawer than to a headline.
+ */
+.shelf__label {
+  display: flex;
+  align-items: center;
+  gap: var(--bx-space-3);
+  margin: 0 0 clamp(1.25rem, 3vw, 2rem);
+  font-family: var(--bx-font-body);
+  font-size: var(--bx-text-lg);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--bx-signal);
+}
+
+/* How many are on it. A count is machine-emitted, so it is set in the mono
+   face — and it is green, which on this plate means it has to have void
+   behind it. */
+.shelf__count {
+  display: inline-flex;
+  justify-content: center;
+  min-width: 1.9em;
+  padding: 0.15em 0.5em;
+  border-radius: var(--bx-radius-pill);
+  background: var(--bx-void-deep);
+  color: var(--plate-screen);
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-xs);
+  line-height: 1.4;
+}
+
+.shelf__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+}
+
+/*
+ * One piece.
+ *
+ * A print pinned to the board, on the paper the cuts are mounted on. The
+ * photograph is what the shop publishes; the wide bottom margin is where a
+ * shop writes what you decide on — the price, the colours it is cut in, the
+ * sizes that exist. None of that was on the card this replaced, which meant
+ * the only way to find out whether a shirt came in your size was to leave the
+ * site.
+ */
+.piece { position: relative; }
+
+/*
+ * Pinned at uneven heights, and hanging from the pin.
+ *
+ * By position in the run rather than at random, so the board looks pinned up
+ * by a person and still renders identically on every load. Three values
+ * against a grid that wraps at two, three or four columns: the offsets never
+ * settle into a pattern the eye can catch, which two would.
+ *
+ * The angle turns about the top of the print rather than its middle, because
+ * that is where the pin is: a sheet held by one point swings from that point.
+ */
+.piece__print {
+  transform-origin: 50% 0;
+  transform: rotate(-0.9deg);
+}
+
+.piece:nth-child(3n + 2) { margin-top: clamp(0.75rem, 2vw, 1.75rem); }
+.piece:nth-child(3n + 3) { margin-top: clamp(0.35rem, 1vw, 0.9rem); }
+.piece:nth-child(3n + 2) .piece__print { transform: rotate(1deg); }
+.piece:nth-child(3n + 3) .piece__print { transform: rotate(0.4deg); }
+
+/* Taking one off the board: it straightens and lifts. The one motion in this
+   section, and it answers the cursor rather than running on its own. */
+.piece:hover .piece__print,
+.piece:focus-within .piece__print {
+  transform: rotate(0deg) translateY(-3px);
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--bx-void-deep) 34%, transparent),
+    0 22px 34px -14px color-mix(in srgb, var(--bx-void-deep) 55%, transparent);
+}
+
+/*
+ * A shorter strip.
+ *
+ * The shop's prints run four across where the cuts run two, so at the shared
+ * 4.5rem the same piece of tape covered a third of a corner. Same material,
+ * cut to the size of what it is holding.
+ */
+.piece__tape { width: 3.3rem; height: 1.15rem; top: -0.45rem; left: -0.85rem; }
+.piece:nth-child(even) .piece__tape { right: -0.85rem; }
+
+/*
+ * Which corner the tape lands on.
+ *
+ * Alternating, so a wall of prints does not develop a diagonal of tape down
+ * one side. The cuts alternate on the same rule; here it runs against the
+ * three-value height stagger, which keeps the two patterns from lining up.
+ */
+.piece:nth-child(even) .piece__tape {
+  left: auto;
+  right: -1.1rem;
+  transform: rotate(38deg);
+}
+
+.piece__shot { display: block; line-height: 0; }
+
+/*
+ * The photograph.
+ *
+ * Square, because every mockup the shop publishes is, and cropped rather than
+ * letterboxed: a strip of paper above and below a photo of a shirt is not a
+ * shape, it is a mistake. Held slightly back at rest and let up to full colour
+ * under the cursor — the same gesture the portraits make, for the same reason.
+ */
+.piece__image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  filter: saturate(0.82) contrast(1.02);
+  transition: filter var(--bx-dur-base) var(--bx-ease-crt);
+}
+
+.piece:hover .piece__image,
+.piece:focus-within .piece__image { filter: saturate(1.05) contrast(1.04); }
+
+/*
+ * The margin.
+ *
+ * Written in ink on paper, so the palette here is neither the plate's nor the
+ * void's: it is the same warm dark the cuts write their captions in, at two
+ * strengths — the name and the price hold the ink, the palette and the size
+ * run step back.
+ */
+.piece__tag {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.6rem 0.3rem 0.7rem;
+  color: #4a4034;
+}
+
+/*
+ * The name.
+ *
+ * Body face on purpose, and the shop is where the site already decided that: a
+ * catalogue name is a label on a thing, not a headline. The display face is
+ * for what the page announces — a section, an episode, a person.
+ */
+.piece__name {
+  margin: 0;
+  font-family: var(--bx-font-body);
+  font-size: var(--bx-text-sm);
+  font-weight: 600;
+  line-height: 1.3;
+  color: #241d16;
+}
+
+.piece__name a { color: inherit; text-decoration: none; }
+.piece__name a:hover,
+.piece__name a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+
+/* The price is the one number in the margin, and a number is machine-emitted:
+   the mono face, tabular, the way the cuts set a running time. */
+.piece__price {
+  margin: 0;
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-base);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  color: #241d16;
+}
+
+.piece__colors,
+.piece__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0.15rem 0 0;
+}
+
+/*
+ * A colour, drawn in itself.
+ *
+ * The values are the shop's own hex codes, so this is the garment's actual
+ * palette rather than an illustration of one. The inner ring is what keeps a
+ * white swatch visible on paper — a hairline of the ink, not a border, so it
+ * does not change the size of the dot.
+ */
+.piece__swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(36, 29, 22, 0.45);
+}
+
+.piece__swatch-rest,
+.piece__size {
+  font-family: var(--bx-font-mono);
+  font-size: var(--bx-text-xs);
+  line-height: 1.5;
+  color: #6b5f50;
+}
+
+/* A size run reads as what is printed on a label: each one boxed, in the order
+   the shop cuts them. */
+.piece__size {
+  padding: 0.05em 0.4em;
+  border: 1px solid rgba(74, 64, 52, 0.3);
+  border-radius: 2px;
+}
+
+@media (max-width: 64rem) {
+  /*
+   * Below the width where there is room beside the heading, the mascot stops
+   * being a decoration in the margin and becomes the first thing on the board.
+   * Right-aligned, so it still hangs off the same side it did.
+   */
+  .store__mascot {
+    position: static;
+    width: min(62%, 16rem);
+    margin: 0 0 clamp(1.5rem, 4vw, 2.5rem) auto;
+  }
+
+  .store .bx-band__head { padding-right: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .piece__print,
+  .piece:hover .piece__print,
+  .piece:focus-within .piece__print { transform: none; transition: none; }
+}
+
 
 
 /* The ask's own heading. `--bx-display-panel` is the token the design system

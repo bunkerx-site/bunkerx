@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Lamp, Plate } from '@bunkerx/design-system'
+import { useCurrentSection } from '../hooks/useCurrentSection'
 import { useHideOnScroll } from '../hooks/useHideOnScroll'
 import { useOverSection } from '../hooks/useOverSection'
 import { hash, NAV, SECTION, SITE } from '../content/site'
@@ -14,11 +15,27 @@ import { hash, NAV, SECTION, SITE } from '../content/site'
  */
 const TOP = hash(SECTION.top)
 
+/*
+ * Every section the bar can be told it is in.
+ *
+ * The nav's own targets, plus the membership panel, which has no link in the
+ * bar. It is on the list so that scrolling into it clears the marker instead
+ * of leaving "Onde ouvir" lit through a section it has nothing to do with —
+ * the panel is genuinely not one of the six, and the honest answer there is
+ * none of them.
+ */
+const WATCHED = [...NAV.map((item) => item.href.slice(1)), SECTION.membership]
+
 export function SiteHeader() {
   const { hidden, atTop, hideForJump } = useHideOnScroll()
-  /* The cuts band is a phosphor plate and so is this bar. Over it, the bar
-     takes the other brand colour — see `.masthead--over`. */
-  const overPlate = useOverSection(SECTION.cuts, '.masthead')
+  /* The cuts and the shop are phosphor plates and so is this bar. Over either
+     of them it takes the other brand colour — see `.masthead--over`. */
+  const overPlate = useOverSection([SECTION.cuts, SECTION.store], '.masthead')
+  /* Which section is under the reading line, so the bar can say where you
+     are. Marked with `aria-current`, which is the attribute for exactly this
+     — the style hangs off it rather than off a class of its own, so the
+     marker and what a screen reader announces can never disagree. */
+  const current = useCurrentSection(WATCHED)
   const [open, setOpen] = useState(false)
 
   // The sheet covers the page, so the page behind it must not scroll, and a
@@ -69,6 +86,7 @@ export function SiteHeader() {
                 key={item.href}
                 className="masthead__link"
                 href={item.href}
+                aria-current={item.href === hash(current ?? '') ? 'true' : undefined}
                 /* Anchor targets reserve no space above themselves, so the bar
                    has to leave for the section to actually start at the top.
                    See `hideForJump`. */
@@ -111,6 +129,7 @@ export function SiteHeader() {
               key={item.href}
               className="menu__link"
               href={item.href}
+              aria-current={item.href === hash(current ?? '') ? 'true' : undefined}
               onClick={() => {
                 setOpen(false)
                 if (item.href !== TOP) hideForJump()

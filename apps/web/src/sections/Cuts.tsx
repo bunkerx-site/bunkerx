@@ -84,8 +84,8 @@ function Cut({ video }: { video: Video }) {
     /* `bx-hoverable` lights the frame's ring from out here, so hovering
        anywhere on the clip — the title included — answers on the print. */
     <article className="cut bx-hoverable">
-      <div className="cut__print">
-        <span className="cut__tape" aria-hidden="true" />
+      <div className="cut__print print">
+        <span className="cut__tape tape" aria-hidden="true" />
 
         {/*
           The photograph is a link but is out of the tab order and hidden from
@@ -168,7 +168,7 @@ export function Cuts({ videos }: { videos: Video[] }) {
   return (
     <Band
       id={SECTION.cuts}
-      className="cuts"
+      className="cuts plate"
       title="Cortes"
       /* No seam. The seam is a colour burst read against the dark, and against
          the plate it is a smear — the change of surface is a bigger boundary
@@ -181,7 +181,7 @@ export function Cuts({ videos }: { videos: Video[] }) {
       */
       layer={
         <>
-          <div className="cuts__grain" aria-hidden="true">
+          <div className="plate__grain" aria-hidden="true">
             <Static intensity={0.35} fps={8} grain={3} />
           </div>
           {/* Purple drifting up around the station — the one thing in this

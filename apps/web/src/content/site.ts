@@ -67,8 +67,11 @@ export const NAV = [
   { label: 'Episódios', href: hash(SECTION.episodes) },
   { label: 'Cortes', href: hash(SECTION.cuts) },
   { label: 'Quem investiga', href: hash(SECTION.hosts) },
-  { label: 'Onde ouvir', href: hash(SECTION.listen) },
+  /* In the order the page puts them, not in the order they were thought of.
+     The shop comes before the listen row on screen, and a nav that disagrees
+     with the scroll makes a reader who followed one link doubt the next. */
   { label: 'Loja', href: hash(SECTION.store) },
+  { label: 'Onde ouvir', href: hash(SECTION.listen) },
 ] as const
 
 export const MEMBERSHIP = {
@@ -77,28 +80,37 @@ export const MEMBERSHIP = {
   orelo: 'https://orelo.cc/bunkerx',
 }
 
+/**
+ * The two agents.
+ *
+ * `icon` names a mark in the design system's `PlatformIcon`, the same way
+ * `PLATFORMS` and `SOCIALS` do — the hosts section draws the mark next to the
+ * label, so a reader recognises where a link goes before reading it.
+ *
+ * Frozen with `as const` so those icon names arrive as literals rather than as
+ * `string`, which is what lets the section pass them straight to the component
+ * without a cast.
+ */
 export const HOSTS = [
   {
     name: 'Affonso Solano',
-    role: 'Agente de campo',
     portrait: '/hosts/affonso-solano.png',
     bio: 'Escritor e roteirista, veterano do Matando Robôs Gigantes. É quem puxa o fio da história até ela virar mitologia — e quem insiste que a parte mais absurda do relato costuma ser a parte documentada.',
     links: [
-      { label: 'Instagram', href: 'https://instagram.com/affonsosolano' },
-      { label: 'TikTok', href: 'https://tiktok.com/@affonsosolano' },
+      { label: 'Instagram', icon: 'instagram', href: 'https://instagram.com/affonsosolano' },
+      { label: 'TikTok', icon: 'tiktok', href: 'https://tiktok.com/@affonsosolano' },
     ],
   },
   {
     name: 'Afonso 3D',
-    role: 'Agente de campo',
     portrait: '/hosts/afonso-3d.png',
     bio: 'Ilustrador e host do Nerdcast. Chega com a papelada: relatório desclassificado, data, número de protocolo. Se existe um documento por trás da lenda, ele leu antes de gravar.',
     links: [
-      { label: 'Instagram', href: 'https://instagram.com/afonso3d' },
-      { label: 'TikTok', href: 'https://tiktok.com/@afonso3d' },
+      { label: 'Instagram', icon: 'instagram', href: 'https://instagram.com/afonso3d' },
+      { label: 'TikTok', icon: 'tiktok', href: 'https://tiktok.com/@afonso3d' },
     ],
   },
-]
+] as const
 
 /**
  * Podcast aggregators. The feed is the source of truth and every one of these
