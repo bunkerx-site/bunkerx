@@ -49,6 +49,34 @@
 .shell--narrow { width: min(100% - 2.5rem, 58rem); }
 
 
+/*
+ * Section headings, one step up the scale.
+ *
+ * The system sets a band title at `--bx-text-2xl`, which is the same 2.5rem
+ * the fold's own subheads take. That put every "EPISÓDIOS" and "CORTES" in
+ * the same register as the copy underneath it, on a page whose only ornament
+ * is scale — so the thing announcing a new subject was no louder than the
+ * thing describing it. Fluid rather than a fixed step up, so it grows with
+ * the screen instead of wrapping "QUEM INVESTIGA" on a phone.
+ */
+.bx-band__title {
+  font-size: clamp(var(--bx-text-2xl), 1.4rem + 2.9vw, var(--bx-text-3xl));
+}
+
+/*
+ * And the line under it, one step down from the title's growth rather than up
+ * with it. The lead is the section's second voice: it has to stay clearly
+ * below the heading, and at `--bx-text-lg` against a 3.25rem title it now
+ * sits far enough away to read as a caption. What it needed was measure and
+ * colour, not size — 52ch is about eleven words a line, which is where a
+ * two-line lead breaks in the middle of a thought rather than after one word.
+ */
+.bx-band__lead {
+  max-width: 52ch;
+  color: color-mix(in srgb, var(--bx-signal) 76%, transparent);
+}
+
+
 /* =============================================================== pager == */
 
 /*
@@ -752,6 +780,55 @@
 
 /* ============================================================= episodes == */
 
+/*
+ * The globe over the archive.
+ *
+ * A cut-out is a real cell of the band's header row, which is what makes it
+ * shrink and re-stack with everything else — and which means a picture taller
+ * than the two lines beside it pushes the first episode down by the whole
+ * difference. At 26rem that was some 280px of empty band between the lead and
+ * the first row, with the globe floating in the middle of it, level with
+ * nothing.
+ *
+ * So its box stops counting past the header: the negative bottom margin takes
+ * the row's height back down to roughly the text it stands beside, and the
+ * rest of the sphere hangs below into the archive. That is the bleed the band
+ * was reaching for when it pushed a full-height box down with `stickerLift`
+ * and left the hole behind it. `start` rather than the row's default centring
+ * is what levels the globe's top edge with the title's.
+ *
+ * The overhang is tuned to land in the first row's own top padding, above its
+ * title — the rows paint over the globe (they come later in the source) but a
+ * headline read against a lit sphere is a headline nobody reads.
+ */
+.archive {
+  --archive-globe: clamp(9rem, 20vw, 18rem);
+  /*
+   * More air above the heading than `tight` gives.
+   *
+   * `tight` is the band's rule for arriving with no seam overhead, and it is
+   * right about the reason — there is no change of surface to recover from —
+   * but it was measured against a header that then sat in 280px of its own
+   * emptiness. With the globe's box pulled in, the gap above the title is the
+   * only thing separating it from the fold, and at 3rem the archive read as
+   * the bottom of the fold rather than as the next thing. Still well short of
+   * a full `--bx-band-pad`, which is for a band that changes surface.
+   */
+  padding-top: clamp(3.5rem, 7.5vw, 7rem);
+}
+
+.archive .bx-band__head--marked { align-items: start; }
+
+.archive .bx-band__sticker { margin-bottom: calc(var(--archive-globe) * -0.42); }
+
+@media (max-width: 48rem) {
+  /* Stacked, the globe is under the lead and the archive is under the globe,
+     so there is nothing left for it to bleed into but the first row's
+     artwork. It stands on its own line here. */
+  .archive .bx-band__sticker { margin-bottom: 0; }
+}
+
+
 
 /* ================================================================ cuts == */
 
@@ -1252,29 +1329,6 @@
   .agent { grid-template-columns: 1fr; }
   .agent__portrait { max-width: 11rem; }
 }
-
-/* ============================================================= bulletin == */
-
-.files { border-top: 1px solid color-mix(in srgb, var(--bx-signal) 14%, transparent); }
-
-.file {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: start;
-  padding-block: clamp(2rem, 4vw, 3rem);
-  border-bottom: 1px solid color-mix(in srgb, var(--bx-signal) 14%, transparent);
-}
-
-.file__title { font-family: var(--bx-font-display); font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.12; margin: 0; color: var(--bx-signal); }
-.file__excerpt { margin: var(--bx-space-4) 0 0; max-width: 58ch; font-size: var(--bx-text-base); line-height: var(--bx-leading-body); color: var(--bx-signal-mute); }
-
-.file__redacted { display: inline-block; margin-top: var(--bx-space-4); font-size: var(--bx-text-sm); color: var(--bx-signal-mute); }
-.file__redacted mark { background: var(--bx-signal-mute); color: transparent; border-radius: 2px; }
-
-.file__state { font-size: var(--bx-text-sm); color: var(--bx-signal-mute); white-space: nowrap; padding-top: 0.5rem; }
-
-@media (max-width: 44rem) { .file { grid-template-columns: 1fr; } }
 
 /* ================================================================ store == */
 

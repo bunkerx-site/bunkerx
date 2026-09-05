@@ -73,6 +73,7 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
   return (
     <Band
       id={SECTION.episodes}
+      className="archive"
       title="Episódios"
       tone="deep"
       /* No seam above this one: the fold's own carrier burst sits a couple of
@@ -82,18 +83,27 @@ export function Episodes({ episodes }: { episodes: Episode[] }) {
       tight
       glitch
       sticker="earth"
-      /* Larger, and pushed down so it crosses the first row. The globe is the
-         section's subject rather than a label on it — a cut-out that stops
-         politely at the header's edge reads as an icon, one that overlaps what
-         follows reads as something in the room. */
-      stickerWidth="clamp(10rem, 28vw, 26rem)"
-      stickerLift="42%"
+      /*
+        The globe is the section's subject rather than a label on it, so it is
+        larger than the default cut-out and it is allowed to reach past the
+        header into the first row.
+
+        Both the size and the reach live in `.archive` rather than here: at
+        26rem the globe was taller than the two lines it stands beside by some
+        280px, and because a cut-out is a real cell of the header row, all of
+        that became empty band between the lead and the first episode. The
+        picture floated in the middle of it, level with nothing. Its box is
+        held to the header's own height in CSS instead, and the overhang is
+        what bleeds — which is the effect the lift was reaching for by pushing
+        a full-height box down and leaving the hole behind it.
+      */
+      stickerWidth="var(--archive-globe)"
       stickerMotion="orbit"
       /* Says what the section is, and stops there. It used to end with "o
          arquivo inteiro está nas plataformas", which is a pointer at a footer
          eight rows below it — the footer says that itself now, where a reader
          who has reached the end of the list can act on it. */
-      lead="O programa completo, toda segunda — no vídeo e no áudio."
+      lead="Um caso por semana, investigado até o fim. Toda segunda às 20h, em vídeo e em áudio."
       more={
         <div className="cta">
           <p className="cta__pitch">

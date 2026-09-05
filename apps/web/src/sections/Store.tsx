@@ -12,7 +12,7 @@ export function Store({ products }: { products: Product[] }) {
       stickerRotate={-5}
       stickerMotion="sway"
       stickerHalo="lift"
-      lead="Estampas do programa. A produção e a entrega ficam com a Montink."
+      lead="Estampas do programa, para sair por aí sinalizando. Produção e entrega por conta da Montink."
       more={
         <Button variant="outline" href={CHANNELS.store} external>
           Ver as {products.length} peças

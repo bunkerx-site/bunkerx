@@ -209,7 +209,7 @@ export function Cuts({ videos }: { videos: Video[] }) {
          row because the row behind it is a wide dark band; a print is a small
          bright object and anything laid over it reads as damage. */
       stickerMotion="pan"
-      lead="Trechos soltos do programa, para quem tem dez minutos. Canal próprio, publicado fora da segunda."
+      lead="O programa em pedaços de dez minutos. Canal próprio, e não espera a segunda-feira."
       more={
         <div className="cta">
           <p className="cta__pitch">

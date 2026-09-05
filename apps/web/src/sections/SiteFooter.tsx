@@ -1,5 +1,5 @@
 import { Plate, Seam, Sticker } from '@bunkerx/design-system'
-import { MEMBERSHIP, NAV, PLATFORMS, SITE, SOCIALS } from '../content/site'
+import { hash, NAV, PLATFORMS, SECTION, SITE, SOCIALS } from '../content/site'
 
 export function SiteFooter() {
   return (
@@ -30,10 +30,14 @@ export function SiteFooter() {
                   <a href={item.href}>{item.label}</a>
                 </li>
               ))}
+              {/* The one item in this column that is not in `NAV`, and the
+                  only "Apoiar" on the page that used to mean something
+                  different from the other two: this is a list of page
+                  anchors, so it points at the membership panel like the
+                  masthead's and the fold's do. Orelo and YouTube are both
+                  in the panel. */}
               <li>
-                <a href={MEMBERSHIP.orelo} target="_blank" rel="noreferrer noopener">
-                  Apoiar
-                </a>
+                <a href={hash(SECTION.membership)}>Apoiar</a>
               </li>
             </ul>
           </div>

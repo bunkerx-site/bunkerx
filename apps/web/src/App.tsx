@@ -4,7 +4,6 @@ import { Fold } from './sections/Fold'
 import { Episodes } from './sections/Episodes'
 import { Cuts } from './sections/Cuts'
 import { Agents } from './sections/Agents'
-import { Bulletin } from './sections/Bulletin'
 import { Store } from './sections/Store'
 import { Join } from './sections/Join'
 import { Listen } from './sections/Listen'
@@ -47,7 +46,6 @@ export function App() {
             their own section — and their own surface. */}
         <Cuts videos={CUTS} />
         <Agents />
-        <Bulletin />
         <Store products={PRODUCTS} />
         <Join />
         <Listen />

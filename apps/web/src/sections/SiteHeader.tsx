@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Lamp, Plate } from '@bunkerx/design-system'
 import { useHideOnScroll } from '../hooks/useHideOnScroll'
 import { useOverSection } from '../hooks/useOverSection'
-import { hash, MEMBERSHIP, NAV, SECTION, SITE } from '../content/site'
+import { hash, NAV, SECTION, SITE } from '../content/site'
 
 /*
  * The one nav target that must not hide the bar.
@@ -77,11 +77,16 @@ export function SiteHeader() {
                 {item.label}
               </a>
             ))}
+            {/* Down the page, not off it. Orelo and YouTube are both real
+                membership routes and the bar can only carry one link, so
+                sending it straight to Orelo picked for the reader — and sent
+                someone who only wanted to know what "apoiar" buys away from
+                the page that says so. The panel makes the case and offers
+                both. */}
             <a
               className="masthead__join"
-              href={MEMBERSHIP.orelo}
-              target="_blank"
-              rel="noreferrer noopener"
+              href={hash(SECTION.membership)}
+              onClick={hideForJump}
             >
               Apoiar
             </a>
@@ -116,10 +121,11 @@ export function SiteHeader() {
           ))}
           <a
             className="menu__link menu__join"
-            href={MEMBERSHIP.orelo}
-            target="_blank"
-            rel="noreferrer noopener"
-            onClick={() => setOpen(false)}
+            href={hash(SECTION.membership)}
+            onClick={() => {
+              setOpen(false)
+              hideForJump()
+            }}
           >
             Apoiar
           </a>

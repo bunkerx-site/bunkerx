@@ -11,7 +11,10 @@ export function Agents() {
       sticker="case-folder"
       stickerRotate={6}
       stickerMotion="identify"
-      lead="Dois sujeitos que levam o assunto a sério o suficiente para rir dele."
+      /* Not a summary of the two bios directly underneath it — "um puxa o fio,
+         o outro traz a papelada" is what those two paragraphs already say, in
+         those words. This says what the pair is instead. */
+      lead="Dois agentes de campo, uma pasta de documentos e nenhuma vergonha de acreditar."
     >
       <div className="agents">
         {HOSTS.map((host) => (

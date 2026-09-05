@@ -31,7 +31,6 @@ export const SECTION = {
   episodes: 'episodios',
   cuts: 'cortes',
   hosts: 'agentes',
-  bulletin: 'boletim',
   listen: 'ouvir',
   store: 'loja',
   membership: 'membro',
@@ -68,7 +67,6 @@ export const NAV = [
   { label: 'Episódios', href: hash(SECTION.episodes) },
   { label: 'Cortes', href: hash(SECTION.cuts) },
   { label: 'Quem investiga', href: hash(SECTION.hosts) },
-  { label: 'Boletim', href: hash(SECTION.bulletin) },
   { label: 'Onde ouvir', href: hash(SECTION.listen) },
   { label: 'Loja', href: hash(SECTION.store) },
 ] as const
@@ -121,9 +119,9 @@ export const HOSTS = [
  * Ordered by where people actually arrive from, not alphabetically.
  *
  * Orelo is not here on purpose: it is where the hosts ask people to *support*
- * the show, and it already has the membership panel and the masthead button to
- * itself. Listing it as a fourth way to press play buried that. RSS is out for
- * the same kind of reason — a podcast app finds the feed from the
+ * the show, not a fourth way to press play, and the membership panel — which
+ * the masthead's "Apoiar" and the fold's both point at — already carries it.
+ * RSS is out for the same kind of reason — a podcast app finds the feed from the
  * `<link rel="alternate">` in the document head without being told, and the
  * people who hand-paste feed URLs are not the ones this row is for.
  */
@@ -153,40 +151,3 @@ export const SOCIALS = [
   { label: 'YouTube', icon: 'youtube', href: CHANNELS.youtube },
   { label: 'Cortes', icon: 'youtube', href: CHANNELS.cuts },
 ] as const
-
-/**
- * Placeholder bulletin entries.
- *
- * There is no newsroom behind this yet — nothing in the feeds carries editorial
- * posts. These exist so the section has a real shape to be judged, and they
- * must be replaced before launch.
- */
-export const BULLETIN = [
-  {
-    id: 'protocolo-174',
-    stamp: 'Desclassificado',
-    title: 'O arquivo que a Base 211 não devolveu',
-    date: '2026-08-28',
-    redacted: 'operação ██████████ / anexo ███',
-    excerpt:
-      'Três documentos citados no episódio 174 sumiram do acervo público entre 2019 e 2021. Um deles reapareceu com quatro páginas a menos.',
-  },
-  {
-    id: 'protocolo-173',
-    stamp: 'Em apuração',
-    title: 'Quem assinou o memorando de Roswell',
-    date: '2026-08-21',
-    redacted: 'testemunha ███████, ██ anos',
-    excerpt:
-      'A assinatura confere. A data não. Fomos atrás do carimbo e encontramos duas versões do mesmo papel circulando.',
-  },
-  {
-    id: 'protocolo-172',
-    stamp: 'Arquivo',
-    title: 'O que sobrou do sinal de 1977',
-    date: '2026-08-14',
-    redacted: 'frequência ████,█ MHz',
-    excerpt:
-      'Setenta e dois segundos de gravação, uma anotação à mão na margem e meio século de gente tentando repetir a captação.',
-  },
-]

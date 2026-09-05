@@ -108,7 +108,7 @@
 
   /*
    * Anchored at 19px, not 16px. This is a reading site — long synopses, host
-   * bios, bulletin copy — and 16px body with 14px secondary text made every
+   * bios, episode notes — and 16px body with 14px secondary text made every
    * level land in the same middle register, so nothing read as large and
    * nothing read as small. The steps below widen toward the top so headline
    * and metadata sit far apart; that distance is what does the decorating on

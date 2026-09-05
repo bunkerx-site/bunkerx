@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { ABDUCTIONS, Button, formatDate, formatDuration, Glitch, Icon, PlatformIcon, Scene, Static, Tile, truncate } from '@bunkerx/design-system'
-import { hash, MEMBERSHIP, PLATFORMS, SECTION, SITE } from '../content/site'
+import { hash, PLATFORMS, SECTION, SITE } from '../content/site'
 import type { Episode } from '../lib/types'
 
 /**
@@ -171,8 +171,13 @@ export function Fold({ episode }: { episode: Episode }) {
               {/* A peer of the archive link, not of the watch button. Both are
                   ways to leave this screen — one further into the show, one
                   into supporting it — so they share the outlined rank and the
-                  filled button keeps the fold's one job to itself. */}
-              <Button variant="outline" href={MEMBERSHIP.orelo} external>
+                  filled button keeps the fold's one job to itself.
+
+                  Both go down the page rather than off it, and this one for
+                  the same reason the masthead's does: the membership panel is
+                  where the two routes are laid out and the case for either one
+                  is made. */}
+              <Button variant="outline" href={hash(SECTION.membership)}>
                 <Icon name="signal" size="1.15em" />
                 Apoie o programa
               </Button>
